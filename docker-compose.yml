@@ -1,0 +1,90 @@
+# docker compose up -d --build
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: gw2nexus_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: app
+      MYSQL_USER: app
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - gw2nexus_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: gw2nexus_mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - gw2nexus_network
+
+  laravel:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: gw2nexus_laravel
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/var/www/html
+      - /var/www/html/vendor
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      DB_HOST: mysql
+      DB_DATABASE: app
+      DB_USERNAME: app
+      DB_PASSWORD: password
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      FRONTEND_URL: http://localhost:5173
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    networks:
+      - gw2nexus_network
+
+  react:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: gw2nexus_react
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      VITE_API_URL: http://localhost:8000/api
+    depends_on:
+      - laravel
+    networks:
+      - gw2nexus_network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  gw2nexus_network:
+    driver: bridge

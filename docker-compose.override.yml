@@ -1,0 +1,7 @@
+services:
+  laravel:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  react:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

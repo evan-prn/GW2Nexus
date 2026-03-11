@@ -1,0 +1,431 @@
+# ============================================================
+# GW2Nexus — Pipeline CI/CD
+# Stack : Laravel (backend) · React/TypeScript/Vite (frontend)
+# Infrastructure : Docker · MySQL 8 · Node 20 LTS · PHP 8.3
+# ============================================================
+
+name: GW2Nexus CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - "feature/**"
+      - "fix/**"
+      - "hotfix/**"
+  pull_request:
+    branches:
+      - main
+      - develop
+
+# -------------------------------------------------------
+# Variables d'environnement globales
+# -------------------------------------------------------
+env:
+  PHP_VERSION: "8.3"
+  NODE_VERSION: "20"
+  MYSQL_DATABASE: gw2nexus_test
+  MYSQL_ROOT_PASSWORD: root
+  MYSQL_USER: gw2nexus
+  MYSQL_PASSWORD: secret
+
+# -------------------------------------------------------
+# Concurrence : annule les runs en cours sur la même branche
+# sauf sur main (on laisse tous les déploiements se terminer)
+# -------------------------------------------------------
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  # ============================================================
+  # JOB 1 — Lint & Analyse statique Backend (Laravel)
+  # ============================================================
+  backend-lint:
+    name: 🔍 Backend — Lint & Static Analysis
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Setup PHP ${{ env.PHP_VERSION }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, pdo, pdo_mysql, xml, curl, zip, bcmath
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: backend/vendor
+          key: composer-${{ hashFiles('backend/composer.lock') }}
+          restore-keys: composer-
+
+      - name: Installation des dépendances Composer
+        run: composer install --no-interaction --prefer-dist --no-progress --ansi
+
+      - name: Copie du fichier .env pour les tests
+        run: cp .env.example .env.ci 2>/dev/null || cp .env.example .env
+
+      - name: Génération de la clé applicative
+        run: php artisan key:generate --env=ci --no-interaction 2>/dev/null || php artisan key:generate
+
+      - name: Laravel Pint — Vérification du style (PSR-12)
+        run: ./vendor/bin/pint --test
+
+      - name: PHPStan — Analyse statique niveau 6
+        run: ./vendor/bin/phpstan analyse --level=6 --memory-limit=256M
+        continue-on-error: true
+
+  # ============================================================
+  # JOB 2 — Tests unitaires & d'intégration Backend
+  # ============================================================
+  backend-tests:
+    name: 🧪 Backend — Tests PHPUnit
+    runs-on: ubuntu-latest
+    needs: backend-lint
+
+    defaults:
+      run:
+        working-directory: backend
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: ${{ env.MYSQL_DATABASE }}
+          MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_ROOT_PASSWORD }}
+          MYSQL_USER: ${{ env.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ env.MYSQL_PASSWORD }}
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Setup PHP ${{ env.PHP_VERSION }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, pdo, pdo_mysql, xml, curl, zip, bcmath
+          coverage: xdebug
+          tools: composer:v2
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: backend/vendor
+          key: composer-${{ hashFiles('backend/composer.lock') }}
+          restore-keys: composer-
+
+      - name: Installation des dépendances Composer
+        run: composer install --no-interaction --prefer-dist --no-progress --ansi
+
+      - name: Configuration de l'environnement de test
+        run: |
+          cp .env.example .env.testing
+          sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=mysql/" .env.testing
+          sed -i "s/DB_HOST=.*/DB_HOST=127.0.0.1/" .env.testing
+          sed -i "s/DB_PORT=.*/DB_PORT=3306/" .env.testing
+          sed -i "s/DB_DATABASE=.*/DB_DATABASE=${{ env.MYSQL_DATABASE }}/" .env.testing
+          sed -i "s/DB_USERNAME=.*/DB_USERNAME=${{ env.MYSQL_USER }}/" .env.testing
+          sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=${{ env.MYSQL_PASSWORD }}/" .env.testing
+          echo "APP_KEY=" >> .env.testing
+
+      - name: Génération de la clé applicative (testing)
+        run: php artisan key:generate --env=testing --no-interaction
+
+      - name: Exécution des migrations sur la base de test
+        run: php artisan migrate --env=testing --no-interaction --force
+
+      - name: Exécution des tests PHPUnit avec couverture
+        run: |
+          php artisan test \
+            --env=testing \
+            --coverage-clover=coverage.xml \
+            --min=70
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: ${{ env.MYSQL_DATABASE }}
+          DB_USERNAME: ${{ env.MYSQL_USER }}
+          DB_PASSWORD: ${{ env.MYSQL_PASSWORD }}
+
+      - name: Upload du rapport de couverture
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: backend/coverage.xml
+          flags: backend
+          fail_ci_if_error: false
+
+  # ============================================================
+  # JOB 3 — Lint & Type Check Frontend (React/TS/Vite)
+  # ============================================================
+  frontend-lint:
+    name: 🔍 Frontend — Lint & Type Check
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Installation des dépendances npm
+        run: npm ci
+
+      - name: ESLint — Vérification du code TypeScript/React
+        run: npm run lint
+
+      - name: TypeScript — Vérification des types (tsc --noEmit)
+        run: npm run type-check
+
+  # ============================================================
+  # JOB 4 — Tests unitaires Frontend (Vitest)
+  # ============================================================
+  frontend-tests:
+    name: 🧪 Frontend — Tests Vitest
+    runs-on: ubuntu-latest
+    needs: frontend-lint
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Installation des dépendances npm
+        run: npm ci
+
+      - name: Vitest — Exécution des tests unitaires
+        run: npm run test -- --coverage --reporter=verbose
+
+      - name: Upload du rapport de couverture
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: frontend/coverage/lcov.info
+          flags: frontend
+          fail_ci_if_error: false
+
+  # ============================================================
+  # JOB 5 — Build de production Frontend
+  # ============================================================
+  frontend-build:
+    name: 🏗️ Frontend — Build Vite
+    runs-on: ubuntu-latest
+    needs: frontend-tests
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Installation des dépendances npm
+        run: npm ci
+
+      - name: Build de production Vite
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Upload des artefacts de build
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist-${{ github.sha }}
+          path: frontend/dist/
+          retention-days: 7
+
+  # ============================================================
+  # JOB 6 — Validation Docker Compose
+  # ============================================================
+  docker-validate:
+    name: 🐳 Docker — Validation des fichiers Compose
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Validation de docker-compose.yml
+        run: docker compose -f docker-compose.yml config --quiet
+
+      - name: Validation de docker-compose.override.yml
+        run: |
+          if [ -f docker-compose.override.yml ]; then
+            docker compose -f docker-compose.yml -f docker-compose.override.yml config --quiet
+          fi
+
+  # ============================================================
+  # JOB 7 — Sécurité : audit des dépendances
+  # ============================================================
+  security-audit:
+    name: 🔒 Sécurité — Audit des dépendances
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Setup PHP ${{ env.PHP_VERSION }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Composer — Audit des vulnérabilités
+        working-directory: backend
+        run: |
+          composer install --no-interaction --prefer-dist --no-progress --quiet
+          composer audit
+        continue-on-error: true
+
+      - name: npm — Audit des vulnérabilités
+        working-directory: frontend
+        run: |
+          npm ci --quiet
+          npm audit --audit-level=high
+        continue-on-error: true
+
+  # ============================================================
+  # JOB 8 — Gate de qualité (résumé de tous les jobs)
+  # Requis avant tout déploiement
+  # ============================================================
+  ci-success:
+    name: ✅ CI — Gate de qualité
+    runs-on: ubuntu-latest
+    needs:
+      - backend-tests
+      - frontend-build
+      - docker-validate
+    if: always()
+
+    steps:
+      - name: Vérification du statut global
+        run: |
+          if [[ "${{ needs.backend-tests.result }}" != "success" ]]; then
+            echo "❌ Les tests backend ont échoué"
+            exit 1
+          fi
+          if [[ "${{ needs.frontend-build.result }}" != "success" ]]; then
+            echo "❌ Le build frontend a échoué"
+            exit 1
+          fi
+          if [[ "${{ needs.docker-validate.result }}" != "success" ]]; then
+            echo "❌ La validation Docker a échoué"
+            exit 1
+          fi
+          echo "✅ Tous les checks CI sont au vert — prêt pour le déploiement"
+
+  # ============================================================
+  # JOB 9 — Déploiement automatique sur VPS (main uniquement)
+  # ============================================================
+  deploy-production:
+    name: 🚀 Déploiement — Production VPS
+    runs-on: ubuntu-latest
+    needs: ci-success
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: ${{ vars.APP_URL }}
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Téléchargement des artefacts frontend
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist-${{ github.sha }}
+          path: frontend/dist/
+
+      - name: Déploiement SSH vers le VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            set -e
+            cd /var/www/gw2nexus
+
+            echo "📦 Pull de la dernière version..."
+            git pull origin main
+
+            echo "🔧 Mise à jour backend Laravel..."
+            cd backend
+            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan migrate --force --no-interaction
+
+            echo "🌐 Reload Nginx & PHP-FPM..."
+            sudo systemctl reload php8.3-fpm
+            sudo systemctl reload nginx
+
+            echo "✅ Déploiement terminé avec succès !"
+
+      - name: Upload du frontend buildé vers le VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          source: "frontend/dist/*"
+          target: "/var/www/gw2nexus/frontend/dist"
+          strip_components: 2
