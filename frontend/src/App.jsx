@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from './services/api';
-import './App.css';
+import api from './api/httpClient';
 
 function App() {
   const [message, setMessage] = useState('');
@@ -15,6 +14,7 @@ function App() {
   }, []);
 
   return (
+
     <div style={{ fontFamily: 'sans-serif', textAlign: 'center', marginTop: '4rem' }}>
       <h1>🚀 Fullstack App</h1>
       <p style={{ color: '#888' }}>React + Vite → Laravel API</p>
@@ -31,6 +31,8 @@ function App() {
           </div>
         )}
       </div>
+
+    <script> console.log("API URL =", import.meta.env.VITE_API_URL); </script>
     </div>
   );
 }
