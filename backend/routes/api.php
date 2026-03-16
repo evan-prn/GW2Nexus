@@ -1,12 +1,23 @@
 <?php
 
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\LogoutController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Auth\ResetPasswordController;
-use App\Http\Controllers\Auth\MeController;
+use App\Http\Controllers\Api\Auth\ForgotPasswordController;
+use App\Http\Controllers\Api\Auth\LoginController;
+use App\Http\Controllers\Api\Auth\LogoutController;
+use App\Http\Controllers\Api\Auth\RegisterController;
+use App\Http\Controllers\Api\Auth\ResetPasswordController;
+use App\Http\Controllers\Api\Auth\MeController;
 use Illuminate\Support\Facades\Route;
+
+/**
+ * Route de test de connectivité — à supprimer en production
+ * Accessible via GET /api/ping
+ * Répond avec un message JSON confirmant la connexion à l'API
+ * Utile pour vérifier que le frontend peut communiquer avec le backend
+ * sans nécessiter d'authentification ni de token.
+ */
+Route::get('/ping', function () {
+    return response()->json(['message' => 'Connexion réussie vers l\'API !']);
+})->name('ping');
 
 /*
 |--------------------------------------------------------------------------

@@ -8,7 +8,7 @@ function App() {
   const [error, setError]   = useState(null);
 
   useEffect(() => {
-    api.get('/hello')
+    api.get('/ping')
       .then((res) => setMessage(res.data.message))
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
