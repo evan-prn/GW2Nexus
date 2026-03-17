@@ -1,23 +1,59 @@
 import axios from 'axios';
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
-  headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-  withCredentials: true,
+// ═══════════════════════════════════════════════════════════════════
+// GW2Nexus — HTTP Client (Axios)
+// Sanctum SPA mode — authentification par cookie de session
+//
+// Architecture proxy :
+//   Browser → Vite (localhost:5173) → proxy → Laravel (laravel:8000)
+//   Tout passe par le même domaine → pas de problème CSRF/CORS
+// ═══════════════════════════════════════════════════════════════════
+
+// Avec le proxy Vite, les appels sont relatifs — pas besoin d'URL absolue.
+// En production, pointer vers le domaine API dédié.
+const BASE_URL = import.meta.env.VITE_API_URL || '';
+
+const httpClient = axios.create({
+  baseURL: BASE_URL,
+  withCredentials: true, // Envoie les cookies de session Sanctum
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
 });
 
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+// ─── Cookie CSRF ──────────────────────────────────────────────────
+// Sanctum requiert un appel à /sanctum/csrf-cookie avant toute mutation.
+// Ce cookie est ensuite automatiquement inclus dans les requêtes suivantes.
+let csrfFetched = false;
+
+const ensureCsrf = async () => {
+  if (!csrfFetched) {
+    // Via le proxy Vite : localhost:5173/sanctum/csrf-cookie → laravel:8000
+    await axios.get(`${BASE_URL}/sanctum/csrf-cookie`, { withCredentials: true });
+    csrfFetched = true;
+  }
+};
+
+// ─── Intercepteur request — CSRF automatique sur mutations ────────
+httpClient.interceptors.request.use(async (config) => {
+  const mutations = ['post', 'put', 'patch', 'delete'];
+  if (mutations.includes(config.method?.toLowerCase())) {
+    await ensureCsrf();
+  }
   return config;
 });
 
-api.interceptors.response.use(
-  (res) => res,
-  (err) => {
-    if (err.response?.status === 401) localStorage.removeItem('token');
-    return Promise.reject(err);
+// ─── Intercepteur response — gestion globale des erreurs ─────────
+httpClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Session expirée — force un nouveau fetch CSRF à la prochaine requête
+      csrfFetched = false;
+    }
+    return Promise.reject(error);
   }
 );
 
-export default api;
+export default httpClient;

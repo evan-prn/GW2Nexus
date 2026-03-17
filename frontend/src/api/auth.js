@@ -1,30 +1,36 @@
-import api from './httpClient';
+import httpClient from './httpClient';
+import { ENDPOINTS } from './endpoint';
 
 /**
- * Authentication API
- * Provides methods for user authentication and management.
- * Each method corresponds to an API endpoint for handling authentication-related actions.
+ * Service d'authentification — appels API Sanctum
  */
+
 export const authApi = {
-  
-  // Logs in a user with the provided credentials.
-  login: (credentials) => api.post('/api/login', credentials),
+  /**
+   * Inscription d'un nouvel utilisateur
+   * @param {{ nom: string, email: string, password: string, password_confirmation: string }} data
+   */
+  register: (data) =>
+    httpClient.post(ENDPOINTS.auth.register, data),
 
-  // Registers a new user with the provided data.
-  register: (data) => api.post('/api/register', data),
+  /**
+   * Connexion utilisateur
+   * @param {{ email: string, password: string, remember?: boolean }} data
+   */
+  login: (data) =>
+    httpClient.post(ENDPOINTS.auth.login, data),
 
-  // Logs out the current user.
-  logout: () => api.post('/api/logout'),
+  /**
+   * Déconnexion — invalide la session Sanctum
+   */
+  logout: () =>
+    httpClient.post(ENDPOINTS.auth.logout),
 
-  // Retrieves the currently authenticated user's information.
-  me: () => api.get('/api/me'),
-
-  // Refreshes the authentication token.
-  refresh: () => api.post('/api/refresh'),
-
-  // Initiates the forgot password process for a user.
-  forgotPassword: (data) => api.post('/api/forgot-password', data),
-
-  // Resets the user's password with the provided data.
-  resetPassword: (data) => api.post('/api/reset-password', data),
+  /**
+   * Récupérer l'utilisateur connecté
+   */
+  me: () =>
+    httpClient.get(ENDPOINTS.auth.me),
 };
+
+export default authApi;

@@ -1,7 +1,17 @@
-# docker compose up -d --build
+# ═══════════════════════════════════════════════════════════════════
+# GW2Nexus — Docker Compose
+# Dev stack : Laravel 11 + React/Vite + MySQL 8 + phpMyAdmin + Mailpit
+#
+# Usage :
+#   Premier démarrage : docker compose up -d --build
+#   Démarrage normal  : docker compose up -d
+#   Logs en direct    : docker compose logs -f
+#   Arrêt             : docker compose down
+# ═══════════════════════════════════════════════════════════════════
 
 services:
 
+  # ─── MySQL 8 ──────────────────────────────────────────────────────
   mysql:
     image: mysql:8.0
     container_name: gw2nexus_mysql
@@ -24,16 +34,44 @@ services:
       retries: 10
       start_period: 20s
 
+  # ─── phpMyAdmin ───────────────────────────────────────────────────
+  # Interface web de gestion MySQL
+  # Accessible : http://localhost:8080
+  # Login : app / password  (ou root / rootpassword pour accès complet)
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: gw2nexus_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql           # Nom du service MySQL dans le réseau Docker
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1          # Permet de se connecter à n'importe quel host
+      UPLOAD_LIMIT: 64M         # Taille max pour l'import de fichiers SQL
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - gw2nexus_network
+
+  # ─── Mailpit — serveur mail de dev ────────────────────────────────
+  # Capture tous les emails envoyés par Laravel sans les envoyer réellement
+  # SMTP      : localhost:1025
+  # Interface : http://localhost:8025
   mailpit:
     image: axllent/mailpit:latest
     container_name: gw2nexus_mailpit
     restart: unless-stopped
     ports:
-      - "1025:1025"
-      - "8025:8025"
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Interface web
     networks:
       - gw2nexus_network
 
+  # ─── Laravel 11 — API REST ────────────────────────────────────────
+  # Accessible directement : http://localhost:8000
+  # Accessible via proxy   : http://localhost:5173/api/*
   laravel:
     build:
       context: ./backend
@@ -43,18 +81,33 @@ services:
     ports:
       - "8000:8000"
     volumes:
+      # Mount du code source — les modifications PHP sont reflétées sans rebuild
       - ./backend:/var/www/html
+      # Exclut vendor/ du mount pour éviter les conflits hôte/container
       - /var/www/html/vendor
     environment:
+      # ── App ──────────────────────────────────────────────────────
       APP_ENV: local
       APP_DEBUG: "true"
+      # ── Base de données ───────────────────────────────────────────
       DB_HOST: mysql
       DB_DATABASE: app
       DB_USERNAME: app
       DB_PASSWORD: password
+      # ── Mail ──────────────────────────────────────────────────────
       MAIL_HOST: mailpit
       MAIL_PORT: 1025
+      # ── Frontend ──────────────────────────────────────────────────
       FRONTEND_URL: http://localhost:5173
+      # ── Session & Sanctum SPA ─────────────────────────────────────
+      # Grâce au proxy Vite (/api → laravel:8000, /sanctum → laravel:8000),
+      # tout passe par localhost:5173 → même domaine → pas de problème CSRF.
+      # SESSION_SAME_SITE=lax est suffisant (plus sécurisé que none).
+      SESSION_DRIVER: cookie
+      SESSION_DOMAIN: localhost
+      SESSION_SAME_SITE: "lax"
+      SESSION_SECURE_COOKIE: "false"
+      SANCTUM_STATEFUL_DOMAINS: "localhost:5173,127.0.0.1:5173"
     depends_on:
       mysql:
         condition: service_healthy
@@ -63,6 +116,10 @@ services:
     networks:
       - gw2nexus_network
 
+  # ─── React + Vite — Frontend SPA ──────────────────────────────────
+  # Accessible : http://localhost:5173
+  # HMR actif  : les modifications React sont reflétées instantanément
+  # Proxy      : /api/* et /sanctum/* → http://laravel:8000
   react:
     build:
       context: ./frontend
@@ -70,21 +127,32 @@ services:
     container_name: gw2nexus_react
     restart: unless-stopped
     ports:
-      - "5173:5173"
+      - "5173:5173"   # Dev server Vite
+      - "24678:24678" # WebSocket HMR
     volumes:
+      # Mount du code source — Vite détecte les changements via polling
       - ./frontend:/app
+      # Exclut node_modules/ : utilise ceux installés dans le container
       - /app/node_modules
     environment:
-      VITE_API_URL: http://localhost:8000/api
+      # Avec le proxy Vite, les appels API passent par Vite lui-même
+      VITE_API_URL: http://localhost:5173
+      # Polling requis pour détecter les changements sur volumes Docker Windows/Mac
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
     depends_on:
       - laravel
     networks:
       - gw2nexus_network
 
+# ─── Volumes persistants ──────────────────────────────────────────────
 volumes:
   mysql_data:
     driver: local
 
+# ─── Réseau interne ───────────────────────────────────────────────────
+# Tous les services communiquent via ce réseau par leur nom de service
+# Ex: le container react peut joindre laravel via http://laravel:8000
 networks:
   gw2nexus_network:
     driver: bridge
