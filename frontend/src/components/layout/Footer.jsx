@@ -30,7 +30,7 @@ const COLUMNS = [
   {
     title: 'Projet',
     links: [
-      { label: 'À propos',     href: '/a-propos'    },
+      { label: 'À propos',     href: '/about'    },
       { label: 'Règles',       href: '/regles'      },
       { label: 'Contact',      href: '/contact'     },
       { label: 'GitHub',       href: 'https://github.com/evan-prn/GW2Nexus', external: true },

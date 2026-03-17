@@ -33,19 +33,24 @@ const RootLayout = () => {
 // ─── Lazy imports ────────────────────────────────────────────────────
 
 // Public
-const HomePage = lazy(() => import('../pages/HomePage'));
+const HomePage    = lazy(() => import('../pages/HomePage'));        // Page d'accueil
+const AboutPage   = lazy(() => import('../pages/AboutPage'));       // Page "À propos"
+// const ContactPage = lazy(() => import('../pages/ContactPage'));     // Page de contact
+// const LegalPage   = lazy(() => import('../pages/LegalPage'));       // Page de mentions légales
+// const PrivacyPage = lazy(() => import('../pages/PrivacyPage'));     // Page de politique de confidentialité
+// const TermsPage   = lazy(() => import('../pages/TermsPage'));       // Page de conditions d'utilisation
 
 // Auth
-const LoginPage          = lazy(() => import('../features/auth/pages/LoginPage'));
-const RegisterPage       = lazy(() => import('../features/auth/pages/RegisterPage'));
-const ForgotPasswordPage = lazy(() => import('../features/auth/pages/ForgotPasswordPage'));
-const ResetPasswordPage  = lazy(() => import('../features/auth/pages/ResetPasswordPage'));
+const LoginPage          = lazy(() => import('../features/auth/pages/LoginPage'));          // Page de connexion
+const RegisterPage       = lazy(() => import('../features/auth/pages/RegisterPage'));       // Page d'inscription
+const ForgotPasswordPage = lazy(() => import('../features/auth/pages/ForgotPasswordPage')); // Page de mot de passe oublié
+const ResetPasswordPage  = lazy(() => import('../features/auth/pages/ResetPasswordPage'));  // Page de réinitialisation de mot de passe
 
 // App
-const DashboardPage = lazy(() => import('../pages/DashboardPage'));
+const DashboardPage = lazy(() => import('../pages/DashboardPage'));     // Tableau de bord utilisateur
 
-// 404
-const NotFoundPage = lazy(() => import('../features/error/pages/NotFoundPage'));
+// Error
+const NotFoundPage = lazy(() => import('../features/error/pages/NotFoundPage'));  // Page 404
 
 // ─── Wrapper Suspense réutilisable ───────────────────────────────────
 const S = ({ children }) => <Suspense fallback={<PageLoader />}>{children}</Suspense>;
@@ -58,6 +63,12 @@ const router = createBrowserRouter([
 
       // ── Route publique ────────────────────────────────────────────
       { path: '/', element: <S><HomePage /></S> },
+      { path: '/about', element: <S><AboutPage /></S> },
+      // { path: '/contact', element: <S><ContactPage /></S> },
+      // { path: '/legal', element: <S><LegalPage /></S> },
+      // { path: '/privacy', element: <S><PrivacyPage /></S> },
+      // { path: '/terms', element: <S><TermsPage /></S> },
+
 
       // ── Routes Guest (visiteur non connecté seulement) ────────────
       {
