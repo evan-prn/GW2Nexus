@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
+
 import ProtectedRoute from './ProtectedRoute';
 import GuestRoute from './GuestRoute';
 
@@ -12,17 +13,17 @@ const PageLoader = () => (
 
 // ─── Lazy imports ────────────────────────────────────────────────────
 
-// Auth (Sprint 1)
+// Auth
 const LoginPage           = lazy(() => import('../features/auth/pages/LoginPage'));
 const RegisterPage        = lazy(() => import('../features/auth/pages/RegisterPage'));
 const ForgotPasswordPage  = lazy(() => import('../features/auth/pages/ForgotPasswordPage'));
 const ResetPasswordPage   = lazy(() => import('../features/auth/pages/ResetPasswordPage'));
 
-// App (Sprint 2+)
+// App
 const DashboardPage = lazy(() => import('../pages/DashboardPage'));
 
 // 404
-// const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
+const NotFoundPage = lazy(() => import('../features/error/pages/NotFoundPage'));
 
 // ─── Wrapper Suspense réutilisable ───────────────────────────────────
 const S = ({ children }) => <Suspense fallback={<PageLoader />}>{children}</Suspense>;
@@ -36,10 +37,10 @@ const router = createBrowserRouter([
   {
     element: <GuestRoute />,
     children: [
-      { path: '/login',           element: <S><LoginPage /></S> },
-      { path: '/register',        element: <S><RegisterPage /></S> },
-      { path: '/forgot-password', element: <S><ForgotPasswordPage /></S> },
-      { path: '/reset-password',  element: <S><ResetPasswordPage /></S> },
+      { path: '/login',           element: <S><LoginPage /></S> },          // Page de connexion
+      { path: '/register',        element: <S><RegisterPage /></S> },       // Page d'inscription
+      { path: '/forgot-password', element: <S><ForgotPasswordPage /></S> }, // Page de mot de passe oublié
+      { path: '/reset-password',  element: <S><ResetPasswordPage /></S> },  // Page de réinitialisation du mot de passe
     ],
   },
 
@@ -79,7 +80,7 @@ const router = createBrowserRouter([
   },
 
   // ── 404 ───────────────────────────────────────────────────────────
-  // { path: '*', element: <S><NotFoundPage /></S> },
+  { path: '*', element: <S><NotFoundPage /></S> },
 ]);
 
 const AppRouter = () => <RouterProvider router={router} />;

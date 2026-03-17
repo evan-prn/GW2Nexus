@@ -1,7 +1,7 @@
 import AuthProvider from './providers/AuthProvider';
 import AppRouter from './router';
-import './styles/theme.css';
-import './features/auth/styles/auth.css';
+
+
 
 /**
  * App.jsx — Racine de l'application GW2Nexus
