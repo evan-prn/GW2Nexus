@@ -18,6 +18,9 @@ export const ENDPOINTS = {
     apiKey:    `${API_VERSION}/profile/api-key`,  // Gestion de la clé API GW2
     gw2Data:   `${API_VERSION}/profile/gw2-data`, // Récupérer les données GW2 liées à l'utilisateur
   },
+  contact: {
+    submit:    `${API_VERSION}/contact`,          // Soumettre un message de contact
+  }
 };
 
 export default ENDPOINTS;

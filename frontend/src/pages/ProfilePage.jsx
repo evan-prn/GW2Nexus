@@ -2,10 +2,10 @@ import useAuthStore from '../store/authStore';
 import useAuth from '../features/auth/hooks/useAuth';
 
 /**
- * DashboardPage — placeholder Sprint 1
+ * ProfilePage — placeholder Sprint 1
  * Sera enrichi en Sprint 2 avec profil GW2, stats, widgets
  */
-const DashboardPage = () => {
+const ProfilePage = () => {
   const { user } = useAuthStore();
   const { logout, isLoading } = useAuth();
 
@@ -59,4 +59,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default ProfilePage;

@@ -6,14 +6,12 @@ use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\Auth\MeController;
+use App\Http\Controllers\Api\Contact\ContactController;
 use Illuminate\Support\Facades\Route;
 
 /**
  * Route de test de connectivité — à supprimer en production
  * Accessible via GET /api/ping
- * Répond avec un message JSON confirmant la connexion à l'API
- * Utile pour vérifier que le frontend peut communiquer avec le backend
- * sans nécessiter d'authentification ni de token.
  */
 Route::get('/ping', function () {
     return response()->json(['message' => 'Connexion réussie vers l\'API !']);
@@ -21,15 +19,8 @@ Route::get('/ping', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Routes d'authentification — API v1
+| Routes API v1
 |--------------------------------------------------------------------------
-|
-| Toutes les routes sont préfixées par /api/v1 (défini dans bootstrap/app.php
-| ou RouteServiceProvider selon la version de Laravel).
-|
-| Routes publiques  : accessibles sans token
-| Routes protégées  : nécessitent un token Sanctum valide (middleware auth:sanctum)
-|
 */
 
 Route::prefix('v1')->group(function (): void {
@@ -41,23 +32,34 @@ Route::prefix('v1')->group(function (): void {
     */
     Route::prefix('auth')->name('auth.')->group(function (): void {
 
-        // POST /api/v1/auth/register — Création de compte
+        // POST /api/v1/auth/register
         Route::post('register', [RegisterController::class, 'store'])
             ->name('register');
 
-        // POST /api/v1/auth/login — Connexion
+        // POST /api/v1/auth/login
         Route::post('login', [LoginController::class, 'store'])
             ->name('login');
 
-        // POST /api/v1/auth/forgot-password — Demande de lien de réinitialisation
+        // POST /api/v1/auth/forgot-password
         Route::post('forgot-password', [ForgotPasswordController::class, 'store'])
             ->name('password.forgot')
-            ->middleware('throttle:3,1'); // 3 demandes max par minute (protection spam mail)
+            ->middleware('throttle:3,1');
 
-        // POST /api/v1/auth/reset-password — Réinitialisation effective du mot de passe
+        // POST /api/v1/auth/reset-password
         Route::post('reset-password', [ResetPasswordController::class, 'store'])
             ->name('password.reset');
     });
+
+    /*
+    |----------------------------------------------------------------------
+    | Routes publiques — hors authentification
+    |----------------------------------------------------------------------
+    */
+
+    // POST /api/v1/contact — Envoi d'un message de contact
+    Route::post('contact', [ContactController::class, 'send'])
+        ->name('contact.send')
+        ->middleware('throttle:3,10'); // 3 messages max par tranche de 10 minutes
 
     /*
     |----------------------------------------------------------------------
@@ -66,16 +68,17 @@ Route::prefix('v1')->group(function (): void {
     */
     Route::middleware('auth:sanctum')->group(function (): void {
 
-        // POST /api/v1/auth/logout — Déconnexion (session courante)
+        // POST /api/v1/auth/logout
         Route::post('auth/logout', [LogoutController::class, 'destroy'])
             ->name('auth.logout');
 
-        // POST /api/v1/auth/logout-all — Déconnexion globale (tous les appareils)
+        // POST /api/v1/auth/logout-all
         Route::post('auth/logout-all', [LogoutController::class, 'destroyAll'])
             ->name('auth.logout-all');
-        
-        // GET /api/v1/auth/me — Récupère les infos de l'utilisateur connecté
-        Route::get('auth/me', MeController::class)->name('auth.me');
+
+        // GET /api/v1/auth/me
+        Route::get('auth/me', MeController::class)
+            ->name('auth.me');
 
         /*
         |------------------------------------------------------------------

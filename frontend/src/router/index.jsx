@@ -35,10 +35,8 @@ const RootLayout = () => {
 // Public
 const HomePage    = lazy(() => import('../pages/HomePage'));        // Page d'accueil
 const AboutPage   = lazy(() => import('../pages/AboutPage'));       // Page "À propos"
-// const ContactPage = lazy(() => import('../pages/ContactPage'));     // Page de contact
-// const LegalPage   = lazy(() => import('../pages/LegalPage'));       // Page de mentions légales
-// const PrivacyPage = lazy(() => import('../pages/PrivacyPage'));     // Page de politique de confidentialité
-// const TermsPage   = lazy(() => import('../pages/TermsPage'));       // Page de conditions d'utilisation
+const ContactPage = lazy(() => import('../pages/ContactPage'));     // Page de contact
+const RulesPage   = lazy(() => import('../pages/RulesPage'));       // Page de règles et conditions
 
 // Auth
 const LoginPage          = lazy(() => import('../features/auth/pages/LoginPage'));          // Page de connexion
@@ -47,7 +45,7 @@ const ForgotPasswordPage = lazy(() => import('../features/auth/pages/ForgotPassw
 const ResetPasswordPage  = lazy(() => import('../features/auth/pages/ResetPasswordPage'));  // Page de réinitialisation de mot de passe
 
 // App
-const DashboardPage = lazy(() => import('../pages/DashboardPage'));     // Tableau de bord utilisateur
+const ProfilePage = lazy(() => import('../pages/ProfilePage'));     // Page de profil utilisateur
 
 // Error
 const NotFoundPage = lazy(() => import('../features/error/pages/NotFoundPage'));  // Page 404
@@ -64,10 +62,8 @@ const router = createBrowserRouter([
       // ── Route publique ────────────────────────────────────────────
       { path: '/', element: <S><HomePage /></S> },
       { path: '/about', element: <S><AboutPage /></S> },
-      // { path: '/contact', element: <S><ContactPage /></S> },
-      // { path: '/legal', element: <S><LegalPage /></S> },
-      // { path: '/privacy', element: <S><PrivacyPage /></S> },
-      // { path: '/terms', element: <S><TermsPage /></S> },
+      { path: '/contact', element: <S><ContactPage /></S> },
+      { path: '/rules', element: <S><RulesPage /></S> },
 
 
       // ── Routes Guest (visiteur non connecté seulement) ────────────
@@ -87,8 +83,7 @@ const router = createBrowserRouter([
         children: [
 
           // Sprint 2 — Dashboard & Profil
-          { path: '/dashboard',       element: <S><DashboardPage /></S> },
-          // { path: '/profil',            element: <S><ProfilePage /></S> },
+          { path: '/profil',            element: <S><ProfilePage /></S> },
           // { path: '/profil/api-key',    element: <S><ApiKeyPage /></S> },
 
           // Sprint 3 — Forum
