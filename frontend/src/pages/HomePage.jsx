@@ -1,13 +1,13 @@
 // frontend/src/pages/HomePage.jsx
-import Header from '../components/layout/Header'
-import { useAuth } from '../providers/AuthProvider'
+import Header from '../components/layout/Header';
+import useAuthStore from '../store/authStore';
 
 /**
  * Page d'accueil — contient le Header hero + sections marketing.
  * C'est ici (et seulement ici) que le Header est rendu.
  */
 const HomePage = () => {
-  const { user } = useAuth()
+  const { user } = useAuthStore();
 
   return (
     <>
@@ -19,7 +19,7 @@ const HomePage = () => {
       {/* <SectionBuilds />  */}
       {/* <SectionGuildes /> */}
     </>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;

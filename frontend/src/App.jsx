@@ -1,5 +1,7 @@
-import AuthProvider from './providers/AuthProvider';
-import AppRouter from './router';
+import AuthProvider from './providers/AuthProvider';    // Fournit le contexte d'authentification à toute l'application
+import AppRouter from './router';                       // Gère la navigation entre les différentes pages de l'application
+
+import './styles/theme.css';  // Thème global
 
 /**
  * App.jsx — Racine de l'application GW2Nexus

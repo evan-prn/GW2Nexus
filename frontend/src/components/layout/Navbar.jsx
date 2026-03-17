@@ -206,7 +206,7 @@ export default function Navbar({ user = null, onLogout }) {
             ) : (
               /* Visiteur */
               <>
-                <Link to="/connexion" style={{
+                <Link to="/login" style={{
                   fontSize: '0.875rem', fontWeight: 500, color: '#C9A84C',
                   textDecoration: 'none', transition: 'color .2s',
                 }}
@@ -215,7 +215,7 @@ export default function Navbar({ user = null, onLogout }) {
                 >
                   Connexion
                 </Link>
-                <Link to="/inscription" style={{
+                <Link to="/register" style={{
                   display: 'inline-flex', alignItems: 'center',
                   padding: '7px 18px', borderRadius: 6,
                   background: '#C9A84C', color: '#0f1117',
@@ -280,7 +280,7 @@ export default function Navbar({ user = null, onLogout }) {
             })}
             {!user && (
               <li style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid rgba(201,168,76,0.1)' }}>
-                <Link to="/connexion" style={{
+                <Link to="/login" style={{
                   display: 'block', padding: '10px 12px',
                   fontSize: '0.875rem', color: '#C9A84C', textDecoration: 'none',
                 }}>
