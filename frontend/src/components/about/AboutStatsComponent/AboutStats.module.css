@@ -1,0 +1,75 @@
+/* ═══════════════════════════════════════════════════════════════════
+   AboutStats.module.css — Bande de statistiques clés
+   ═══════════════════════════════════════════════════════════════════ */
+
+.band {
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.05) 0%, rgba(201, 168, 76, 0.02) 100%);
+  border-top: 1px solid rgba(201, 168, 76, 0.1);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+  padding: 60px 24px;
+}
+
+/* ─── Grille 4 colonnes ─────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ─── Item stat ─────────────────────────────────────────────────── */
+.item {
+  text-align: center;
+  padding: 32px 24px;
+  position: relative;
+}
+
+/* Séparateur vertical entre les items */
+.item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background: rgba(201, 168, 76, 0.15);
+}
+
+.icon {
+  font-size: 24px;
+  color: var(--gold-primary);
+  margin-bottom: 12px;
+  opacity: 0.7;
+  display: block;
+}
+
+.value {
+  font-family: var(--font-display);
+  font-size: 42px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #F5E6C0, var(--gold-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.label {
+  font-size: 11px;
+  font-family: var(--font-display);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(232, 224, 208, 0.45);
+}
+
+/* ─── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  /* Masque le séparateur du 2e item sur mobile (grille 2 colonnes) */
+  .item:nth-child(2)::after {
+    display: none;
+  }
+}

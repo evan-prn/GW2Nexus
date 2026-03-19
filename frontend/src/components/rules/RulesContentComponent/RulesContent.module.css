@@ -1,12 +1,11 @@
 /* ═══════════════════════════════════════════════════════════════════
-   RulesPage.module.css — Layout de la page Règles & Légal
-   Styles de mise en page globale uniquement.
-   Les styles des blocs sont dans leur propre module.css.
+   RulesContent.module.css — Zone de contenu des onglets
    ═══════════════════════════════════════════════════════════════════ */
 
-.page {
-  min-height: 100vh;
-  background: var(--bg-void);
-  color: var(--text-primary);
-  overflow-x: hidden;
+.content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 56px 24px 100px;
+  /* scroll-margin-top : compense la barre sticky lors du scrollIntoView */
+  scroll-margin-top: 80px;
 }

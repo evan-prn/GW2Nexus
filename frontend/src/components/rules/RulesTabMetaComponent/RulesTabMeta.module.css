@@ -1,0 +1,52 @@
+/* ═══════════════════════════════════════════════════════════════════
+   RulesTabMeta.module.css — Bandeau méta de l'onglet actif
+   ═══════════════════════════════════════════════════════════════════ */
+
+.meta {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(232, 224, 208, 0.6);
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.desc {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(232, 224, 208, 0.4);
+  font-family: var(--font-body);
+}
+
+/* Badge date de mise à jour */
+.updated {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border: 1px solid rgba(201, 168, 76, 0.12);
+  background: rgba(201, 168, 76, 0.03);
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(201, 168, 76, 0.45);
+  white-space: nowrap;
+}
+
+/* ─── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}

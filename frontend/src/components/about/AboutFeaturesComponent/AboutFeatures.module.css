@@ -1,0 +1,128 @@
+/* ═══════════════════════════════════════════════════════════════════
+   AboutFeatures.module.css — Grille des fonctionnalités
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── En-tête ───────────────────────────────────────────────────── */
+.header {
+  margin-bottom: 64px;
+}
+
+.label {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold-primary);
+  margin-bottom: 16px;
+  opacity: 0.8;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  color: #F5E6C0;
+  line-height: 1.2;
+}
+
+.accent {
+  color: var(--gold-primary);
+}
+
+.subtitle {
+  margin-top: 16px;
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(232, 224, 208, 0.55);
+  max-width: 560px;
+  font-family: var(--font-body);
+}
+
+/* ─── Grille 3 colonnes ─────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(201, 168, 76, 0.08);
+  border: 1px solid rgba(201, 168, 76, 0.08);
+}
+
+/* ─── Carte feature ─────────────────────────────────────────────── */
+.card {
+  background: #111111;
+  padding: 40px 32px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s ease;
+  height: 100%; /* Hauteur uniforme dans la grille */
+}
+
+/* Overlay dégradé au hover */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.04), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover {
+  background: #131313;
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card:hover .icon {
+  transform: scale(1.1);
+}
+
+/* Badge épopée (coin supérieur droit) */
+.cardTag {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 9px;
+  font-family: var(--font-display);
+  letter-spacing: 2px;
+  color: rgba(201, 168, 76, 0.35);
+  text-transform: uppercase;
+}
+
+/* Icône */
+.icon {
+  font-size: 28px;
+  color: var(--gold-primary);
+  margin-bottom: 20px;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+/* Titre de la feature */
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: #F5E6C0;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+/* Description */
+.cardDesc {
+  font-size: 13.5px;
+  font-weight: 300;
+  color: rgba(232, 224, 208, 0.55);
+  line-height: 1.7;
+  font-family: var(--font-body);
+}
+
+/* ─── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

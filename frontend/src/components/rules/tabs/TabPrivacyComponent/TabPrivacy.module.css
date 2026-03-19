@@ -1,0 +1,185 @@
+/* ═══════════════════════════════════════════════════════════════════
+   TabPrivacy.module.css — Onglet Confidentialité / RGPD
+   ═══════════════════════════════════════════════════════════════════ */
+
+.tab {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Grille catégories de données (2 colonnes) ─────────────────── */
+.dataGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.dataCard {
+  padding: 18px;
+  border: 1px solid rgba(201, 168, 76, 0.1);
+  background: rgba(201, 168, 76, 0.02);
+  transition: border-color 0.25s ease;
+}
+
+.dataCard:hover { border-color: rgba(201, 168, 76, 0.2); }
+
+.dataHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.dataIcon {
+  color: var(--gold-primary);
+  font-size: 13px;
+}
+
+.dataLabel {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(232, 224, 208, 0.75);
+}
+
+.dataList { list-style: none; }
+
+.dataList li {
+  font-size: 12.5px;
+  font-weight: 300;
+  color: rgba(232, 224, 208, 0.5);
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+}
+
+.dataList li:last-child { border-bottom: none; }
+
+/* Chevron décoratif avant chaque item */
+.dataList li::before {
+  content: '›';
+  color: rgba(201, 168, 76, 0.4);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ─── Callout clé API ───────────────────────────────────────────── */
+.callout {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 20px;
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.05), rgba(201, 168, 76, 0.02));
+  margin-top: 20px;
+}
+
+.calloutIcon {
+  font-size: 20px;
+  color: var(--gold-primary);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.calloutTitle {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  color: #F5E6C0;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+/* Override du style p du SectionBlock dans le callout */
+.callout p {
+  font-size: 13px !important;
+  margin-bottom: 0 !important;
+}
+
+/* ─── Liste générique ───────────────────────────────────────────── */
+.list {
+  list-style: none;
+  margin: 14px 0;
+}
+
+.list li {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(232, 224, 208, 0.6);
+  padding: 6px 0 6px 20px;
+  position: relative;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.05);
+  line-height: 1.6;
+  font-family: var(--font-body);
+}
+
+.list li:last-child { border-bottom: none; }
+
+.list li::before {
+  content: '◈';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  color: rgba(201, 168, 76, 0.4);
+  font-size: 10px;
+}
+
+/* ─── Droits RGPD ───────────────────────────────────────────────── */
+.rightsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.rightRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border: 1px solid rgba(201, 168, 76, 0.08);
+  background: #111111;
+  transition: all 0.22s ease;
+}
+
+.rightRow:hover {
+  border-color: rgba(201, 168, 76, 0.2);
+  transform: translateX(4px);
+}
+
+.rightIcon {
+  font-size: 14px;
+  color: var(--gold-primary);
+  opacity: 0.7;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.rightName {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(232, 224, 208, 0.8);
+  width: 110px;
+  flex-shrink: 0;
+}
+
+.rightDesc {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(232, 224, 208, 0.5);
+  font-family: var(--font-body);
+}
+
+.rgpdFooter { margin-top: 20px !important; }
+
+/* ─── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .dataGrid    { grid-template-columns: 1fr; }
+  .rightName   { width: auto; min-width: 90px; }
+}

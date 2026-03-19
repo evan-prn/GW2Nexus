@@ -1,0 +1,97 @@
+/* ═══════════════════════════════════════════════════════════════════
+   AboutStack.module.css — Section stack technique
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Wrapper avec fond radial ──────────────────────────────────── */
+.wrapper {
+  background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(201, 168, 76, 0.03) 0%, transparent 70%);
+}
+
+/* ─── En-tête ───────────────────────────────────────────────────── */
+.header {
+  margin-bottom: 48px;
+}
+
+.label {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold-primary);
+  margin-bottom: 16px;
+  opacity: 0.8;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  color: #F5E6C0;
+  line-height: 1.2;
+}
+
+.accent {
+  color: var(--gold-primary);
+}
+
+.subtitle {
+  margin-top: 16px;
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(232, 224, 208, 0.55);
+  max-width: 560px;
+  font-family: var(--font-body);
+}
+
+/* ─── Conteneur flex wrap des badges ────────────────────────────── */
+.items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ─── Badge technologie ─────────────────────────────────────────── */
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.25s ease;
+  cursor: default;
+}
+
+.item:hover {
+  border-color: rgba(201, 168, 76, 0.3);
+  background: rgba(201, 168, 76, 0.04);
+  transform: translateY(-2px);
+}
+
+/* Pastille couleur (inline style pour la couleur dynamique) */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Nom de la techno */
+.name {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: rgba(232, 224, 208, 0.8);
+}
+
+/* Catégorie (Backend / Frontend…) */
+.category {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: rgba(232, 224, 208, 0.3);
+  text-transform: uppercase;
+  padding-left: 10px;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--font-body);
+}

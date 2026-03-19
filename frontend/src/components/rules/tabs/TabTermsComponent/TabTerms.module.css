@@ -1,0 +1,116 @@
+/* ═══════════════════════════════════════════════════════════════════
+   TabTerms.module.css — Onglet CGU
+   ═══════════════════════════════════════════════════════════════════ */
+
+.tab {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Liste générique ───────────────────────────────────────────── */
+.list {
+  list-style: none;
+  margin: 14px 0;
+}
+
+.list li {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(232, 224, 208, 0.6);
+  padding: 6px 0 6px 20px;
+  position: relative;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.05);
+  line-height: 1.6;
+  font-family: var(--font-body);
+}
+
+.list li:last-child { border-bottom: none; }
+
+.list li::before {
+  content: '◈';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  color: rgba(201, 168, 76, 0.4);
+  font-size: 10px;
+}
+
+/* ─── Grille autorisé / interdit (2 colonnes) ───────────────────── */
+.rulesGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.rulesBlock {
+  padding: 20px;
+  border: 1px solid;
+}
+
+/* Bloc autorisé — vert discret */
+.rulesAllowed {
+  border-color: rgba(80, 180, 80, 0.15);
+  background: rgba(80, 180, 80, 0.03);
+}
+
+/* Bloc interdit — rouge discret */
+.rulesForbidden {
+  border-color: rgba(220, 80, 80, 0.15);
+  background: rgba(220, 80, 80, 0.03);
+}
+
+/* ─── En-tête du bloc ───────────────────────────────────────────── */
+.rulesHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.rulesIcon {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.rulesAllowed  .rulesIcon  { color: rgba(80, 200, 80, 0.8); }
+.rulesForbidden .rulesIcon { color: rgba(220, 80, 80, 0.8); }
+
+.rulesTitle {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.rulesAllowed  .rulesTitle  { color: rgba(80, 200, 80, 0.7); }
+.rulesForbidden .rulesTitle { color: rgba(220, 80, 80, 0.7); }
+
+/* ─── Liste du bloc ─────────────────────────────────────────────── */
+.rulesList { list-style: none; }
+
+.rulesList li {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(232, 224, 208, 0.55);
+  padding: 5px 0 5px 16px;
+  position: relative;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  line-height: 1.5;
+  font-family: var(--font-body);
+}
+
+.rulesList li:last-child { border-bottom: none; }
+
+/* Icône ✓ pour autorisé, ✗ pour interdit */
+.rulesAllowed  .rulesList li::before { content: '✓'; position: absolute; left: 0; top: 7px; font-size: 11px; color: rgba(80, 200, 80, 0.5); }
+.rulesForbidden .rulesList li::before { content: '✗'; position: absolute; left: 0; top: 7px; font-size: 11px; color: rgba(220, 80, 80, 0.5); }
+
+/* ─── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .rulesGrid { grid-template-columns: 1fr; }
+}

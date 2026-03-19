@@ -1,12 +1,10 @@
 /* ═══════════════════════════════════════════════════════════════════
-   RulesPage.module.css — Layout de la page Règles & Légal
-   Styles de mise en page globale uniquement.
-   Les styles des blocs sont dans leur propre module.css.
+   TabLegal.module.css — Onglet Mentions Légales
+   Styles propres à cet onglet uniquement.
+   Les styles communs (section, body, a…) sont dans SectionBlock.module.css
    ═══════════════════════════════════════════════════════════════════ */
 
-.page {
-  min-height: 100vh;
-  background: var(--bg-void);
-  color: var(--text-primary);
-  overflow-x: hidden;
+.tab {
+  display: flex;
+  flex-direction: column;
 }

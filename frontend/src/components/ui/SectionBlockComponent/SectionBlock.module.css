@@ -1,0 +1,70 @@
+/* ═══════════════════════════════════════════════════════════════════
+   SectionBlock.module.css — Bloc section numérotée
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Section ───────────────────────────────────────────────────── */
+.section {
+  padding: 48px 0;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.07);
+}
+
+.section:first-child { padding-top: 0; }
+.section:last-child  { border-bottom: none; padding-bottom: 0; }
+
+/* ─── Titre numéroté ────────────────────────────────────────────── */
+.title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: #F5E6C0;
+  margin-bottom: 24px;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+}
+
+.number {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: rgba(201, 168, 76, 0.5);
+  font-family: var(--font-display);
+  flex-shrink: 0;
+}
+
+/* ─── Corps — styles pour le contenu enfant ─────────────────────── */
+.body p {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(232, 224, 208, 0.6);
+  line-height: 1.9;
+  margin-bottom: 14px;
+  font-family: var(--font-body);
+}
+
+.body p:last-child { margin-bottom: 0; }
+
+.body strong {
+  color: rgba(232, 224, 208, 0.85);
+  font-weight: 600;
+}
+
+.body code {
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--gold-primary);
+  background: rgba(201, 168, 76, 0.08);
+  padding: 1px 6px;
+  border-radius: 2px;
+}
+
+.body a {
+  color: var(--gold-primary);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.25);
+  transition: border-color 0.2s ease;
+}
+
+.body a:hover { border-color: var(--gold-primary); }

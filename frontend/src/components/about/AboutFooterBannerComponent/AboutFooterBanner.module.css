@@ -1,0 +1,30 @@
+/* ═══════════════════════════════════════════════════════════════════
+   AboutFooterBanner.module.css — Bannière citation bas de page
+   ═══════════════════════════════════════════════════════════════════ */
+
+.banner {
+  padding: 80px 24px;
+  text-align: center;
+  border-top: 1px solid rgba(201, 168, 76, 0.08);
+  background: linear-gradient(to bottom, transparent, rgba(201, 168, 76, 0.02));
+}
+
+/* ─── Citation ──────────────────────────────────────────────────── */
+.quote {
+  font-family: var(--font-display);
+  font-size: clamp(16px, 2.5vw, 22px);
+  color: rgba(232, 224, 208, 0.4);
+  font-style: italic;
+  max-width: 600px;
+  margin: 0 auto 16px;
+  letter-spacing: 1px;
+}
+
+/* ─── Attribution ───────────────────────────────────────────────── */
+.attribution {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(201, 168, 76, 0.3);
+  font-family: var(--font-display);
+}

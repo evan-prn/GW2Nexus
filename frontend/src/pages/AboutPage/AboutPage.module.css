@@ -1,0 +1,55 @@
+/* ═══════════════════════════════════════════════════════════════════
+   AboutPage.module.css — Layout de la page About
+   Seuls les styles de mise en page globale sont ici.
+   Les styles des blocs sont dans leur propre module.css.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Wrapper page ──────────────────────────────────────────────── */
+.page {
+  min-height: 100vh;
+  background: var(--bg-void);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+/* ─── Section générique avec max-width et padding ───────────────── */
+.section {
+  padding: 100px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ─── Fond distinct pour la stack (fond radial) ─────────────────── */
+.stackSection {
+  background: radial-gradient(
+    ellipse 80% 50% at 50% 50%,
+    rgba(201, 168, 76, 0.03) 0%,
+    transparent 70%
+  );
+}
+
+/* ─── Séparateur doré ───────────────────────────────────────────── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 48px 0;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(201, 168, 76, 0.4));
+}
+
+/* Ligne de droite inversée */
+.dividerLineReverse {
+  background: linear-gradient(to left, transparent, rgba(201, 168, 76, 0.4));
+}
+
+.dividerIcon {
+  color: var(--gold-primary);
+  font-size: 18px;
+  opacity: 0.7;
+  flex-shrink: 0;
+}

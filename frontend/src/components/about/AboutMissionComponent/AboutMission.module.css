@@ -1,0 +1,126 @@
+/* ═══════════════════════════════════════════════════════════════════
+   AboutMission.module.css — Bloc Mission
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Layout 2 colonnes (texte | ornement) ──────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+/* ─── Bloc texte ────────────────────────────────────────────────── */
+
+.label {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold-primary);
+  margin-bottom: 16px;
+  opacity: 0.8;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  color: #F5E6C0;
+  line-height: 1.2;
+  margin-bottom: 32px;
+}
+
+.accent {
+  color: var(--gold-primary);
+}
+
+.paragraph {
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(232, 224, 208, 0.65);
+  margin-bottom: 24px;
+  font-family: var(--font-body);
+  line-height: var(--leading-loose);
+}
+
+.paragraph strong {
+  color: var(--gold-primary);
+  font-weight: 600;
+}
+
+/* ─── Ornement ──────────────────────────────────────────────────── */
+.ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ornamentRing {
+  width: 280px;
+  height: 280px;
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Anneaux intérieurs concentriques */
+.ornamentRing::before {
+  content: '';
+  position: absolute;
+  inset: 20px;
+  border: 1px solid rgba(201, 168, 76, 0.08);
+  border-radius: 50%;
+}
+
+.ornamentRing::after {
+  content: '';
+  position: absolute;
+  inset: 40px;
+  border: 1px solid rgba(201, 168, 76, 0.05);
+  border-radius: 50%;
+}
+
+/* Anneau rotatif (animation CSS) */
+.ornamentRotating {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 168, 76, 0.05);
+  animation: rotate 30s linear infinite;
+}
+
+/* Symbole central doré */
+.ornamentSymbol {
+  font-family: var(--font-display);
+  font-size: 64px;
+  background: linear-gradient(135deg, #F5E6C0, var(--gold-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Animations ────────────────────────────────────────────────── */
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ─── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  /* On masque l'ornement sur mobile — peu utile sans la colonne adjacente */
+  .ornament {
+    display: none;
+  }
+}

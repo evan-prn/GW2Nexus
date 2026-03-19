@@ -1,0 +1,63 @@
+/* ═══════════════════════════════════════════════════════════════════
+   RulesTabsBar.module.css — Barre d'onglets sticky
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Barre sticky ──────────────────────────────────────────────── */
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13, 13, 13, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.12);
+}
+
+.inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 0;
+}
+
+/* ─── Bouton onglet ─────────────────────────────────────────────── */
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 28px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: rgba(232, 224, 208, 0.4);
+  white-space: nowrap;
+  transition: all 0.25s ease;
+}
+
+.btn:hover {
+  color: rgba(232, 224, 208, 0.75);
+  background: rgba(201, 168, 76, 0.03);
+}
+
+/* Onglet actif */
+.btnActive {
+  color: var(--gold-primary);
+  border-bottom-color: var(--gold-primary);
+  background: rgba(201, 168, 76, 0.04);
+}
+
+.icon {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* ─── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 500px) {
+  .btn  { padding: 16px; font-size: 10px; gap: 6px; }
+  .icon { display: none; }
+}

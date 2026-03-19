@@ -1,0 +1,88 @@
+/* ═══════════════════════════════════════════════════════════════════
+   RulesHero.module.css — Hero de la page Règles
+   ═══════════════════════════════════════════════════════════════════ */
+
+.hero {
+  position: relative;
+  padding: 140px 24px 0;
+  overflow: hidden;
+}
+
+/* ─── Fond dégradé ──────────────────────────────────────────────── */
+.bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 0%, rgba(201, 168, 76, 0.07) 0%, transparent 65%),
+    #0D0D0D;
+}
+
+/* ─── Lignes diagonales décoratives ─────────────────────────────── */
+.lines {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    -55deg,
+    rgba(201, 168, 76, 0.018) 0px,
+    rgba(201, 168, 76, 0.018) 1px,
+    transparent 1px,
+    transparent 48px
+  );
+  mask-image: radial-gradient(ellipse 80% 100% at 50% 0%, black 30%, transparent 80%);
+}
+
+/* ─── Contenu ───────────────────────────────────────────────────── */
+.content {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-bottom: 56px;
+}
+
+/* ─── Label décoratif ───────────────────────────────────────────── */
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold-primary);
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+/* Tirets décoratifs avant/après le label */
+.label::before,
+.label::after {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--gold-primary);
+  opacity: 0.5;
+}
+
+/* ─── Titre ─────────────────────────────────────────────────────── */
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 5vw, 54px);
+  font-weight: 700;
+  color: #F5E6C0;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.titleAccent { color: var(--gold-primary); }
+
+/* ─── Sous-titre ────────────────────────────────────────────────── */
+.subtitle {
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(232, 224, 208, 0.5);
+  max-width: 540px;
+  line-height: 1.85;
+  font-family: var(--font-body);
+}

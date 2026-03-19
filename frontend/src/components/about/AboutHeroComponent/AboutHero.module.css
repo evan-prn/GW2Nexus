@@ -1,0 +1,176 @@
+/* ═══════════════════════════════════════════════════════════════════
+   AboutHero.module.css — Hero de la page About
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Section ───────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 120px 24px 80px;
+}
+
+/* ─── Fond dégradé radial ────────────────────────────────────────── */
+.bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%,   rgba(201, 168, 76, 0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 80%,  rgba(139, 0, 0, 0.05)    0%, transparent 60%),
+    radial-gradient(ellipse 60% 60% at 20% 60%,  rgba(30, 30, 60, 0.3)    0%, transparent 70%),
+    #0D0D0D;
+}
+
+/* ─── Texture noise ─────────────────────────────────────────────── */
+.noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* ─── Grille parallax ───────────────────────────────────────────── */
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(201, 168, 76, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 168, 76, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+}
+
+/* ─── Contenu ───────────────────────────────────────────────────── */
+.content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 860px;
+}
+
+/* ─── Badge ─────────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: 2px;
+  font-size: 11px;
+  font-family: var(--font-display);
+  letter-spacing: 3px;
+  color: var(--gold-primary);
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  background: rgba(201, 168, 76, 0.05);
+  animation: fadeIn 1s ease 0.2s both;
+}
+
+/* ─── Titre ─────────────────────────────────────────────────────── */
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -2px;
+  margin-bottom: 8px;
+  animation: fadeInUp 1s ease 0.4s both;
+}
+
+.titleMain {
+  background: linear-gradient(135deg, #F5E6C0 0%, #C9A84C 40%, #E8C97A 70%, #8B6914 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: block;
+}
+
+.titleSub {
+  display: block;
+  font-size: clamp(14px, 2vw, 20px);
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 8px;
+  color: rgba(201, 168, 76, 0.5);
+  text-transform: uppercase;
+  margin-top: 16px;
+  -webkit-text-fill-color: rgba(201, 168, 76, 0.5);
+}
+
+/* ─── Description ───────────────────────────────────────────────── */
+.description {
+  font-size: 17px;
+  font-weight: 300;
+  color: rgba(232, 224, 208, 0.7);
+  max-width: 600px;
+  margin: 40px auto 56px;
+  font-family: var(--font-body);
+  line-height: var(--leading-loose);
+  animation: fadeInUp 1s ease 0.6s both;
+}
+
+/* ─── CTA ───────────────────────────────────────────────────────── */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, var(--gold-primary), #8B6914);
+  color: #0D0D0D;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  transition: var(--transition-smooth);
+  animation: fadeInUp 1s ease 0.8s both;
+}
+
+.cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(201, 168, 76, 0.4);
+}
+
+/* ─── Indicateur scroll ─────────────────────────────────────────── */
+.scrollIndicator {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: rgba(201, 168, 76, 0.4);
+  font-size: 10px;
+  font-family: var(--font-display);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  animation: bounce 2s ease infinite;
+}
+
+.scrollArrow {
+  font-size: 16px;
+}
+
+/* ─── Animations ────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(8px); }
+}
