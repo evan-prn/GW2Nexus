@@ -1,0 +1,865 @@
+/* ═══════════════════════════════════════════════════════════════════
+   GW2Nexus — theme.module.css
+   Système de design global · Dark Fantasy · Guild Wars 2
+   ───────────────────────────────────────────────────────────────────
+   USAGE :
+     import theme from '@/styles/theme.module.css';
+     <div className={theme.card}>...</div>
+
+   CONVENTION :
+     - Ce fichier définit TOUS les tokens de design via :root
+     - Chaque composant a son propre component.module.css
+     - Les classes utilitaires ici sont réutilisables globalement
+     - Ne jamais écrire de styles inline dans les composants
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── IMPORTS TYPOGRAPHIE ──────────────────────────────────────────
+   Cinzel       → Titres, headings, éléments héroïques (fantasy serif)
+   Crimson Pro  → Corps de texte, descriptions (serif élégant lisible)
+   ────────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap');
+
+/* ─── TOKENS DE DESIGN — CSS CUSTOM PROPERTIES ─────────────────────
+   Toutes les valeurs de design sont centralisées ici.
+   Modifier une variable ici = répercussion sur tout le site.
+   ────────────────────────────────────────────────────────────────── */
+:root {
+
+  /* ── Palette Or — Accent principal GW2 ─────────────────────────── */
+  --gold-primary:   #C9A84C;   /* Or GW2 signature — boutons, accents */
+  --gold-light:     #F0D98A;   /* Or clair — hover states, highlights  */
+  --gold-dark:      #8B6914;   /* Or sombre — borders, shadows dorés   */
+  --gold-muted:     #6B5420;   /* Or très sombre — backgrounds subtils */
+  --gold-glow:      rgba(201, 168, 76, 0.25);  /* Halo doré — glows    */
+  --gold-glow-strong: rgba(201, 168, 76, 0.5); /* Halo fort — focus    */
+
+  /* ── Palette Fond — Noirs & Sombres ────────────────────────────── */
+  --bg-void:        #040404;   /* Noir absolu — fond body              */
+  --bg-deep:        #080808;   /* Noir profond — fond principal        */
+  --bg-surface:     #0E0E0E;   /* Surface légèrement éclairée          */
+  --bg-card:        #121212;   /* Fond des cards                       */
+  --bg-card-hover:  #1A1A1A;   /* Fond card au hover                   */
+  --bg-overlay:     rgba(8, 8, 8, 0.85);       /* Overlays modaux      */
+  --bg-input:       rgba(255, 255, 255, 0.04); /* Fond champs form      */
+  --bg-input-focus: rgba(201, 168, 76, 0.06);  /* Fond champ focus      */
+
+  /* ── Palette Texte ──────────────────────────────────────────────── */
+  --text-primary:   #E8E0D0;   /* Texte principal — ivoire chaud       */
+  --text-secondary: #A89880;   /* Texte secondaire — parchemin foncé   */
+  --text-dim:       rgba(232, 224, 208, 0.45); /* Texte discret        */
+  --text-gold:      #C9A84C;   /* Texte doré — labels, accents         */
+  --text-inverse:   #080808;   /* Texte sur fond clair (bouton filled) */
+
+  /* ── Palette Bordures ───────────────────────────────────────────── */
+  --border-subtle:  rgba(201, 168, 76, 0.12);  /* Bordure très discrète */
+  --border-default: rgba(201, 168, 76, 0.25);  /* Bordure standard      */
+  --border-strong:  rgba(201, 168, 76, 0.5);   /* Bordure visible       */
+  --border-focus:   #C9A84C;                   /* Bordure focus champ   */
+
+  /* ── Palette Statuts ────────────────────────────────────────────── */
+  --color-success:  #4CAF82;   /* Vert succès                          */
+  --color-success-bg: rgba(76, 175, 130, 0.1);
+  --color-error:    #E05252;   /* Rouge erreur                         */
+  --color-error-bg: rgba(224, 82, 82, 0.1);
+  --color-warning:  #D4A020;   /* Jaune avertissement                  */
+  --color-warning-bg: rgba(212, 160, 32, 0.1);
+  --color-info:     #5B9BD5;   /* Bleu info                            */
+  --color-info-bg:  rgba(91, 155, 213, 0.1);
+
+  /* ── Typographie ────────────────────────────────────────────────── */
+  --font-display:   'Cinzel', 'Georgia', serif;      /* Titres heroïques */
+  --font-body:      'Crimson Pro', 'Georgia', serif; /* Corps de texte   */
+  --font-mono:      'Courier New', monospace;        /* Code, IDs        */
+
+  --text-xs:    0.75rem;    /* 12px */
+  --text-sm:    0.875rem;   /* 14px */
+  --text-base:  1rem;       /* 16px */
+  --text-lg:    1.125rem;   /* 18px */
+  --text-xl:    1.25rem;    /* 20px */
+  --text-2xl:   1.5rem;     /* 24px */
+  --text-3xl:   1.875rem;   /* 30px */
+  --text-4xl:   2.25rem;    /* 36px */
+  --text-5xl:   3rem;       /* 48px */
+  --text-6xl:   3.75rem;    /* 60px */
+
+  --weight-light:   300;
+  --weight-regular: 400;
+  --weight-medium:  500;
+  --weight-semibold: 600;
+  --weight-bold:    700;
+  --weight-black:   900;
+
+  --leading-tight:  1.2;
+  --leading-snug:   1.4;
+  --leading-normal: 1.6;
+  --leading-loose:  1.8;
+
+  --tracking-tight:  -0.02em;
+  --tracking-normal:  0;
+  --tracking-wide:    0.05em;
+  --tracking-wider:   0.1em;
+  --tracking-widest:  0.2em;
+
+  /* ── Espacement ─────────────────────────────────────────────────── */
+  --space-1:   0.25rem;   /*  4px */
+  --space-2:   0.5rem;    /*  8px */
+  --space-3:   0.75rem;   /* 12px */
+  --space-4:   1rem;      /* 16px */
+  --space-5:   1.25rem;   /* 20px */
+  --space-6:   1.5rem;    /* 24px */
+  --space-8:   2rem;      /* 32px */
+  --space-10:  2.5rem;    /* 40px */
+  --space-12:  3rem;      /* 48px */
+  --space-16:  4rem;      /* 64px */
+  --space-20:  5rem;      /* 80px */
+  --space-24:  6rem;      /* 96px */
+
+  /* ── Bordures & Rayons ──────────────────────────────────────────── */
+  --radius-sm:   2px;
+  --radius-md:   4px;
+  --radius-lg:   8px;
+  --radius-xl:   12px;
+  --radius-2xl:  16px;
+  --radius-full: 9999px;
+
+  /* ── Ombres ─────────────────────────────────────────────────────── */
+  --shadow-sm:   0 1px 3px rgba(0, 0, 0, 0.6);
+  --shadow-md:   0 4px 12px rgba(0, 0, 0, 0.7);
+  --shadow-lg:   0 8px 32px rgba(0, 0, 0, 0.8);
+  --shadow-xl:   0 16px 48px rgba(0, 0, 0, 0.9);
+  --shadow-gold: 0 0 20px rgba(201, 168, 76, 0.2);
+  --shadow-gold-strong: 0 0 40px rgba(201, 168, 76, 0.4);
+  --shadow-inset: inset 0 1px 0 rgba(201, 168, 76, 0.1);
+
+  /* ── Transitions ────────────────────────────────────────────────── */
+  --transition-fast:   all 0.15s ease;
+  --transition-base:   all 0.25s ease;
+  --transition-smooth: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Z-index ────────────────────────────────────────────────────── */
+  --z-base:    0;
+  --z-raised:  10;
+  --z-overlay: 100;
+  --z-modal:   200;
+  --z-toast:   300;
+  --z-tooltip: 400;
+
+  /* ── Layout ─────────────────────────────────────────────────────── */
+  --container-sm:  640px;
+  --container-md:  768px;
+  --container-lg:  1024px;
+  --container-xl:  1280px;
+  --container-2xl: 1536px;
+  --navbar-height: 64px;
+}
+
+/* ─── RESET & BASE ──────────────────────────────────────────────────
+   Reset minimal et opinionated — adapté au dark fantasy GW2
+   ────────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+  background-color: var(--bg-deep);
+  min-height: 100vh;
+  /* Texture de grain subtile — atmosphère parchemin/forge */
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(201, 168, 76, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(139, 105, 20, 0.04) 0%, transparent 40%);
+}
+
+/* Scrollbar personnalisée — thème doré */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-void);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gold-muted);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-primary);
+}
+
+/* Sélection de texte — or GW2 */
+::selection {
+  background: var(--gold-glow-strong);
+  color: var(--gold-light);
+}
+
+/* ─── LAYOUT UTILITAIRES ────────────────────────────────────────────
+   Classes réutilisables pour la mise en page
+   ────────────────────────────────────────────────────────────────── */
+
+/* Conteneur centré avec padding responsive */
+.container {
+  width: 100%;
+  max-width: var(--container-xl);
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+}
+
+.containerSm  { max-width: var(--container-sm);  margin-inline: auto; padding-inline: var(--space-6); }
+.containerMd  { max-width: var(--container-md);  margin-inline: auto; padding-inline: var(--space-6); }
+.containerLg  { max-width: var(--container-lg);  margin-inline: auto; padding-inline: var(--space-6); }
+.container2xl { max-width: var(--container-2xl); margin-inline: auto; padding-inline: var(--space-6); }
+
+/* Section pleine page */
+.section {
+  padding-block: var(--space-16);
+}
+
+/* Séparateur décoratif doré */
+.divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--border-default),
+    var(--gold-primary),
+    var(--border-default),
+    transparent
+  );
+  margin-block: var(--space-8);
+}
+
+/* ─── TYPOGRAPHIE — CLASSES UTILITAIRES ────────────────────────────
+   ────────────────────────────────────────────────────────────────── */
+
+/* Titres heroïques en Cinzel */
+.headingHero {
+  font-family: var(--font-display);
+  font-size: var(--text-6xl);
+  font-weight: var(--weight-black);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-primary);
+  /* Dégradé doré sur le titre principal */
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold-primary) 50%, var(--gold-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.heading1 {
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-primary);
+}
+
+.heading2 {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-primary);
+}
+
+.heading3 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wider);
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
+.heading4 {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+/* Texte corps */
+.textLg   { font-size: var(--text-lg); line-height: var(--leading-loose); color: var(--text-primary); }
+.textBase { font-size: var(--text-base); line-height: var(--leading-normal); color: var(--text-primary); }
+.textSm   { font-size: var(--text-sm); line-height: var(--leading-normal); color: var(--text-secondary); }
+.textXs   { font-size: var(--text-xs); line-height: var(--leading-normal); color: var(--text-dim); }
+
+/* Couleurs texte */
+.textGold      { color: var(--text-gold); }
+.textSecondary { color: var(--text-secondary); }
+.textDim       { color: var(--text-dim); }
+.textSuccess   { color: var(--color-success); }
+.textError     { color: var(--color-error); }
+.textWarning   { color: var(--color-warning); }
+
+/* Label — style Cinzel uppercase */
+.label {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* ─── BOUTONS ───────────────────────────────────────────────────────
+   Variantes : primary, secondary, ghost, danger
+   Tailles : sm, md (défaut), lg
+   ────────────────────────────────────────────────────────────────── */
+
+/* Base commune à tous les boutons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-display);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  text-decoration: none;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  /* Padding défaut = md */
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--text-sm);
+}
+
+/* Effet shimmer au hover — commun */
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+.btn:hover::before {
+  transform: translateX(100%);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Bouton Primary — Or plein ──────────────────────────────────── */
+.btnPrimary {
+  composes: btn;
+  background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-dark) 100%);
+  color: var(--text-inverse);
+  border: 1px solid var(--gold-primary);
+  box-shadow: var(--shadow-gold), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.btnPrimary:hover {
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold-primary) 100%);
+  box-shadow: var(--shadow-gold-strong), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+  color: var(--text-inverse);
+}
+.btnPrimary:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-gold);
+}
+
+/* ── Bouton Secondary — Contour doré ────────────────────────────── */
+.btnSecondary {
+  composes: btn;
+  background: transparent;
+  color: var(--gold-primary);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-inset);
+}
+.btnSecondary:hover {
+  background: var(--gold-glow);
+  border-color: var(--gold-primary);
+  color: var(--gold-light);
+  box-shadow: var(--shadow-gold);
+  transform: translateY(-1px);
+}
+.btnSecondary:active {
+  transform: translateY(0);
+}
+
+/* ── Bouton Ghost — Transparent ─────────────────────────────────── */
+.btnGhost {
+  composes: btn;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+}
+.btnGhost:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+/* ── Bouton Danger — Rouge ──────────────────────────────────────── */
+.btnDanger {
+  composes: btn;
+  background: rgba(224, 82, 82, 0.15);
+  color: var(--color-error);
+  border: 1px solid rgba(224, 82, 82, 0.3);
+}
+.btnDanger:hover {
+  background: rgba(224, 82, 82, 0.25);
+  border-color: var(--color-error);
+  transform: translateY(-1px);
+}
+
+/* ── Tailles boutons ────────────────────────────────────────────── */
+.btnSm {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-xs);
+}
+.btnLg {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--text-base);
+}
+.btnFull {
+  width: 100%;
+}
+
+/* État loading bouton */
+.btnLoading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* ─── CARDS & PANELS ────────────────────────────────────────────────
+   ────────────────────────────────────────────────────────────────── */
+
+/* Card standard */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  position: relative;
+  transition: var(--transition-smooth);
+  /* Ligne décorative en haut — signature GW2 */
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--gold-primary),
+    transparent
+  );
+  opacity: 0.4;
+}
+
+/* Card interactive (hover) */
+.cardHoverable {
+  composes: card;
+  cursor: pointer;
+}
+.cardHoverable:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-lg), var(--shadow-gold);
+  transform: translateY(-2px);
+}
+.cardHoverable:hover::before {
+  opacity: 1;
+}
+
+/* Card avec bordure forte */
+.cardHighlight {
+  composes: card;
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-gold);
+}
+.cardHighlight::before {
+  opacity: 1;
+}
+
+/* Header de card */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Footer de card */
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  margin-top: var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* Panel — surface sans bordure forte (sections internes) */
+.panel {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+/* ─── FORMULAIRES ───────────────────────────────────────────────────
+   ────────────────────────────────────────────────────────────────── */
+
+/* Groupe de champ (label + input + message) */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Label de champ */
+.formLabel {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+
+/* Input, Textarea, Select — style commun */
+.formInput {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  transition: var(--transition-base);
+  outline: none;
+  appearance: none;
+}
+
+.formInput::placeholder {
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.formInput:hover {
+  border-color: var(--border-default);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.formInput:focus {
+  background: var(--bg-input-focus);
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--gold-glow);
+}
+
+/* Input en erreur */
+.formInputError {
+  composes: formInput;
+  border-color: rgba(224, 82, 82, 0.5);
+}
+.formInputError:focus {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(224, 82, 82, 0.15);
+}
+
+/* Input en succès */
+.formInputSuccess {
+  composes: formInput;
+  border-color: rgba(76, 175, 130, 0.5);
+}
+.formInputSuccess:focus {
+  border-color: var(--color-success);
+  box-shadow: 0 0 0 3px rgba(76, 175, 130, 0.15);
+}
+
+/* Message d'aide / erreur sous le champ */
+.formMessage {
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+  color: var(--text-dim);
+}
+.formMessageError {
+  composes: formMessage;
+  color: var(--color-error);
+}
+.formMessageSuccess {
+  composes: formMessage;
+  color: var(--color-success);
+}
+
+/* Textarea */
+.formTextarea {
+  composes: formInput;
+  resize: vertical;
+  min-height: 120px;
+  line-height: var(--leading-normal);
+}
+
+/* ─── NAVIGATION ────────────────────────────────────────────────────
+   ────────────────────────────────────────────────────────────────── */
+
+/* Navbar principale */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--navbar-height);
+  z-index: var(--z-overlay);
+  display: flex;
+  align-items: center;
+  background: rgba(8, 8, 8, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-subtle);
+  transition: var(--transition-base);
+}
+
+/* Navbar au scroll (ombre renforcée) */
+.navbarScrolled {
+  composes: navbar;
+  box-shadow: var(--shadow-lg), 0 1px 0 var(--border-subtle);
+}
+
+/* Lien de navigation */
+.navLink {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  transition: var(--transition-base);
+  position: relative;
+}
+.navLink:hover {
+  color: var(--gold-primary);
+  background: var(--gold-glow);
+}
+
+/* Lien actif */
+.navLinkActive {
+  composes: navLink;
+  color: var(--gold-primary);
+}
+.navLinkActive::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 1px;
+  background: var(--gold-primary);
+  border-radius: var(--radius-full);
+}
+
+/* Offset pour compenser la navbar fixed */
+.pageOffset {
+  padding-top: var(--navbar-height);
+}
+
+/* ─── BADGES & TAGS ─────────────────────────────────────────────────
+   ────────────────────────────────────────────────────────────────── */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+}
+
+.badgeGold    { composes: badge; background: rgba(201, 168, 76, 0.15); color: var(--gold-primary);   border-color: rgba(201, 168, 76, 0.3); }
+.badgeSuccess { composes: badge; background: var(--color-success-bg);  color: var(--color-success);  border-color: rgba(76, 175, 130, 0.3); }
+.badgeError   { composes: badge; background: var(--color-error-bg);    color: var(--color-error);    border-color: rgba(224, 82, 82, 0.3); }
+.badgeWarning { composes: badge; background: var(--color-warning-bg);  color: var(--color-warning);  border-color: rgba(212, 160, 32, 0.3); }
+.badgeInfo    { composes: badge; background: var(--color-info-bg);     color: var(--color-info);     border-color: rgba(91, 155, 213, 0.3); }
+.badgeMuted   { composes: badge; background: rgba(255,255,255,0.05);   color: var(--text-secondary); border-color: var(--border-subtle); }
+
+/* ─── ALERTES ───────────────────────────────────────────────────────
+   ────────────────────────────────────────────────────────────────── */
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid transparent;
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}
+
+.alertSuccess { composes: alert; background: var(--color-success-bg); color: var(--color-success); border-color: rgba(76, 175, 130, 0.3); }
+.alertError   { composes: alert; background: var(--color-error-bg);   color: var(--color-error);   border-color: rgba(224, 82, 82, 0.3); }
+.alertWarning { composes: alert; background: var(--color-warning-bg); color: var(--color-warning); border-color: rgba(212, 160, 32, 0.3); }
+.alertInfo    { composes: alert; background: var(--color-info-bg);    color: var(--color-info);    border-color: rgba(91, 155, 213, 0.3); }
+
+/* ─── LOADERS ───────────────────────────────────────────────────────
+   ────────────────────────────────────────────────────────────────── */
+
+/* Spinner doré */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--border-subtle);
+  border-top-color: var(--gold-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+.spinnerSm { composes: spinner; width: 16px; height: 16px; }
+.spinnerLg { composes: spinner; width: 40px; height: 40px; border-width: 3px; }
+
+/* Pulse — skeleton loading */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(201, 168, 76, 0.05) 0%,
+    rgba(201, 168, 76, 0.1) 50%,
+    rgba(201, 168, 76, 0.05) 100%
+  );
+  border-radius: var(--radius-md);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* ─── ANIMATIONS GLOBALES ───────────────────────────────────────────
+   ────────────────────────────────────────────────────────────────── */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: var(--shadow-gold); }
+  50%       { box-shadow: var(--shadow-gold-strong); }
+}
+
+.animFadeIn     { animation: fadeIn     0.4s var(--transition-smooth) both; }
+.animFadeInDown { animation: fadeInDown 0.4s var(--transition-smooth) both; }
+.animScaleIn    { animation: scaleIn    0.3s var(--transition-smooth) both; }
+.animGlowPulse  { animation: glowPulse  2s ease-in-out infinite; }
+
+/* Délais d'animation pour les stagger effects */
+.delay1 { animation-delay: 0.1s; }
+.delay2 { animation-delay: 0.2s; }
+.delay3 { animation-delay: 0.3s; }
+.delay4 { animation-delay: 0.4s; }
+.delay5 { animation-delay: 0.5s; }
+
+/* ─── UTILITAIRES DIVERS ────────────────────────────────────────────
+   ────────────────────────────────────────────────────────────────── */
+
+/* Flex helpers */
+.flex        { display: flex; }
+.flexCol     { display: flex; flex-direction: column; }
+.flexCenter  { display: flex; align-items: center; justify-content: center; }
+.flexBetween { display: flex; align-items: center; justify-content: space-between; }
+.flexGap2    { gap: var(--space-2); }
+.flexGap3    { gap: var(--space-3); }
+.flexGap4    { gap: var(--space-4); }
+
+/* Visually hidden (accessibilité) */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Truncate texte */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Ornement décoratif — coins GW2 */
+.ornament {
+  position: relative;
+}
+.ornament::before,
+.ornament::after {
+  content: '❖';
+  font-size: var(--text-xs);
+  color: var(--gold-primary);
+  opacity: 0.6;
+  margin-inline: var(--space-2);
+}

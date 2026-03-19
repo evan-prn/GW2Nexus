@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import path from 'path';
 
 // ═══════════════════════════════════════════════════════════════════
-// GW2Nexus — Vite Configuration
+// GW2Nexus — Vite Configuration (TypeScript)
 // Proxy /api → Laravel (même domaine = CSRF cookie natif)
 // HMR via polling — requis sur volumes Docker Windows/Mac
 // ═══════════════════════════════════════════════════════════════════
@@ -14,38 +15,39 @@ export default defineConfig({
     tailwindcss(),
   ],
 
+  // ─── Alias @ ──────────────────────────────────────────────────────
+  // Permet d'importer depuis src/ avec @/ au lieu de chemins relatifs
+  // Exemple : import { authStore } from '@/store/authStore'
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+
   server: {
-    host: '0.0.0.0',   // Écoute sur toutes les interfaces — requis dans Docker
+    host: '0.0.0.0',
     port: 5173,
 
-    // ─── Proxy API ────────────────────────────────────────────────
-    // Toutes les requêtes /api/* et /sanctum/* sont forwardées au
-    // container Laravel via le réseau Docker interne (nom du service).
-    // Avantage : même domaine (localhost:5173) → pas de problème CORS
-    // ni de cookie SameSite — Sanctum fonctionne nativement.
+    // ─── Proxy API ──────────────────────────────────────────────────
     proxy: {
       '/api': {
         target: 'http://laravel:8000',
         changeOrigin: true,
       },
-      // Requis pour que Sanctum puisse émettre le cookie CSRF
       '/sanctum': {
         target: 'http://laravel:8000',
         changeOrigin: true,
       },
     },
 
-    // ─── HMR (Hot Module Replacement) ─────────────────────────────
-    // Le client WebSocket doit se connecter à localhost (hôte Windows/Mac),
-    // pas à l'IP interne du container Docker.
+    // ─── HMR ────────────────────────────────────────────────────────
     hmr: {
       host: 'localhost',
-      port: 24678,
+      port: 5173,
+      protocol: 'ws',
     },
 
-    // ─── Polling ──────────────────────────────────────────────────
-    // inotify non fiable sur volumes Docker montés sous Windows/Mac.
-    // Polling toutes les 100ms garantit la détection des changements.
+    // ─── Polling ────────────────────────────────────────────────────
     watch: {
       usePolling: true,
       interval: 100,

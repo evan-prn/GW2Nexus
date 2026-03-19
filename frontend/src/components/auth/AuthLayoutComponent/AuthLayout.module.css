@@ -1,0 +1,203 @@
+/* ═══════════════════════════════════════════════════════════════════
+   AuthLayout.module.css
+   Wrapper visuel des pages d'authentification
+   Fond atmosphérique GW2, logo, ornements dorés
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Wrapper pleine page ───────────────────────────────────────── */
+.layout {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-void);
+  padding: var(--space-6);
+}
+
+/* ─── Fond atmosphérique ────────────────────────────────────────── */
+.bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-base);
+}
+
+/* Orbes lumineuses dorées — ambiance forge/magie */
+.bgOrb1 {
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(201, 168, 76, 0.06) 0%,
+    transparent 70%
+  );
+  animation: orbFloat 8s ease-in-out infinite;
+}
+
+.bgOrb2 {
+  position: absolute;
+  bottom: -20%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(139, 105, 20, 0.07) 0%,
+    transparent 70%
+  );
+  animation: orbFloat 10s ease-in-out infinite reverse;
+}
+
+/* Grille géométrique — clin d'œil à l'esthétique GW2 */
+.bgGrid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(201, 168, 76, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 168, 76, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+}
+
+/* ─── Conteneur centré ──────────────────────────────────────────── */
+.container {
+  position: relative;
+  z-index: var(--z-raised);
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
+  animation: fadeInDown 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+/* ─── Logo GW2Nexus ─────────────────────────────────────────────── */
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.logoEmblem {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  filter: drop-shadow(0 0 16px rgba(201, 168, 76, 0.4));
+  animation: emblemPulse 3s ease-in-out infinite;
+}
+
+.logoText {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  font-family: var(--font-display);
+  font-weight: var(--weight-black);
+  letter-spacing: var(--tracking-wider);
+  line-height: 1;
+}
+
+.logoGw2 {
+  font-size: var(--text-3xl);
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.logoNexus {
+  font-size: var(--text-2xl);
+  color: var(--text-primary);
+}
+
+.logoTagline {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  font-style: italic;
+}
+
+/* ─── Card principale ───────────────────────────────────────────── */
+.card {
+  width: 100%;
+  position: relative;
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+  box-shadow:
+    var(--shadow-xl),
+    0 0 60px rgba(201, 168, 76, 0.05);
+  overflow: hidden;
+}
+
+/* Ligne décorative dorée en haut de la card */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--gold-primary),
+    transparent
+  );
+}
+
+.cardInner {
+  padding: var(--space-10);
+}
+
+/* Bordure dorée décorative — coins */
+.cardBorder {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-xl);
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, rgba(201, 168, 76, 0.1) 0%, transparent 40%) top left / 80px 80px no-repeat,
+    linear-gradient(225deg, rgba(201, 168, 76, 0.1) 0%, transparent 40%) top right / 80px 80px no-repeat,
+    linear-gradient(315deg, rgba(201, 168, 76, 0.1) 0%, transparent 40%) bottom left / 80px 80px no-repeat,
+    linear-gradient(45deg,  rgba(201, 168, 76, 0.1) 0%, transparent 40%) bottom right / 80px 80px no-repeat;
+}
+
+/* ─── Footer ────────────────────────────────────────────────────── */
+.footer {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  text-align: center;
+  letter-spacing: var(--tracking-wide);
+}
+
+/* ─── Animations ────────────────────────────────────────────────── */
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(20px, -30px) scale(1.05); }
+  66%       { transform: translate(-15px, 20px) scale(0.97); }
+}
+
+@keyframes emblemPulse {
+  0%, 100% { filter: drop-shadow(0 0 16px rgba(201, 168, 76, 0.4)); }
+  50%       { filter: drop-shadow(0 0 28px rgba(201, 168, 76, 0.7)); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

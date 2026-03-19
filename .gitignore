@@ -1,28 +1,23 @@
-# OS
-.DS_Store
-Thumbs.db
+# ═══════════════════════════════════════════════════════════════════
+# GW2Nexus — .gitignore racine
+# ═══════════════════════════════════════════════════════════════════
 
-# Editors
-.idea/
-.vscode/
-*.swp
-
-# Node
-node_modules/
-
-# Laravel
+# ─── Variables d'environnement ───────────────────────────────────────
+# Jamais commiter les .env — ils contiennent des secrets
+.env
 backend/.env
-backend/vendor/
-backend/storage/logs/*
-backend/storage/framework/cache/*
-backend/storage/framework/sessions/*
-backend/storage/framework/views/*
-backend/bootstrap/cache/*
-
-# React / Vite
-frontend/node_modules/
-frontend/dist/
 frontend/.env
 
-# Docker
-.env.docker
+# ─── Dépendances ─────────────────────────────────────────────────────
+node_modules/
+vendor/
+
+# ─── IDE & OS ────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.DS_Store
+Thumbs.db
+
+# ─── Docker ──────────────────────────────────────────────────────────
+# Les volumes Docker sont gérés par Docker, pas Git
+docker/volumes/

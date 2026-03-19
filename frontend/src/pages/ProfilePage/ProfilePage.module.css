@@ -1,0 +1,464 @@
+/* ═══════════════════════════════════════════════════════════════════
+   ProfilePage.module.css — Profil utilisateur GW2Nexus
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Wrapper page ──────────────────────────────────────────────── */
+.root {
+  min-height: 100vh;
+  background: var(--bg-deep);
+  padding-top: var(--navbar-height);
+}
+
+/* ─── Bannière hero ─────────────────────────────────────────────── */
+.banner {
+  position: relative;
+  height: 220px;
+  background:
+    linear-gradient(135deg, rgba(201, 168, 76, 0.08) 0%, transparent 60%),
+    linear-gradient(to bottom, #0a0d14, #080808);
+  border-bottom: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+/* Grille décorative dans la bannière */
+.bannerGrid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(201, 168, 76, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 168, 76, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Hexagone décoratif bannière */
+.bannerHex {
+  position: absolute;
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.06;
+}
+
+/* ─── Container centré ──────────────────────────────────────────── */
+.container {
+  max-width: var(--container-xl);
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+}
+
+/* ─── Zone avatar + identité (chevauche la bannière) ────────────── */
+.identity {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-6);
+  margin-top: -60px;
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+
+/* Avatar */
+.avatarWrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px solid var(--gold-primary);
+  box-shadow: 0 0 24px rgba(201, 168, 76, 0.3);
+  object-fit: cover;
+  background: var(--bg-card);
+}
+
+.avatarInitial {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px solid var(--gold-primary);
+  box-shadow: 0 0 24px rgba(201, 168, 76, 0.3);
+  background: rgba(201, 168, 76, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-bold);
+  color: var(--gold-primary);
+}
+
+/* Badge rôle sur l'avatar */
+.roleBadge {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  background: rgba(201, 168, 76, 0.2);
+  color: var(--gold-primary);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+}
+
+/* Infos identité */
+.identityInfo {
+  flex: 1;
+  padding-bottom: var(--space-2);
+  min-width: 0;
+}
+
+.username {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--space-1);
+}
+
+.email {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+.identityMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.metaTag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding: 3px var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+}
+
+/* Actions header droite */
+.identityActions {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  margin-left: auto;
+  padding-bottom: var(--space-2);
+}
+
+/* ─── Grille principale (sidebar + contenu) ─────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-8);
+  padding-block: var(--space-8);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Sidebar ───────────────────────────────────────────────────── */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Card sidebar générique */
+.sideCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  position: relative;
+  overflow: hidden;
+}
+
+.sideCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold-primary), transparent);
+  opacity: 0.4;
+}
+
+.sideCardTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--gold-primary);
+  margin-bottom: var(--space-4);
+}
+
+/* Ligne info sidebar */
+.sideRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-block: var(--space-2);
+  border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+}
+
+.sideRow:last-child {
+  border-bottom: none;
+}
+
+.sideRowLabel {
+  color: var(--text-secondary);
+}
+
+.sideRowValue {
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+  text-align: right;
+}
+
+.sideRowValueGold {
+  color: var(--gold-primary);
+  font-family: var(--font-display);
+  font-weight: var(--weight-semibold);
+}
+
+/* ─── Contenu principal ─────────────────────────────────────────── */
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* Section card ─────────────────────────────────────────────────── */
+.section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(201, 168, 76, 0.02);
+}
+
+.sectionIcon {
+  font-size: var(--text-lg);
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.sectionBody {
+  padding: var(--space-6);
+}
+
+/* ─── Stats GW2 ─────────────────────────────────────────────────── */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 640px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.statBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background: rgba(201, 168, 76, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  transition: var(--transition-base);
+}
+
+.statBox:hover {
+  border-color: var(--border-default);
+  background: rgba(201, 168, 76, 0.06);
+}
+
+.statIcon {
+  font-size: var(--text-2xl);
+}
+
+.statLabel {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.statValue {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  color: var(--gold-primary);
+  line-height: 1;
+}
+
+/* ─── Grille personnages ────────────────────────────────────────── */
+.characterGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.characterCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: rgba(201, 168, 76, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  transition: var(--transition-smooth);
+  cursor: default;
+}
+
+.characterCard:hover {
+  border-color: var(--border-default);
+  background: rgba(201, 168, 76, 0.07);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md), var(--shadow-gold);
+}
+
+.charName {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  color: var(--gold-primary);
+}
+
+.charProfession {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+}
+
+.charMeta {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+}
+
+/* ─── État vide / loading / erreur ──────────────────────────────── */
+.stateBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-10);
+  text-align: center;
+}
+
+.stateIcon {
+  font-size: var(--text-4xl);
+  opacity: 0.4;
+}
+
+.stateText {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+/* Spinner loading */
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--border-subtle);
+  border-top-color: var(--gold-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* ─── Bouton déconnexion ────────────────────────────────────────── */
+.logoutBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-6);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--color-error);
+  border: 1px solid rgba(224, 82, 82, 0.3);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.logoutBtn:hover:not(:disabled) {
+  background: var(--color-error-bg);
+  border-color: var(--color-error);
+}
+
+.logoutBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Sprint tag ────────────────────────────────────────────────── */
+.sprintTag {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: var(--space-6) 0 var(--space-10);
+}
+
+/* ─── Animations ────────────────────────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

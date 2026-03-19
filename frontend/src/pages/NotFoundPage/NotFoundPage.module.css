@@ -1,0 +1,257 @@
+/* ═══════════════════════════════════════════════════════════════════
+   NotFoundPage.module.css
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Wrapper pleine page ───────────────────────────────────────── */
+.root {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-void);
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-6);
+}
+
+/* ─── Particules flottantes ─────────────────────────────────────── */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--gold-primary);
+  opacity: var(--op, 0.3);
+  pointer-events: none;
+  animation: particleFloat linear infinite;
+}
+
+/* ─── Card centrale ─────────────────────────────────────────────── */
+.card {
+  position: relative;
+  z-index: var(--z-raised);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-5);
+  max-width: 520px;
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-12) var(--space-10);
+  box-shadow: var(--shadow-xl), 0 0 60px rgba(201, 168, 76, 0.05);
+  animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
+  /* Ligne décorative dorée en haut */
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--gold-primary),
+    transparent
+  );
+}
+
+/* ─── Ornement ──────────────────────────────────────────────────── */
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 160px;
+}
+
+.ornamentLine {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(201, 168, 76, 0.5));
+}
+
+.ornamentLineRight {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to left, transparent, rgba(201, 168, 76, 0.5));
+}
+
+.ornamentDiamond {
+  width: 8px;
+  height: 8px;
+  background: var(--gold-primary);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+  box-shadow: 0 0 8px rgba(201, 168, 76, 0.6);
+}
+
+/* ─── Code 404 ──────────────────────────────────────────────────── */
+.code {
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 15vw, 8rem);
+  font-weight: var(--weight-black);
+  line-height: 1;
+  letter-spacing: var(--tracking-wide);
+  background: linear-gradient(
+    135deg,
+    var(--gold-light) 0%,
+    var(--gold-primary) 40%,
+    var(--gold-dark) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(201, 168, 76, 0.3));
+}
+
+/* ─── Sous-titre ────────────────────────────────────────────────── */
+.subtitle {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin-top: calc(var(--space-2) * -1);
+}
+
+/* ─── Séparateur doré ───────────────────────────────────────────── */
+.divider {
+  border: none;
+  height: 1px;
+  width: 120px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--gold-primary),
+    transparent
+  );
+}
+
+/* ─── Message lore ──────────────────────────────────────────────── */
+.message {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: var(--leading-loose);
+  max-width: 380px;
+}
+
+.submessage {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+  line-height: var(--leading-normal);
+}
+
+/* ─── Countdown ─────────────────────────────────────────────────── */
+.countdown {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+  background: rgba(201, 168, 76, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: var(--space-2) var(--space-5);
+}
+
+.countdownNum {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  color: var(--gold-primary);
+  min-width: 28px;
+  text-align: center;
+  line-height: 1;
+}
+
+/* ─── Boutons ───────────────────────────────────────────────────── */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-8);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-dark) 100%);
+  color: #0a0d14;
+  border: 1px solid var(--gold-primary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  box-shadow: 0 0 20px rgba(201, 168, 76, 0.2);
+}
+
+.btnPrimary:hover {
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold-primary) 100%);
+  box-shadow: 0 0 40px rgba(201, 168, 76, 0.4);
+  transform: translateY(-1px);
+}
+
+.btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-8);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--gold-primary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.btnSecondary:hover {
+  background: var(--gold-glow);
+  border-color: var(--gold-primary);
+  color: var(--gold-light);
+  transform: translateY(-1px);
+}
+
+/* ─── Footer ornement ───────────────────────────────────────────── */
+.footerOrnament {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: var(--space-2);
+}
+
+/* ─── Animations ────────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes particleFloat {
+  0%   { transform: translateY(0) scale(1);    opacity: var(--op, 0.3); }
+  50%  { transform: translateY(-30px) scale(1.2); opacity: calc(var(--op, 0.3) * 1.5); }
+  100% { transform: translateY(0) scale(1);    opacity: var(--op, 0.3); }
+}

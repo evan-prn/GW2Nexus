@@ -1,0 +1,55 @@
+/* ═══════════════════════════════════════════════════════════════════
+   ContactPage.module.css — Layout de la page Contact
+   Seuls les styles de mise en page globale sont ici.
+   Les styles des blocs sont dans leur propre module.css.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Wrapper page ──────────────────────────────────────────────── */
+.page {
+  min-height: 100vh;
+  background: var(--bg-void);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  padding-top: var(--navbar-height);
+}
+
+/* ─── Fond décoratif fixe ───────────────────────────────────────── */
+.bgOverlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-base);
+  background:
+    radial-gradient(circle at 10% 10%, rgba(201, 168, 76, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 90% 90%, rgba(139, 105, 20, 0.05) 0%, transparent 50%);
+}
+
+/* ─── Grille principale (formulaire | canaux) ───────────────────── */
+.main {
+  position: relative;
+  z-index: var(--z-raised);
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: var(--space-16);
+  max-width: var(--container-xl);
+  margin: var(--space-16) auto;
+  padding-inline: var(--space-6);
+}
+
+@media (max-width: 850px) {
+  .main {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Titre de bloc ─────────────────────────────────────────────── */
+.blockTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  letter-spacing: var(--tracking-wide);
+  margin-bottom: var(--space-8);
+  padding-left: var(--space-4);
+  border-left: 3px solid var(--gold-primary);
+}

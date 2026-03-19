@@ -9,13 +9,8 @@ use App\Http\Controllers\Api\Auth\MeController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use Illuminate\Support\Facades\Route;
 
-/**
- * Route de test de connectivité — à supprimer en production
- * Accessible via GET /api/ping
- */
-Route::get('/ping', function () {
-    return response()->json(['message' => 'Connexion réussie vers l\'API !']);
-})->name('ping');
+// GET /api/health — point de santé pour le healthcheck Docker
+Route::get('/health', fn() => response()->json(['status-backend' => 'ok']));
 
 /*
 |--------------------------------------------------------------------------
