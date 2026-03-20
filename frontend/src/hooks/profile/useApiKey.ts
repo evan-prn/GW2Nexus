@@ -1,55 +1,102 @@
-// ═══════════════════════════════════════════════════════════════════
-// src/hooks/profile/useApiKey.ts
-// Gestion de la clé API GW2 : saisie, validation via backend, feedback
-// ═══════════════════════════════════════════════════════════════════
+import { useCallback, useState } from 'react';
+import profileApi       from '../../api/profile';
+import useProfileStore  from '../../store/profileStore';
+import type { Gw2DataResponse } from '../../types/profile';
 
-import { useState } from 'react';
-import axios from 'axios';
-import type { AxiosError } from 'axios';
+// ─── Types locaux ────────────────────────────────────────────────
+type SubmitStatus = 'idle' | 'loading' | 'success' | 'error';
 
-// ─── Types ───────────────────────────────────────────────────────────
-export type ApiKeyStatus = 'idle' | 'loading' | 'success' | 'error';
+// ─── Hook clé API GW2 ────────────────────────────────────────────
+// Expose deux interfaces :
+//   1. Formulaire  → apiKey, setApiKey, status, message, handleSubmit
+//   2. Données GW2 → profilGw2, gw2Data, fetchGw2Data, deleteApiKey
 
-// ─── Hook ────────────────────────────────────────────────────────────
-export function useApiKey() {
-  const [apiKey,    setApiKey]    = useState('');
-  const [status,    setStatus]    = useState<ApiKeyStatus>('idle');
-  const [message,   setMessage]   = useState('');
+const useApiKey = () => {
+  const {
+    profilGw2, gw2Data,
+    setProfilGw2, setGw2Data,
+    setSaving, setError, clearError,
+  } = useProfileStore();
 
-  // ─── Soumission et validation de la clé API ─────────────────────────
-  const handleSubmit = async (e: React.FormEvent) => {
+  // ─── État local formulaire ─────────────────────────────────────
+  const [apiKey,        setApiKey]       = useState('');
+  const [status,        setStatus]       = useState<SubmitStatus>('idle');
+  const [message,       setMessage]      = useState('');
+  const [isLoadingGw2,  setIsLoadingGw2] = useState(false);
+
+  // ─── Soumettre la clé API ──────────────────────────────────────
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!apiKey.trim()) return;
 
     setStatus('loading');
     setMessage('');
+    clearError();
 
     try {
-      // Cookie CSRF avant POST (Sanctum SPA mode)
-      await axios.get('/sanctum/csrf-cookie', { withCredentials: true });
-
-      await axios.post(
-        '/api/v1/profile/api-key',
-        { api_key: apiKey.trim() },
-        { withCredentials: true }
-      );
-
+      const response = await profileApi.updateApiKey({ api_key: apiKey.trim() });
+      setProfilGw2(response.data.profil_gw2);
       setStatus('success');
       setMessage('Clé API validée et enregistrée avec succès.');
       setApiKey('');
-    } catch (err) {
-      const axiosErr = err as AxiosError<{ message?: string }>;
+    } catch (err: any) {
+      const msg = err.response?.data?.message ?? 'Clé API invalide ou expirée.';
       setStatus('error');
-      setMessage(
-        axiosErr.response?.data?.message ?? 'Clé API invalide ou expirée.'
-      );
+      setMessage(msg);
+      setError(msg);
     }
-  };
+  }, [apiKey, clearError, setProfilGw2, setError]);
 
-  const reset = () => {
-    setStatus('idle');
-    setMessage('');
-  };
+  // ─── Supprimer la clé API ─────────────────────────────────────
+  const deleteApiKey = useCallback(async () => {
+    setSaving(true);
+    clearError();
+    try {
+      await profileApi.deleteApiKey();
+      if (profilGw2) {
+        setProfilGw2({ ...profilGw2, valide: false, nom_compte: null, monde: null });
+      }
+      setGw2Data(null);
+      setStatus('idle');
+      setMessage('');
+      return { success: true };
+    } catch {
+      setError('Erreur lors de la suppression de la clé API.');
+      return { success: false };
+    } finally {
+      setSaving(false);
+    }
+  }, [profilGw2, setSaving, clearError, setProfilGw2, setGw2Data, setError]);
 
-  return { apiKey, setApiKey, status, message, handleSubmit, reset };
-}
+  // ─── Charger les données GW2 fraîches ─────────────────────────
+  const fetchGw2Data = useCallback(async (): Promise<Gw2DataResponse | null> => {
+    setIsLoadingGw2(true);
+    clearError();
+    try {
+      const response = await profileApi.gw2Data();
+      setGw2Data(response.data);
+      return response.data;
+    } catch (err: any) {
+      const msg = err.response?.data?.message ?? 'Impossible de récupérer les données GW2.';
+      setError(msg);
+      return null;
+    } finally {
+      setIsLoadingGw2(false);
+    }
+  }, [clearError, setGw2Data, setError]);
+
+  return {
+    // Interface formulaire
+    apiKey, setApiKey,
+    status, message,
+    handleSubmit,
+
+    // Interface données GW2
+    profilGw2, gw2Data,
+    isLoadingGw2,
+    deleteApiKey,
+    fetchGw2Data,
+  };
+};
+
+export default useApiKey;

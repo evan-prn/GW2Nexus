@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\Auth\MeController;
 use App\Http\Controllers\Api\Contact\ContactController;
+use App\Http\Controllers\Api\Profile\UserProfileController;
 use Illuminate\Support\Facades\Route;
 
 // GET /api/health — point de santé pour le healthcheck Docker
@@ -75,13 +76,33 @@ Route::prefix('v1')->group(function (): void {
         Route::get('auth/me', MeController::class)
             ->name('auth.me');
 
+        
         /*
-        |------------------------------------------------------------------
-        | Point d'extension — les futures features s'ajoutent ici
-        | Exemple :
-        |   Route::apiResource('profile', UserProfileController::class);
-        |   Route::apiResource('discussions', DiscussionController::class);
-        |------------------------------------------------------------------
+        |--------------------------------------------------------------------------
+        | Profile utilisateur
+        |--------------------------------------------------------------------------
         */
+        Route::prefix('profile')->name('profile.')->group(function (): void {
+        
+            // GET    /api/v1/profile          — données profil complet
+            Route::get('/', [UserProfileController::class, 'show'])
+                ->name('show');
+        
+            // PUT    /api/v1/profile          — mise à jour infos de base (nom, pseudo_gw2, avatar)
+            Route::put('/', [UserProfileController::class, 'update'])
+                ->name('update');
+        
+            // POST   /api/v1/profile/api-key  — valider + enregistrer clé API GW2
+            Route::post('api-key', [UserProfileController::class, 'updateApiKey'])
+                ->name('api-key.update');
+        
+            // DELETE /api/v1/profile/api-key  — supprimer la clé API GW2
+            Route::delete('api-key', [UserProfileController::class, 'deleteApiKey'])
+                ->name('api-key.delete');
+        
+            // GET    /api/v1/profile/gw2-data — données GW2 fraîches (compte + personnages)
+            Route::get('gw2-data', [UserProfileController::class, 'gw2Data'])
+                ->name('gw2-data');
+        });
     });
 });

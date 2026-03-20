@@ -1,48 +1,89 @@
-// ═══════════════════════════════════════════════════════════════════
-// src/hooks/profile/useProfile.ts
-// Chargement des données GW2 (compte + personnages) via le backend proxy
-// ═══════════════════════════════════════════════════════════════════
+import { useCallback } from 'react';
+import profileApi from '../../api/profile';
+import useProfileStore from '../../store/profileStore';
+import useAuthStore from '../../store/authStore';
+import type { UpdateProfilePayload } from '../../types/profile';
 
-import { useEffect, useState } from 'react';
-import type { Gw2Account, Gw2Character } from '@/data/profile.data';
+// ─── Hook profil utilisateur ──────────────────────────────────────
+// Responsabilité : charger et mettre à jour le profil de base.
 
-// ─── Hook ────────────────────────────────────────────────────────────
-export function useProfile() {
-  const [gw2Data,    setGw2Data]    = useState<Gw2Account | null>(null);
-  const [characters, setCharacters] = useState<Gw2Character[]>([]);
-  const [loading,    setLoading]    = useState(true);
-  const [error,      setError]      = useState(false);
+const useProfile = () => {
+  const {
+    profileUser, profilGw2,
+    isLoading, isSaving, error,
+    setProfileUser, setProfilGw2,
+    setLoading, setSaving, setError, clearError,
+  } = useProfileStore();
 
-  // ─── Fetch compte GW2 + personnages en parallèle ───────────────────
-  useEffect(() => {
-    const fetchGw2Data = async () => {
-      setLoading(true);
-      setError(false);
-      try {
-        const [accRes, charRes] = await Promise.all([
-          fetch('/api/gw2/account',    { credentials: 'include' }),
-          fetch('/api/gw2/characters', { credentials: 'include' }),
-        ]);
+  const { setUser } = useAuthStore();
 
-        if (!accRes.ok || !charRes.ok) throw new Error('Réponse API invalide');
+  // ─── Charger le profil complet ────────────────────────────────────
+  const fetchProfile = useCallback(async () => {
+    setLoading(true);
+    clearError();
+    try {
+      const response = await profileApi.get();
+      const { user, profil_gw2 } = response.data;
 
-        const [account, chars] = await Promise.all([
-          accRes.json(),
-          charRes.json(),
-        ]);
+      setProfileUser(user);
+      setProfilGw2(profil_gw2);
 
-        setGw2Data(account);
-        setCharacters(chars);
-      } catch (err) {
-        console.error('Erreur GW2 :', err);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
+      // Synchronise authStore avec les données fraîches
+      setUser({
+        id:         user.id,
+        nom:        user.nom,
+        email:      user.email,
+        pseudo_gw2: user.pseudo_gw2,
+        avatar:     user.avatar,
+        role:       user.role,
+      });
+    } catch {
+      setError('Impossible de charger le profil.');
+    } finally {
+      setLoading(false);
+    }
+  }, [setLoading, clearError, setProfileUser, setProfilGw2, setUser, setError]);
 
-    fetchGw2Data();
-  }, []);
+  // ─── Mettre à jour le profil de base ─────────────────────────────
+  const updateProfile = useCallback(async (payload: UpdateProfilePayload) => {
+    setSaving(true);
+    clearError();
+    try {
+      const response = await profileApi.update(payload);
+      const { user } = response.data;
 
-  return { gw2Data, characters, loading, error };
-}
+      setProfileUser(user);
+
+      // Synchronise authStore
+      setUser({
+        id:         user.id,
+        nom:        user.nom,
+        email:      user.email,
+        pseudo_gw2: user.pseudo_gw2,
+        avatar:     user.avatar,
+        role:       user.role,
+      });
+
+      return { success: true };
+    } catch (err: any) {
+      const message = err.response?.data?.message ?? 'Erreur lors de la mise à jour.';
+      setError(message);
+      return { success: false, error: message, errors: err.response?.data?.errors };
+    } finally {
+      setSaving(false);
+    }
+  }, [setSaving, clearError, setProfileUser, setUser, setError]);
+
+  return {
+    profileUser,
+    profilGw2,
+    isLoading,
+    isSaving,
+    error,
+    fetchProfile,
+    updateProfile,
+    clearError,
+  };
+};
+
+export default useProfile;

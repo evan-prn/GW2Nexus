@@ -30,7 +30,7 @@ return new class extends Migration
             // Clé API GW2 — 72 chars, stockée chiffrée (AES-256 via encrypt())
             // Pas de contrainte UNIQUE : plusieurs NULL autorisés, et la validation
             // métier se fait au niveau applicatif (Gw2ApiService)
-            $table->string('api_key', 72)->nullable();
+            $table->string('api_key', 500)->nullable();
 
             // Vérification email (standard Laravel)
             $table->timestamp('email_verified_at')->nullable();

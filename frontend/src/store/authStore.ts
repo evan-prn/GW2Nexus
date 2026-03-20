@@ -1,79 +1,64 @@
-// frontend/src/store/authStore.js
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import authApi from '../api/auth';
 
 export interface User {
-  id: number;
-  nom: string;
-  email: string;
-  pseudo_gw2?: string;
-  avatar?: string;
-  role?: string;
+  id:          number;
+  nom:         string;
+  email:       string;
+  pseudo_gw2?: string | null;
+  avatar?:     string | null;
+  role?:       string;
+  has_api_key?: boolean;  // ← ajout Sprint 2
 }
 
 interface AuthState {
-  user: User | null;
+  user:            User | null;
   isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
-  setUser: (user: User) => void;
-  clearAuth: () => void;
-  logout: () => Promise<void>;
-  setLoading: (isLoading: boolean) => void;
-  setError: (error: string | null) => void;
-  clearError: () => void;
+  isLoading:       boolean;
+  error:           string | null;
+  setUser:         (user: User) => void;
+  clearAuth:       () => void;
+  logout:          () => Promise<void>;
+  setLoading:      (isLoading: boolean) => void;
+  setError:        (error: string | null) => void;
+  clearError:      () => void;
 }
 
-/**
- * Store Zustand — état d'authentification global
- * Persiste uniquement les données non-sensibles (pas le token — Sanctum gère via cookie)
- */
 const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      // ─── State ────────────────────────────────────────────────────────
-      user: null,            // { id, nom, email, pseudo_gw2, avatar, role }
+      user:            null,
       isAuthenticated: false,
-      isLoading: false,
-      error: null,
+      isLoading:       false,
+      error:           null,
 
-      // ─── Actions ──────────────────────────────────────────────────────
-
-      /** Définit l'utilisateur après connexion/inscription réussie */
       setUser: (user) =>
         set({ user, isAuthenticated: true, error: null }),
 
-      /** Efface la session côté client uniquement */
       clearAuth: () =>
         set({ user: null, isAuthenticated: false, error: null }),
 
-      /** Déconnexion complète : appel API + reset état */
       logout: async () => {
         set({ isLoading: true });
         try {
           await authApi.logout();
         } catch {
-          // On déconnecte côté client même si le serveur échoue
+          // Déconnexion côté client même si le serveur échoue
         } finally {
           set({ user: null, isAuthenticated: false, error: null, isLoading: false });
         }
       },
 
-      /** Gestion du loading */
-      setLoading: (isLoading) => set({ isLoading }),
-
-      /** Gestion des erreurs */
-      setError: (error) => set({ error, isLoading: false }),
-
-      /** Reset erreur */
-      clearError: () => set({ error: null }),
+      setLoading:  (isLoading) => set({ isLoading }),
+      setError:    (error)     => set({ error, isLoading: false }),
+      clearError:  ()          => set({ error: null }),
     }),
     {
       name: 'gw2nexus-auth',
       storage: createJSONStorage(() => sessionStorage),
       partialize: (state) => ({
-        user: state.user,
+        user:            state.user,
         isAuthenticated: state.isAuthenticated,
       }),
     }
