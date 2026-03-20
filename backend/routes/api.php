@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\Auth\MeController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Api\Profile\UserProfileController;
+use App\Http\Controllers\Api\Profile\AvatarController;
 use Illuminate\Support\Facades\Route;
 
 // GET /api/health — point de santé pour le healthcheck Docker
@@ -91,6 +92,9 @@ Route::prefix('v1')->group(function (): void {
             // PUT    /api/v1/profile          — mise à jour infos de base (nom, pseudo_gw2, avatar)
             Route::put('/', [UserProfileController::class, 'update'])
                 ->name('update');
+
+            // POST   /api/v1/profile/avatar   — upload d'un nouvel avatar
+            Route::post('avatar', [AvatarController::class, 'upload'])->name('profile.avatar.upload');
         
             // POST   /api/v1/profile/api-key  — valider + enregistrer clé API GW2
             Route::post('api-key', [UserProfileController::class, 'updateApiKey'])

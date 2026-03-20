@@ -5,18 +5,19 @@
 import { useState }         from 'react';
 import useApiKey            from '@/hooks/profile/useApiKey';
 import useAuthStore         from '@/store/authStore';
+import useProfileStore      from '@/store/profileStore';
 import { API_KEY_HELP_URL } from '@/data/profile.data';
 import styles               from './ProfileApiKey.module.css';
 
 export default function ProfileApiKey() {
-  const { user }                                          = useAuthStore();
+  const { user }                                                          = useAuthStore();
+  const { isLoading: isLoadingProfile }                                   = useProfileStore();
   const { apiKey, setApiKey, status, message, handleSubmit, deleteApiKey, profilGw2 } = useApiKey();
 
-  // Mode édition — affiché uniquement si l'utilisateur veut changer sa clé
   const [modeEdition, setModeEdition] = useState(false);
 
-  // Clé déjà configurée = has_api_key true ET profil valide
-  const cleConfiguree = user?.has_api_key && profilGw2?.valide;
+  // Attend que le profil soit chargé avant de décider l'état
+  const cleConfiguree = !isLoadingProfile && user?.has_api_key === true && profilGw2 !== null;
 
   return (
     <div className={styles.section}>
@@ -37,16 +38,20 @@ export default function ProfileApiKey() {
 
       <div className={styles.body}>
 
-        {/* ── Mode : clé déjà configurée ── */}
-        {cleConfiguree && !modeEdition ? (
+        {/* ── Chargement ── */}
+        {isLoadingProfile ? (
+          <p className={styles.desc}>Chargement…</p>
+
+        ) : cleConfiguree && !modeEdition ? (
+          /* ── Mode : clé déjà configurée ── */
           <>
             <div className={styles.cleActive}>
               <span className={styles.cleActiveIcon}>✦</span>
               <div>
                 <p className={styles.cleActiveTitle}>Clé API connectée</p>
                 <p className={styles.cleActiveSub}>
-                  Compte GW2 : <strong>{profilGw2.nom_compte ?? '—'}</strong>
-                  {profilGw2.derniere_synchro && (
+                  Compte GW2 : <strong>{profilGw2?.nom_compte ?? '—'}</strong>
+                  {profilGw2?.derniere_synchro && (
                     <> · Dernière synchro : {new Date(profilGw2.derniere_synchro).toLocaleDateString('fr-FR')}</>
                   )}
                 </p>
@@ -90,7 +95,11 @@ export default function ProfileApiKey() {
               <div className={styles.alertError}>⚠ {message}</div>
             )}
 
-            <form onSubmit={async (e) => { await handleSubmit(e); setModeEdition(false); }} className={styles.form} noValidate>
+            <form
+              onSubmit={async (e) => { await handleSubmit(e); setModeEdition(false); }}
+              className={styles.form}
+              noValidate
+            >
               <div className={styles.inputWrapper}>
                 <input
                   type="text"
