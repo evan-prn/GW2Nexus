@@ -32,7 +32,7 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       # Volume nommé : les données MySQL survivent aux docker compose down
       - mysql_data:/var/lib/mysql
@@ -61,8 +61,8 @@ services:
       PMA_HOST: mysql             # Nom du service MySQL dans le réseau Docker
       PMA_PORT: 3306
       PMA_ARBITRARY: 1            # Permet de se connecter à n'importe quel host MySQL
-      PMA_USER: root
-      PMA_PASSWORD: ${DB_ROOT_PASSWORD}
+      #PMA_USER: root
+      #PMA_PASSWORD: ${DB_ROOT_PASSWORD}
       UPLOAD_LIMIT: 64M           # Taille max pour l'import de fichiers SQL
     depends_on:
       mysql:
