@@ -12,6 +12,7 @@ import ContactHero     from '@/components/contact/ContactHeroComponent/ContactHe
 import ContactForm     from '@/components/contact/ContactFormComponent/ContactForm';
 import ContactChannels from '@/components/contact/ContactChannelsComponent/ContactChannels';
 import { useContactForm } from '@/hooks/contact/useContactForm';
+import PageTitle from '@/hooks/usePageTitle';
 
 import styles from './ContactPage.module.css';
 
@@ -59,6 +60,9 @@ export default function ContactPage() {
 
   return (
     <div className={styles.page}>
+
+      <PageTitle title="Contactez-nous" />
+
       {/* Fond décoratif — purement visuel, ignoré par les lecteurs d'écran */}
       <div className={styles.bgOverlay} aria-hidden="true" />
 

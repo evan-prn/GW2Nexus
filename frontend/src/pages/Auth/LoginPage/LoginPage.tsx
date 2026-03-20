@@ -5,6 +5,7 @@ import type { ChangeEvent, FormEvent } from 'react';
 import AuthLayout from '@/components/auth/AuthLayoutComponent/AuthLayout';
 import FormInput  from '@/components/auth/FormInputComponent/FormInput';
 import useAuth    from '@/hooks/auth/useAuth';
+import PageTitle  from '@/hooks/usePageTitle';
 import type { FieldErrors } from '@/types/auth';
 
 import styles from './LoginPage.module.css';
@@ -37,7 +38,6 @@ const LoginPage = () => {
 
     const result = await login(formData);
 
-    // Erreurs de validation Laravel (422)
     if (!result.success && result.errors) {
       const mapped: FieldErrors = {};
       Object.entries(result.errors).forEach(([key, messages]) => {
@@ -49,6 +49,8 @@ const LoginPage = () => {
 
   return (
     <AuthLayout>
+
+      <PageTitle title="Connexion" />
 
       {/* ── En-tête ── */}
       <div className={styles.header}>
@@ -93,7 +95,6 @@ const LoginPage = () => {
           icon={LockIcon}
         />
 
-        {/* ── Remember me + lien mot de passe oublié ── */}
         <div className={styles.row}>
           <label className={styles.checkbox}>
             <input
@@ -111,7 +112,6 @@ const LoginPage = () => {
           </Link>
         </div>
 
-        {/* ── Bouton submit ── */}
         <button
           type="submit"
           className={styles.submitBtn}
@@ -131,12 +131,10 @@ const LoginPage = () => {
         </button>
       </form>
 
-      {/* ── Séparateur ── */}
       <div className={styles.divider}>
         <span>Pas encore de compte ?</span>
       </div>
 
-      {/* ── Lien inscription ── */}
       <Link to="/register" className={styles.secondaryLink}>
         Créer un compte GW2Nexus
       </Link>

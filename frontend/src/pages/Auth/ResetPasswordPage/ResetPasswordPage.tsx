@@ -7,7 +7,7 @@ import type { FieldErrors, Status, PasswordStrength } from '@/types/auth';
 import AuthLayout from '@/components/auth/AuthLayoutComponent/AuthLayout';
 import FormInput  from '@/components/auth/FormInputComponent/FormInput';
 import httpClient from '@/api/httpClient';
-
+import PageTitle  from '@/hooks/usePageTitle';
 import styles from './ResetPasswordPage.module.css';
 
 // ─── Types ──────────────────────────────────────────────────────────
@@ -112,6 +112,8 @@ const ResetPasswordPage = () => {
 
   return (
     <AuthLayout>
+
+      <PageTitle title="Nouveau mot de passe" />
 
       {/* ── En-tête ── */}
       <div className={styles.header}>

@@ -5,6 +5,7 @@ import type { ChangeEvent, FormEvent } from 'react';
 import AuthLayout from '@/components/auth/AuthLayoutComponent/AuthLayout';
 import FormInput  from '@/components/auth/FormInputComponent/FormInput';
 import useAuth    from '@/hooks/auth/useAuth';
+import PageTitle  from '@/hooks/usePageTitle';
 import type { FieldErrors, PasswordStrength } from '@/types/auth';
 
 import styles from './RegisterPage.module.css';
@@ -51,6 +52,8 @@ const RegisterPage = () => {
 
   return (
     <AuthLayout>
+
+      <PageTitle title="Créer un compte" />
 
       {/* ── En-tête ── */}
       <div className={styles.header}>

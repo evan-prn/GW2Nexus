@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import AuthLayout from '@/components/auth/AuthLayoutComponent/AuthLayout';
 import FormInput from '@/components/auth/FormInputComponent/FormInput';
 import httpClient from '@/api/httpClient';
+import PageTitle  from '@/hooks/usePageTitle';
 
 import styles from './ForgotPasswordPage.module.css';
 
@@ -54,6 +55,9 @@ const ForgotPasswordPage = () => {
 
   return (
     <AuthLayout>
+
+      <PageTitle title="Mot de passe oublié" />
+
       {/* En-tête */}
       <div className={styles.header}>
         <h1 className={styles.title}>Mot de passe oublié</h1>

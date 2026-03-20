@@ -14,6 +14,7 @@ import AboutFeatures     from '@/components/about/AboutFeaturesComponent/AboutFe
 import AboutStack        from '@/components/about/AboutStackComponent/AboutStack';
 import AboutTeam         from '@/components/about/AboutTeamComponent/AboutTeam';
 import AboutFooterBanner from '@/components/about/AboutFooterBannerComponent/AboutFooterBanner';
+import PageTitle         from '@/hooks/usePageTitle';
 
 import styles from './AboutPage.module.css';
 
@@ -42,6 +43,8 @@ export default function AboutPage() {
 
   return (
     <div className={styles.page}>
+
+      <PageTitle title="À propos de GW2 Nexus" />
 
       {/* ── Hero plein écran ── */}
       <AboutHero scrollY={scrollY} />

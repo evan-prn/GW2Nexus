@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState }  from 'react';
 import { useNavigate }                  from 'react-router-dom';
 
+import PageTitle from '@/hooks/usePageTitle';
+
 import styles from './NotFoundPage.module.css';
 
 // ─── Types ──────────────────────────────────────────────────────────
@@ -49,6 +51,8 @@ export default function NotFoundPage() {
 
   return (
     <div className={styles.root}>
+
+      <PageTitle title="Page non trouvée - GW2 Nexus" />
 
       {/* ── Particules flottantes ── */}
       {PARTICLES.map((p) => (

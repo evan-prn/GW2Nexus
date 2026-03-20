@@ -11,6 +11,8 @@ import RulesTabsBar        from '@/components/rules/RulesTabsBarComponent/RulesT
 import RulesTabMeta        from '@/components/rules/RulesTabMetaComponent/RulesTabMeta';
 import RulesContent        from '@/components/rules/RulesContentComponent/RulesContent';
 
+import PageTitle from '@/hooks/usePageTitle';
+
 import styles from './RulesPage.module.css';
 
 // ─── Page ────────────────────────────────────────────────────────────
@@ -19,6 +21,8 @@ export default function RulesPage() {
 
   return (
     <div className={styles.page}>
+
+      <PageTitle title="Règles et mentions légales - GW2 Nexus" />
 
       {/* ── Hero ── */}
       <RulesHero />
