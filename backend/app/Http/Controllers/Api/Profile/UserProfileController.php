@@ -26,8 +26,8 @@ class UserProfileController extends Controller
         $user = $request->user()->load('profilGw2');
 
         return response()->json([
-            'user'      => $this->formatUser($user),
-            'profil_gw2'=> $user->profilGw2,
+            'user'       => $this->formatUser($user),
+            'profil_gw2' => $user->profilGw2,
         ]);
     }
 
@@ -54,6 +54,7 @@ class UserProfileController extends Controller
      * 1. Valide le format (72 car.)
      * 2. Appelle /v2/tokeninfo pour vérifier la clé
      * 3. Récupère les données du compte et met à jour profils_gw2
+     * 4. Synchronise pseudo_gw2 sur la table utilisateurs
      */
     public function updateApiKey(UpdateApiKeyRequest $request): JsonResponse
     {
@@ -74,23 +75,25 @@ class UserProfileController extends Controller
             ], 422);
         }
 
-        // Sauvegarde la clé chiffrée
-        $user->update(['api_key' => $cle]);
-
-        // Récupère et met à jour les données du compte GW2
+        // Récupère les données du compte GW2
         $compte = $this->gw2->getCompte($cle);
 
-        $profilData = [
-            'valide'           => true,
-            'derniere_synchro' => now(),
-            'nom_compte'       => $compte['name']  ?? null,
-            'monde'            => $compte['world']  ?? null,
-        ];
-
+        // Met à jour profils_gw2
         $profil = ProfilGw2::updateOrCreate(
             ['user_id' => $user->id],
-            $profilData
+            [
+                'valide'           => true,
+                'derniere_synchro' => now(),
+                'nom_compte'       => $compte['name']  ?? null,
+                'monde'            => $compte['world'] ?? null,
+            ]
         );
+
+        // Sauvegarde la clé chiffrée + synchronise pseudo_gw2
+        $user->update([
+            'api_key'    => $cle,
+            'pseudo_gw2' => $compte['name'] ?? null,
+        ]);
 
         return response()->json([
             'message'    => 'Clé API GW2 validée et enregistrée.',
@@ -102,6 +105,7 @@ class UserProfileController extends Controller
 
     /**
      * Supprime la clé API GW2 de l'utilisateur
+     * Remet pseudo_gw2 à null et invalide le profil GW2
      */
     public function deleteApiKey(Request $request): JsonResponse
     {
@@ -111,9 +115,13 @@ class UserProfileController extends Controller
             $this->gw2->invaliderCache($user->api_key);
         }
 
-        $user->update(['api_key' => null]);
+        // Supprime la clé et efface le pseudo GW2
+        $user->update([
+            'api_key'    => null,
+            'pseudo_gw2' => null,
+        ]);
 
-        // Marque le profil comme invalide
+        // Marque le profil comme invalide et efface les données compte
         $user->profilGw2?->update([
             'valide'     => false,
             'nom_compte' => null,
