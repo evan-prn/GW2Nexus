@@ -1,0 +1,16 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="32" cy="32" r="31" fill="#0e0e12" stroke="#c9a84c" stroke-width="1.5"/>
+  <polygon
+    points="32,8 52,19 52,43 32,54 12,43 12,19"
+    fill="rgba(201,168,76,0.08)" stroke="#c9a84c" stroke-width="1"
+  />
+  <text
+    x="32" y="36"
+    text-anchor="middle"
+    dominant-baseline="central"
+    fill="#c9a84c"
+    font-size="26"
+    font-family="Cinzel, serif"
+    font-weight="700"
+  >N</text>
+</svg>
