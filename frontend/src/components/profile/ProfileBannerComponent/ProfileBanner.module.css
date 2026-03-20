@@ -1,0 +1,32 @@
+/* ═══════════════════════════════════════════════════════════════════
+   ProfileBanner.module.css
+   ═══════════════════════════════════════════════════════════════════ */
+
+.banner {
+  position: relative;
+  height: 220px;
+  background:
+    linear-gradient(135deg, rgba(201, 168, 76, 0.08) 0%, transparent 60%),
+    linear-gradient(to bottom, #0a0d14, #080808);
+  border-bottom: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+/* Grille décorative */
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(201, 168, 76, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 168, 76, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Hexagone SVG décoratif */
+.hex {
+  position: absolute;
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.06;
+}
