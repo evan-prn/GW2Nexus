@@ -65,14 +65,25 @@ export default function AdminLayout() {
             Utilisateurs
           </NavLink>
 
-          {/*
-           * Point d'extension — décommenter au fur et à mesure des sprints :
-           *
-           * <NavLink to="/admin/categories" className={...}>
-           *   <span className={styles.navIcon}>◧</span>
-           *   Catégories forum
-           * </NavLink>
-           */}
+          <NavLink
+            to="/admin/forum"
+            className={({ isActive }) =>
+              `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
+            }
+          >
+            <span className={styles.navIcon}>◧</span>
+            Forum
+          </NavLink>
+
+          <NavLink
+            to="/admin/categories"
+            className={({ isActive }) =>
+              `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
+            }
+          >
+            <span className={styles.navIcon}>◧</span>
+            Catégories forum
+          </NavLink>
 
         </nav>
 
@@ -101,6 +112,6 @@ export default function AdminLayout() {
         <Outlet />
       </main>
 
-    </div>
+    </div >
   );
 }
