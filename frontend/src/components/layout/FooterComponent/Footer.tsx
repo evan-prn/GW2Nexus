@@ -46,7 +46,7 @@ const COLUMNS: FooterColumn[] = [
     links: [
       { label: 'Connexion',   href: '/login'    },
       { label: 'Inscription', href: '/register' },
-      { label: 'Mon profil',  href: '/profil'   },
+      { label: 'Mon profil',  href: '/profile'   },
     ],
   },
   {

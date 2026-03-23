@@ -29,6 +29,18 @@ const STATS: Stat[] = [
   { value: '200+',    label: 'Guildes actives' },
 ];
 
+// ─── Constantes particules ──────────────────────────────────────────
+const PARTICLE_COUNT     = 500;   // nombre total de particules
+const PARTICLE_SPEED_MAX = 0.5;   // vitesse verticale maximale (montée)
+const PARTICLE_SPEED_MIN = 0.08;  // vitesse verticale minimale
+const PARTICLE_DRIFT     = 0.4;   // dérive horizontale max (±)
+const PARTICLE_SIZE_MAX  = 2.4;   // rayon max
+const PARTICLE_SIZE_MIN  = 0.3;   // rayon min
+const PARTICLE_ALPHA_MAX = 0.7;   // opacité max à la création
+const PARTICLE_ALPHA_MIN = 0.1;   // opacité min à la création
+const PARTICLE_FADE      = 0.0005; // vitesse de fondu par frame
+const GOLD_RATIO         = 0.55;  // proportion de particules dorées
+
 // ─── Composant ──────────────────────────────────────────────────────
 export default function Header({ isAuthenticated = false }: HeaderProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -48,39 +60,46 @@ export default function Header({ isAuthenticated = false }: HeaderProps) {
     resize();
     window.addEventListener('resize', resize);
 
-    const count = Math.min(70, Math.floor(canvas.offsetWidth / 18));
-    const particles: Particle[] = Array.from({ length: count }, () => ({
+    // Création des particules réparties sur toute la hauteur dès le départ
+    const particles: Particle[] = Array.from({ length: PARTICLE_COUNT }, () => ({
       x:     Math.random() * canvas.width,
-      y:     Math.random() * canvas.height,
-      vx:    (Math.random() - 0.5) * 0.25,
-      vy:    -(Math.random() * 0.35 + 0.1),
-      size:  Math.random() * 1.8 + 0.4,
-      alpha: Math.random() * 0.55 + 0.1,
-      gold:  Math.random() > 0.55,
+      y:     Math.random() * canvas.height,   // dispersion verticale initiale
+      vx:    (Math.random() - 0.5) * PARTICLE_DRIFT,
+      vy:    -(Math.random() * (PARTICLE_SPEED_MAX - PARTICLE_SPEED_MIN) + PARTICLE_SPEED_MIN),
+      size:  Math.random() * (PARTICLE_SIZE_MAX - PARTICLE_SIZE_MIN) + PARTICLE_SIZE_MIN,
+      alpha: Math.random() * (PARTICLE_ALPHA_MAX - PARTICLE_ALPHA_MIN) + PARTICLE_ALPHA_MIN,
+      gold:  Math.random() > (1 - GOLD_RATIO),
     }));
 
     let raf: number;
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => {
+
+      for (const p of particles) {
         p.x += p.vx;
         p.y += p.vy;
-        p.alpha -= 0.0006;
+        p.alpha -= PARTICLE_FADE;
 
+        // Réinitialisation quand la particule sort par le haut ou s'estompe
         if (p.y < -8 || p.alpha <= 0) {
           p.x     = Math.random() * canvas.width;
           p.y     = canvas.height + 8;
-          p.alpha = Math.random() * 0.5 + 0.2;
+          p.vx    = (Math.random() - 0.5) * PARTICLE_DRIFT;
+          p.vy    = -(Math.random() * (PARTICLE_SPEED_MAX - PARTICLE_SPEED_MIN) + PARTICLE_SPEED_MIN);
+          p.size  = Math.random() * (PARTICLE_SIZE_MAX - PARTICLE_SIZE_MIN) + PARTICLE_SIZE_MIN;
+          p.alpha = Math.random() * (PARTICLE_ALPHA_MAX - PARTICLE_ALPHA_MIN) + PARTICLE_ALPHA_MIN;
+          p.gold  = Math.random() > (1 - GOLD_RATIO);
         }
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = p.gold
           ? `rgba(201,168,76,${p.alpha.toFixed(2)})`
-          : `rgba(255,255,255,${(p.alpha * 0.4).toFixed(2)})`;
+          : `rgba(255,255,255,${(p.alpha * 0.45).toFixed(2)})`;
         ctx.fill();
-      });
+      }
+
       raf = requestAnimationFrame(draw);
     };
 
