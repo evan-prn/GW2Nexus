@@ -5,7 +5,7 @@ import styles from './Navbar.module.css';
 // ─── Types ──────────────────────────────────────────────────────────
 interface NavUser {
   nom: string;
-  avatar?: string;
+  avatar?: string | null;
   role?: string;
 }
 
@@ -69,9 +69,8 @@ export default function Navbar({ user = null, onLogout }: NavbarProps) {
 
   /* Items dropdown selon le rôle */
   const dropdownItems: DropdownItem[] = [
-    { label: 'Mon profil',  href: '/profil',         icon: '👤' },
-    { label: 'Clé API GW2', href: '/profil/api-key', icon: '🔑' },
-    { label: 'Mes builds',  href: '/profil/builds',  icon: '🛡' },
+    { label: 'Mon profil',  href: '/profile',         icon: '👤' },
+    { label: 'Mes builds',  href: '/profile/builds',  icon: '🛡' },
     ...(user?.role === 'admin'
       ? [{ label: 'Administration', href: '/admin', icon: '⚙' }]
       : []

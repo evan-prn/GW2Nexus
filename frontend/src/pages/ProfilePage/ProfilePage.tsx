@@ -15,7 +15,7 @@ import ProfileCharacters from '@/components/profile/ProfileCharactersComponent/P
 import ProfileApiKey     from '@/components/profile/ProfileApiKeyComponent/ProfileApiKey';
 import ProfileEditModal  from '@/components/profile/ProfileEditModalComponent/ProfileEditModal';
 
-import PageTitle from '@/hooks/usePageTitle';
+import usePageTitle      from '@/hooks/usePageTitle';
 
 import type { Gw2Account, Gw2Character } from '@/data/profile.data';
 
@@ -59,10 +59,10 @@ export default function ProfilePage() {
       )
     : [];
 
+    usePageTitle(compte ? `${compte.name} ` : 'Profil GW2');
+
   return (
     <div className={styles.page}>
-
-      <PageTitle title={`${gw2Data?.compte?.name || 'Profil'} - GW2 Nexus`} />
 
       <ProfileBanner />
 

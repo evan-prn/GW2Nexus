@@ -8,11 +8,11 @@
 
 import { useRef, useState, useEffect } from 'react';
 
-import ContactHero     from '@/components/contact/ContactHeroComponent/ContactHero';
-import ContactForm     from '@/components/contact/ContactFormComponent/ContactForm';
-import ContactChannels from '@/components/contact/ContactChannelsComponent/ContactChannels';
+import ContactHero        from '@/components/contact/ContactHeroComponent/ContactHero';
+import ContactForm        from '@/components/contact/ContactFormComponent/ContactForm';
+import ContactChannels    from '@/components/contact/ContactChannelsComponent/ContactChannels';
 import { useContactForm } from '@/hooks/contact/useContactForm';
-import PageTitle from '@/hooks/usePageTitle';
+import usePageTitle       from '@/hooks/usePageTitle';
 
 import styles from './ContactPage.module.css';
 
@@ -58,10 +58,11 @@ export default function ContactPage() {
   const formReveal  = useReveal(0);
   const chansReveal = useReveal(120);
 
+  usePageTitle('Contact');
+
   return (
     <div className={styles.page}>
 
-      <PageTitle title="Contactez-nous" />
 
       {/* Fond décoratif — purement visuel, ignoré par les lecteurs d'écran */}
       <div className={styles.bgOverlay} aria-hidden="true" />

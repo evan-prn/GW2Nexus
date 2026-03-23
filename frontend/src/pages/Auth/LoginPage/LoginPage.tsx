@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { ChangeEvent, FormEvent } from 'react';
 
-import AuthLayout from '@/components/auth/AuthLayoutComponent/AuthLayout';
-import FormInput  from '@/components/auth/FormInputComponent/FormInput';
-import useAuth    from '@/hooks/auth/useAuth';
-import PageTitle  from '@/hooks/usePageTitle';
+import AuthLayout   from '@/components/auth/AuthLayoutComponent/AuthLayout';
+import FormInput    from '@/components/auth/FormInputComponent/FormInput';
+import useAuth      from '@/hooks/auth/useAuth';
+import usePageTitle from '@/hooks/usePageTitle';
+
 import type { FieldErrors } from '@/types/auth';
 
 import styles from './LoginPage.module.css';
@@ -47,10 +48,10 @@ const LoginPage = () => {
     }
   };
 
+  usePageTitle('Connexion');
+
   return (
     <AuthLayout>
-
-      <PageTitle title="Connexion" />
 
       {/* ── En-tête ── */}
       <div className={styles.header}>

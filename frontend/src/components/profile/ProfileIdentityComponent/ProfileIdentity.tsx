@@ -3,7 +3,6 @@
 // ═══════════════════════════════════════════════════════════════════
 
 import useAuthStore from '@/store/authStore';
-import useAuth      from '@/hooks/auth/useAuth';
 import type { Gw2Account } from '@/data/profile.data';
 import styles from './ProfileIdentity.module.css';
 
@@ -34,7 +33,6 @@ const GW2_WORLDS: Record<number, string> = {
 
 export default function ProfileIdentity({ gw2Data, onEditProfile }: ProfileIdentityProps) {
   const { user }              = useAuthStore();
-  const { logout, isLoading } = useAuth();
 
   const nomMonde = gw2Data?.world
     ? (GW2_WORLDS[gw2Data.world] ?? `Monde #${gw2Data.world}`)
@@ -78,13 +76,6 @@ export default function ProfileIdentity({ gw2Data, onEditProfile }: ProfileIdent
       <div className={styles.actions}>
         <button className={styles.editBtn} onClick={onEditProfile}>
           ✏️ Modifier le profil
-        </button>
-        <button
-          className={styles.logoutBtn}
-          onClick={logout}
-          disabled={isLoading}
-        >
-          {isLoading ? 'Déconnexion…' : '🚪 Se déconnecter'}
         </button>
       </div>
 

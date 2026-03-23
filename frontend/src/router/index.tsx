@@ -60,9 +60,9 @@ const router = createBrowserRouter([
     children: [
 
       // ── Route publique ────────────────────────────────────────────
-      { path: '/', element: <S><HomePage /></S> },
-      { path: '/about', element: <S><AboutPage /></S> },
-      { path: '/rules', element: <S><RulesPage /></S> },
+      { path: '/', element: <S><HomePage /></S> },              // Page d'accueil
+      { path: '/about', element: <S><AboutPage /></S> },        // Page "À propos"
+      { path: '/rules', element: <S><RulesPage /></S> },        // Page de règles et conditions
 
 
       // ── Routes Guest (visiteur non connecté seulement) ────────────
@@ -82,11 +82,11 @@ const router = createBrowserRouter([
         children: [
 
           // Contact
-          { path: '/contact', element: <S><ContactPage /></S> },
+          { path: '/contact', element: <S><ContactPage /></S> },                    // Page de contact (accessible uniquement aux utilisateurs connectés)
 
           // Sprint 2 — Dashboard & Profil
-          { path: '/profil',            element: <S><ProfilePage /></S> },
-          // { path: '/profil/api-key',    element: <S><ApiKeyPage /></S> },
+          { path: '/profile',            element: <S><ProfilePage /></S> },         // Vue d'ensemble du profil
+          // { path: '/profile/api-key',    element: <S><ApiKeyPage /></S> },
 
           // Sprint 3 — Forum
           // { path: '/forum',                     element: <S><ForumPage /></S> },

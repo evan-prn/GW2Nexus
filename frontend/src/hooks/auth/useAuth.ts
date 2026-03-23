@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import useAuthStore from '../../store/authStore';
-import authApi from '../../api/auth';
+import authApi, { LoginPayload, RegisterPayload } from '../../api/auth';
 
 /**
  * Hook d'authentification — encapsule toute la logique auth.
@@ -17,18 +18,19 @@ const useAuth = () => {
 
   // ─── Inscription ────────────────────────────────────────────────────
   const register = useCallback(
-    async (formData) => {
+    async (formData: RegisterPayload) => {
       setLoading(true);
       clearError();
       try {
         const response = await authApi.register(formData);
         setUser(response.data.user);
-        navigate('/dashboard');
+        navigate('/profile');
         return { success: true };
       } catch (err) {
         const message = extractErrorMessage(err);
+        const errors = axios.isAxiosError(err) ? err.response?.data?.errors : undefined;
         setError(message);
-        return { success: false, error: message, errors: err.response?.data?.errors };
+        return { success: false, error: message, errors };
       } finally {
         setLoading(false);
       }
@@ -38,18 +40,19 @@ const useAuth = () => {
 
   // ─── Connexion ──────────────────────────────────────────────────────
   const login = useCallback(
-    async (formData) => {
+    async (formData: LoginPayload) => {
       setLoading(true);
       clearError();
       try {
         const response = await authApi.login(formData);
         setUser(response.data.user);
-        navigate('/dashboard');
+        navigate('/profile');
         return { success: true };
       } catch (err) {
         const message = extractErrorMessage(err);
+        const errors = axios.isAxiosError(err) ? err.response?.data?.errors : undefined;
         setError(message);
-        return { success: false, error: message, errors: err.response?.data?.errors };
+        return { success: false, error: message, errors };
       } finally {
         setLoading(false);
       }
@@ -98,12 +101,14 @@ const useAuth = () => {
 };
 
 // ─── Extraction du message d'erreur Laravel ──────────────────────────
-const extractErrorMessage = (err) => {
-  if (err.response?.data?.message) return err.response.data.message;
-  if (err.response?.status === 422) return 'Veuillez corriger les erreurs du formulaire.';
-  if (err.response?.status === 429) return 'Trop de tentatives. Réessayez dans quelques minutes.';
-  if (err.response?.status === 403) return 'Accès refusé.';
-  if (!err.response)                return 'Erreur de connexion au serveur.';
+const extractErrorMessage = (err: unknown): string => {
+  if (axios.isAxiosError(err)) {
+    if (err.response?.data?.message) return err.response.data.message;
+    if (err.response?.status === 422) return 'Veuillez corriger les erreurs du formulaire.';
+    if (err.response?.status === 429) return 'Trop de tentatives. Réessayez dans quelques minutes.';
+    if (err.response?.status === 403) return 'Accès refusé.';
+    if (!err.response)                return 'Erreur de connexion au serveur.';
+  }
   return 'Une erreur inattendue est survenue.';
 };
 

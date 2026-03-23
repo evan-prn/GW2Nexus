@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import AuthLayout from '@/components/auth/AuthLayoutComponent/AuthLayout';
-import FormInput from '@/components/auth/FormInputComponent/FormInput';
-import httpClient from '@/api/httpClient';
-import PageTitle  from '@/hooks/usePageTitle';
+import AuthLayout     from '@/components/auth/AuthLayoutComponent/AuthLayout';    // Layout simple pour les pages de login/register/forgot-password
+import FormInput      from '@/components/auth/FormInputComponent/FormInput';      // Input stylisé avec label et gestion d'erreur
+import httpClient     from '@/api/httpClient';                                    // Wrapper autour d'axios avec baseURL et gestion des tokens                      
+import usePageTitle   from '@/hooks/usePageTitle';                                // Hook pour mettre à jour le titre de la page (document.title) 
+                                                                                  // de manière déclarative     
 
-import styles from './ForgotPasswordPage.module.css';
+import styles from './ForgotPasswordPage.module.css';                             // CSS module local à cette page, 
+                                                                                  // pour éviter les conflits de classes et faciliter la maintenance
+
 
 // ─── Types ──────────────────────────────────────────────────────────
 type Status = 'success' | 'error' | null;
@@ -17,11 +20,11 @@ type Status = 'success' | 'error' | null;
  * Retour attendu   : { message: string }
  */
 const ForgotPasswordPage = () => {
-  const [email, setEmail]         = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [status, setStatus]       = useState<Status>(null);
-  const [message, setMessage]     = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail]               = useState('');
+  const [emailError, setEmailError]     = useState('');
+  const [status, setStatus]             = useState<Status>(null);
+  const [message, setMessage]           = useState('');
+  const [isLoading, setIsLoading]       = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,8 +42,8 @@ const ForgotPasswordPage = () => {
       setStatus('success');
       setMessage(res.data.message || 'Un lien de réinitialisation a été envoyé à votre adresse e-mail.');
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { errors?: { email?: string | string[] }; message?: string } } };
-      const errors = error.response?.data?.errors;
+      const error   = err as { response?: { data?: { errors?: { email?: string | string[] }; message?: string } } };
+      const errors  = error.response?.data?.errors;
 
       if (errors?.email) {
         setEmailError(Array.isArray(errors.email) ? errors.email[0] : errors.email);
@@ -53,10 +56,10 @@ const ForgotPasswordPage = () => {
     }
   };
 
+  usePageTitle('Mot de passe oublié');
+
   return (
     <AuthLayout>
-
-      <PageTitle title="Mot de passe oublié" />
 
       {/* En-tête */}
       <div className={styles.header}>

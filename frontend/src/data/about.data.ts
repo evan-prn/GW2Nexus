@@ -112,6 +112,6 @@ export const TEAM: TeamMember[] = [
     role: 'Backend & Base de données',
     focus: ['Laravel', 'MySQL', 'API GW2', 'Auth'],
     avatar: 'D2',
-    github: '',
+    github: 'Espoiiir',
   },
 ];

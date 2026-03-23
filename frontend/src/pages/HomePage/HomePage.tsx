@@ -1,7 +1,6 @@
 import Header       from '@/components/layout/HeaderComponent/Header';
 import useAuthStore from '@/store/authStore';
-
-import PageTitle from '@/hooks/usePageTitle';
+import usePageTitle from '@/hooks/usePageTitle';
 
 /**
  * HomePage — page d'accueil GW2Nexus
@@ -10,10 +9,10 @@ import PageTitle from '@/hooks/usePageTitle';
 const HomePage = () => {
   const { user } = useAuthStore();
 
+  usePageTitle('Accueil');
+
   return (
     <>
-
-      <PageTitle title="GW2 Nexus - Votre compagnon ultime pour Guild Wars 2" />
 
       {/* Hero pleine page */}
       <Header isAuthenticated={!!user} />

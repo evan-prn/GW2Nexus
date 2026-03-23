@@ -4,10 +4,11 @@ import type { ChangeEvent, FormEvent } from 'react';
 import type { AxiosError } from 'axios';
 import type { FieldErrors, Status, PasswordStrength } from '@/types/auth';
 
-import AuthLayout from '@/components/auth/AuthLayoutComponent/AuthLayout';
-import FormInput  from '@/components/auth/FormInputComponent/FormInput';
-import httpClient from '@/api/httpClient';
-import PageTitle  from '@/hooks/usePageTitle';
+import AuthLayout   from '@/components/auth/AuthLayoutComponent/AuthLayout';
+import FormInput    from '@/components/auth/FormInputComponent/FormInput';
+import httpClient   from '@/api/httpClient';
+import usePageTitle from '@/hooks/usePageTitle';
+
 import styles from './ResetPasswordPage.module.css';
 
 // ─── Types ──────────────────────────────────────────────────────────
@@ -110,10 +111,10 @@ const ResetPasswordPage = () => {
 
   const passwordStrength = getPasswordStrength(form.password);
 
+  usePageTitle('Nouveau mot de passe');
+
   return (
     <AuthLayout>
-
-      <PageTitle title="Nouveau mot de passe" />
 
       {/* ── En-tête ── */}
       <div className={styles.header}>

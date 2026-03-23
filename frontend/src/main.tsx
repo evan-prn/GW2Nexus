@@ -1,8 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import { HelmetProvider } from 'react-helmet-async'
-
 import App from './App';
 
 // Import du thème global — charge les CSS custom properties dans :root
@@ -16,8 +14,6 @@ if (!root) {
 
 createRoot(root).render(
   <StrictMode>
-    <HelmetProvider>
-      <App />
-    </HelmetProvider>
+    <App />
   </StrictMode>
 );
