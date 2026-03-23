@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import type { ChangeEvent, FormEvent } from 'react';
 import type { AxiosError } from 'axios';
-import type { FieldErrors, Status, PasswordStrength } from '@/types/auth';
+import type { FieldErrors, Status, PasswordStrength } from '@/types/auth.types';
 
 import AuthLayout   from '@/components/auth/AuthLayoutComponent/AuthLayout';
 import FormInput    from '@/components/auth/FormInputComponent/FormInput';

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import useAuthStore from '../../store/authStore';
-import authApi, { LoginPayload, RegisterPayload } from '../../api/auth';
+import authApi, { LoginPayload, RegisterPayload } from '../../api/auth.api';
 
 /**
  * Hook d'authentification — encapsule toute la logique auth.

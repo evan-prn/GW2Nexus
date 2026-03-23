@@ -23,7 +23,8 @@ class LoginController extends Controller
      *   1. Vérification du rate limiter (max 5 tentatives/min)
      *   2. Tentative d'authentification via Auth::attempt()
      *   3. En cas d'échec : incrémentation du compteur + réponse 401
-     *   4. En cas de succès : remise à zéro du compteur + émission du token
+     *   4. Vérification du ban actif — refus avec 403 si banni
+     *   5. En cas de succès : remise à zéro du compteur + émission du token
      */
     public function store(LoginRequest $request): JsonResponse
     {
@@ -47,11 +48,32 @@ class LoginController extends Controller
             ], 401);
         }
 
-        // Étape 4 — Succès : remise à zéro + émission du token
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        // Étape 4 — Vérification du ban actif
+        // On vérifie AVANT d'émettre le token pour ne jamais créer de session
+        // pour un compte banni. On ne remet pas à zéro le rate limiter ici —
+        // une tentative de connexion depuis un compte banni reste comptabilisée.
+        $activeBan = $user->bans()->active()->latest()->first();
+
+        if ($activeBan !== null) {
+            // On déconnecte la session Laravel créée par Auth::attempt()
+            Auth::logout();
+
+            return response()->json([
+                'message' => 'Votre compte a été suspendu.',
+                'ban'     => [
+                    'type'       => $activeBan->type,
+                    'reason'     => $activeBan->reason,
+                    'expires_at' => $activeBan->expires_at?->toIso8601String(),
+                ],
+            ], 403);
+        }
+
+        // Étape 5 — Succès : remise à zéro + émission du token
         $request->clearRateLimiter();
 
-        /** @var \App\Models\User $user */
-        $user  = Auth::user();
         $token = $user->createToken('web')->plainTextToken;
 
         return response()->json([

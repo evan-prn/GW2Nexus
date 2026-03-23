@@ -1,5 +1,5 @@
 import httpClient from './httpClient';
-import type { UpdateProfilePayload, UpdateApiKeyPayload } from '../types/profile';
+import type { UpdateProfilePayload, UpdateApiKeyPayload } from '../types/profile.types';
 
 // ─── Service profil — endpoints /api/v1/profile ───────────────────
 

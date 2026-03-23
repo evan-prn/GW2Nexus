@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
-import profileApi from '../../api/profile';
+import profileApi from '../../api/profile.api';
 import useProfileStore from '../../store/profileStore';
 import useAuthStore from '../../store/authStore';
-import type { UpdateProfilePayload } from '../../types/profile';
+import type { UpdateProfilePayload } from '../../types/profile.types';
 
 // ─── Hook profil utilisateur ──────────────────────────────────────
 // Responsabilité : charger et mettre à jour le profil de base.

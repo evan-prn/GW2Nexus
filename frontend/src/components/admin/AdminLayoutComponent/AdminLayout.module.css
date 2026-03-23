@@ -1,0 +1,182 @@
+/* src/components/admin/AdminLayoutComponent/AdminLayout.module.css */
+
+/* ── Layout global ──────────────────────────────────────────────── */
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-deep, #0e0e12);
+}
+
+/* ── Sidebar ────────────────────────────────────────────────────── */
+
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: #12121a;
+  border-right: 1px solid rgba(201, 168, 76, 0.12);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 1.25rem 1rem;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+}
+
+.sidebarLogo {
+  font-size: 1.4rem;
+  color: var(--gold-primary, #c9a84c);
+  line-height: 1;
+}
+
+.sidebarTitle {
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gold-primary, #c9a84c);
+  margin: 0;
+  letter-spacing: 0.06em;
+}
+
+.sidebarSub {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.35);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* ── Navigation ─────────────────────────────────────────────────── */
+
+.nav {
+  flex: 1;
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.navSection {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.3);
+  margin: 0.75rem 0 0.35rem 0.5rem;
+  font-family: var(--font-display, 'Cinzel', serif);
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.navLink:hover {
+  background: rgba(201, 168, 76, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.navLinkActive {
+  background: rgba(201, 168, 76, 0.1);
+  color: var(--gold-primary, #c9a84c) !important;
+}
+
+.navIcon {
+  font-size: 0.9rem;
+  width: 1rem;
+  text-align: center;
+  opacity: 0.7;
+}
+
+/* ── Footer sidebar ─────────────────────────────────────────────── */
+
+.sidebarFooter {
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.adminInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.adminAvatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(201, 168, 76, 0.15);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: 0.7rem;
+  color: var(--gold-primary, #c9a84c);
+  flex-shrink: 0;
+}
+
+/* Remplace .avatar ou ajoute à côté */
+.avatarImg {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(201, 168, 76, 0.25);
+  flex-shrink: 0;
+}
+
+.adminInfoText {
+  min-width: 0;
+}
+
+.adminName {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.adminRole {
+  font-size: 0.62rem;
+  color: var(--gold-primary, #c9a84c);
+  margin: 0;
+  opacity: 0.7;
+}
+
+/* ── Contenu principal ──────────────────────────────────────────── */
+
+.main {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+.backLink {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 1rem;
+  text-decoration: none;
+  padding: 0.25rem;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.backLink:hover {
+  color: var(--gold-primary, #c9a84c);
+}

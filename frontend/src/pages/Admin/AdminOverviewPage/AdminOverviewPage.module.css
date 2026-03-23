@@ -1,0 +1,112 @@
+/* src/pages/Admin/AdminOverviewPage/AdminOverviewPage.module.css */
+
+.page {
+  padding: 2rem 2.5rem;
+  max-width: 900px;
+}
+
+/* ── En-tête ────────────────────────────────────────────────────── */
+
+.pageHeader {
+  margin-bottom: 2rem;
+}
+
+.pageTitle {
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: 1.6rem;
+  color: #fff;
+  margin: 0 0 0.25rem;
+  letter-spacing: 0.03em;
+}
+
+.pageSubtitle {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0;
+}
+
+/* ── Grille de stats ────────────────────────────────────────────── */
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-left-width: 3px;
+  transition: border-color 0.15s;
+}
+
+.statCard:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ── Couleurs de la bordure gauche ──────────────────────────────── */
+
+.color_gold  { border-left-color: rgba(201, 168, 76, 0.5); }
+.color_green { border-left-color: rgba(76, 175, 80, 0.5);  }
+.color_red   { border-left-color: rgba(224, 90, 90, 0.5);  }
+.color_blue  { border-left-color: rgba(100, 160, 220, 0.5);}
+.color_muted { border-left-color: rgba(255, 255, 255, 0.15);}
+
+/* ── Couleurs des icônes ────────────────────────────────────────── */
+
+.color_gold  .statIcon { color: var(--gold-primary, #c9a84c); }
+.color_green .statIcon { color: #4caf50; }
+.color_red   .statIcon { color: #e05a5a; }
+.color_blue  .statIcon { color: #64a0dc; }
+.color_muted .statIcon { color: rgba(255, 255, 255, 0.35); }
+
+.statIcon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.statValue {
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0.2rem 0 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── États ──────────────────────────────────────────────────────── */
+
+.stateMsg {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.85rem;
+  padding: 2rem 0;
+}
+
+/* ── Info box ───────────────────────────────────────────────────── */
+
+.infoBox {
+  background: rgba(201, 168, 76, 0.04);
+  border: 1px solid rgba(201, 168, 76, 0.1);
+  border-radius: 6px;
+  padding: 0.9rem 1.25rem;
+}
+
+.infoText {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.35);
+  margin: 0;
+}

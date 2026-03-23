@@ -7,7 +7,7 @@ import FormInput    from '@/components/auth/FormInputComponent/FormInput';
 import useAuth      from '@/hooks/auth/useAuth';
 import usePageTitle from '@/hooks/usePageTitle';
 
-import type { FieldErrors } from '@/types/auth';
+import type { FieldErrors } from '@/types/auth.types';
 
 import styles from './LoginPage.module.css';
 

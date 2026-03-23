@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { ProfileUser, ProfilGw2, Gw2DataResponse } from '../types/profile';
+import type { ProfileUser, ProfilGw2, Gw2DataResponse } from '../types/profile.types';
 
 // ─── Store Zustand — état profil utilisateur ──────────────────────
 // Ne persiste pas — les données profil sont rechargées à chaque visite.

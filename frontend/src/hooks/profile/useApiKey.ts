@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
-import profileApi       from '../../api/profile';
+import profileApi       from '../../api/profile.api';
 import useProfileStore  from '../../store/profileStore';
-import type { Gw2DataResponse } from '../../types/profile';
+import type { Gw2DataResponse } from '../../types/profile.types';
 
 // ─── Types locaux ────────────────────────────────────────────────
 type SubmitStatus = 'idle' | 'loading' | 'success' | 'error';

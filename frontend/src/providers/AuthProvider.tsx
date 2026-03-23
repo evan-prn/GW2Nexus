@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import authApi from '../api/auth';
+import authApi from '../api/auth.api';
 import useAuthStore from '../store/authStore';
 
 /**

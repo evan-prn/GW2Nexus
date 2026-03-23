@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import authApi from '../api/auth';
+import authApi from '../api/auth.api';
 
 export interface User {
   id:          number;
