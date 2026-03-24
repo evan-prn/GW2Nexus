@@ -16,8 +16,19 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
 
-        // Sanctum SPA — gestion des cookies de session pour l'API
-        $middleware->statefulApi();
+        // Mode Bearer Token — les routes API sont stateless, pas de session.
+        // statefulApi() est retiré : il activait le mode SPA cookie de Sanctum
+        // qui exige un cookie CSRF sur chaque requête mutante (POST/PUT/DELETE).
+        // En Bearer Token, Laravel authentifie via le header Authorization uniquement.
+
+        // Exclusion du middleware CSRF pour toutes les routes API.
+        // En mode Bearer Token, la protection CSRF est inutile — elle est
+        // conçue pour les sessions cookie. Les tokens Bearer sont envoyés
+        // dans le header Authorization, pas dans un cookie accessible au JS,
+        // ce qui les rend naturellement immunisés contre les attaques CSRF.
+        $middleware->validateCsrfTokens(except: [
+            'api/*',
+        ]);
 
         // Alias middleware — utilisés par leur nom dans les routes
         $middleware->alias([

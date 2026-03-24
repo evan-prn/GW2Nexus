@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Route;
 |   /api/health              — healthcheck Docker (public)
 |   /api/v1/auth/*           — authentification (public)
 |   /api/v1/contact          — formulaire de contact (public)
+|   /api/v1/events/*         — événements GW2 (public)
 |   /api/v1/auth/logout*     — déconnexion (protégé)
 |   /api/v1/auth/me          — utilisateur courant (protégé)
 |   /api/v1/profile/*        — profil utilisateur (protégé)
@@ -47,7 +48,7 @@ Route::prefix('v1')->group(function (): void {
     |--------------------------------------------------------------------------
     |
     | Aucun token requis. Le rate limiting est géré par Laravel Throttle.
-    | Le login est limité dans LoginController via RateLimiter.
+    | Le login est limité dans LoginRequest via RateLimiter (5 tentatives/min).
     |
     */
     Route::prefix('auth')->name('auth.')->group(function (): void {
@@ -56,7 +57,7 @@ Route::prefix('v1')->group(function (): void {
         Route::post('register', [RegisterController::class, 'store'])
             ->name('register');
 
-        // POST /api/v1/auth/login — Connexion et émission d'un token Sanctum
+        // POST /api/v1/auth/login — Connexion et émission d'un token Sanctum Bearer
         Route::post('login', [LoginController::class, 'store'])
             ->name('login');
 
@@ -67,6 +68,7 @@ Route::prefix('v1')->group(function (): void {
             ->middleware('throttle:3,1');
 
         // POST /api/v1/auth/reset-password — Réinitialisation via token email
+        // Révoque tous les tokens Bearer actifs après le reset (sécurité)
         Route::post('reset-password', [ResetPasswordController::class, 'store'])
             ->name('password.reset');
     });
@@ -83,44 +85,52 @@ Route::prefix('v1')->group(function (): void {
         ->name('contact.send')
         ->middleware('throttle:3,10');
 
-    // Point d'extension — futures routes publiques
-    Route::prefix('events')->name('events.')->group(function () {
+    /*
+    |--------------------------------------------------------------------------
+    | Routes publiques — Événements GW2
+    |--------------------------------------------------------------------------
+    |
+    | Correction Sprint 2 : le double prefix('events') imbriqué a été supprimé.
+    | L'URL correcte est désormais /api/v1/events/schedule.
+    |
+    */
+    Route::prefix('events')->name('events.')->group(function (): void {
 
-        // GET /api/v1/events/schedule
-        // Retourne les horaires des événements GW2.
-        // Public — pas d'authentification requise.
-        Route::prefix('events')->name('events.')->group(function (): void {
-            Route::get('schedule', [EventController::class, 'schedule'])
-                ->name('schedule')
-                ->middleware('throttle:60,1');
-        });
-
+        // GET /api/v1/events/schedule — Horaires des événements GW2
+        // Sprint 2 : retourne les données statiques
+        // Sprint 4 : sera remplacé par Gw2ApiService + cache Redis
+        Route::get('schedule', [EventController::class, 'schedule'])
+            ->name('schedule')
+            ->middleware('throttle:60,1');
     });
 
     /*
     |--------------------------------------------------------------------------
-    | Routes protégées — Token Sanctum obligatoire
+    | Routes protégées — Token Sanctum Bearer obligatoire
     |--------------------------------------------------------------------------
     |
     | Toutes les routes ci-dessous exigent un header :
     |   Authorization: Bearer <token>
     |
-    | Le middleware BanCheck est ajouté globalement ici pour bloquer
-    | tout accès aux utilisateurs actuellement bannis.
+    | Middleware appliqués sur tout le groupe :
+    |   - auth:sanctum  : vérifie la présence et la validité du token Bearer
+    |   - ban.check     : bloque les utilisateurs actuellement bannis (403)
     |
     */
     Route::middleware(['auth:sanctum', 'ban.check'])->group(function (): void {
 
-        // POST /api/v1/auth/logout — Révocation du token courant
+        // POST /api/v1/auth/logout — Révocation du token Bearer courant
+        // Déconnecte uniquement l'appareil ayant émis la requête
         Route::post('auth/logout', [LogoutController::class, 'destroy'])
             ->name('auth.logout');
 
-        // POST /api/v1/auth/logout-all — Révocation de tous les tokens (tous les appareils)
+        // POST /api/v1/auth/logout-all — Révocation de tous les tokens Bearer
+        // Déconnecte tous les appareils simultanément ("déconnexion globale")
         Route::post('auth/logout-all', [LogoutController::class, 'destroyAll'])
             ->name('auth.logout-all');
 
         // GET /api/v1/auth/me — Retourne l'utilisateur authentifié courant
-        // Utilisé par le frontend au rechargement de page pour restaurer la session
+        // Appelé par le frontend au rechargement de page pour restaurer l'état auth
         Route::get('auth/me', MeController::class)
             ->name('auth.me');
 
@@ -131,7 +141,7 @@ Route::prefix('v1')->group(function (): void {
         */
         Route::prefix('profile')->name('profile.')->group(function (): void {
 
-            // GET /api/v1/profile — Données complètes du profil (user + profil GW2)
+            // GET /api/v1/profile — Profil complet (données user + profil GW2)
             Route::get('/', [UserProfileController::class, 'show'])
                 ->name('show');
 
@@ -140,20 +150,22 @@ Route::prefix('v1')->group(function (): void {
                 ->name('update');
 
             // POST /api/v1/profile/avatar — Upload et remplacement de l'avatar
+            // Persiste l'URL sur le modèle User après upload
             Route::post('avatar', [AvatarController::class, 'upload'])
                 ->name('avatar.upload');
 
             // POST /api/v1/profile/api-key — Validation et enregistrement de la clé API GW2
-            // Appelle /v2/tokeninfo pour vérifier la clé avant de la chiffrer en base
+            // Appelle /v2/tokeninfo avant de chiffrer la clé en base (AES-256)
             Route::post('api-key', [UserProfileController::class, 'updateApiKey'])
                 ->name('api-key.update');
 
             // DELETE /api/v1/profile/api-key — Suppression de la clé API GW2
+            // Invalide le cache GW2 et remet pseudo_gw2 à null
             Route::delete('api-key', [UserProfileController::class, 'deleteApiKey'])
                 ->name('api-key.delete');
 
             // GET /api/v1/profile/gw2-data — Données GW2 fraîches (compte + personnages)
-            // Appelle l'API GW2 ou retourne les données cachées (Redis/cache Laravel)
+            // Retourne les données depuis le cache Laravel ou appelle l'API GW2
             Route::get('gw2-data', [UserProfileController::class, 'gw2Data'])
                 ->name('gw2-data');
         });
@@ -166,10 +178,10 @@ Route::prefix('v1')->group(function (): void {
         | Groupe supplémentaire avec le middleware 'admin' qui vérifie
         | que l'utilisateur possède le rôle 'admin'.
         |
-        | Note : 'auth:sanctum' et 'ban.check' sont déjà appliqués par le
-        | groupe parent — on n'a pas besoin de les répéter ici.
+        | Les middlewares 'auth:sanctum' et 'ban.check' sont déjà appliqués
+        | par le groupe parent — pas besoin de les répéter ici.
         |
-        | Enregistrement des alias dans bootstrap/app.php :
+        | Alias enregistrés dans bootstrap/app.php :
         |   'admin'     => AdminMiddleware::class
         |   'ban.check' => BanCheck::class
         |
@@ -180,6 +192,7 @@ Route::prefix('v1')->group(function (): void {
             ->group(function (): void {
 
                 // GET /api/v1/admin/stats — Statistiques globales de la plateforme
+                // Accessible aux admins et modérateurs (voir AdminPolicy::viewStats)
                 Route::get('stats', [AdminUserController::class, 'stats'])
                     ->name('stats');
 
@@ -190,19 +203,20 @@ Route::prefix('v1')->group(function (): void {
                 */
                 Route::prefix('users')->name('users.')->group(function (): void {
 
-                    // GET    /api/v1/admin/users           — Liste paginée + filtres (search, role, status)
+                    // GET /api/v1/admin/users — Liste paginée + filtres (search, role, status)
                     Route::get('/', [AdminUserController::class, 'index'])
                         ->name('index');
 
-                    // GET    /api/v1/admin/users/{user}    — Détail + historique de bans
+                    // GET /api/v1/admin/users/{user} — Détail + historique de bans
                     Route::get('{user}', [AdminUserController::class, 'show'])
                         ->name('show');
 
-                    // POST   /api/v1/admin/users/{user}/ban   — Appliquer un ban (temporaire ou permanent)
+                    // POST /api/v1/admin/users/{user}/ban — Appliquer un ban
+                    // Révoque immédiatement tous les tokens Bearer de la cible
                     Route::post('{user}/ban', [AdminUserController::class, 'ban'])
                         ->name('ban');
 
-                    // DELETE /api/v1/admin/users/{user}/ban   — Lever le ban actif
+                    // DELETE /api/v1/admin/users/{user}/ban — Lever le ban actif
                     Route::delete('{user}/ban', [AdminUserController::class, 'unban'])
                         ->name('unban');
                 });

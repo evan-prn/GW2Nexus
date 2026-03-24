@@ -1,17 +1,20 @@
+// src/pages/auth/ResetPasswordPage/ResetPasswordPage.tsx
+
 import { useState } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import type { ChangeEvent, FormEvent } from 'react';
-import type { AxiosError } from 'axios';
-import type { FieldErrors, Status, PasswordStrength } from '@/types/auth.types';
+import axios from 'axios';
 
 import AuthLayout   from '@/components/auth/AuthLayoutComponent/AuthLayout';
 import FormInput    from '@/components/auth/FormInputComponent/FormInput';
-import httpClient   from '@/api/httpClient';
+import authApi      from '@/api/auth.api';
 import usePageTitle from '@/hooks/usePageTitle';
+
+import type { FieldErrors, Status, PasswordStrength } from '@/types/auth.types';
 
 import styles from './ResetPasswordPage.module.css';
 
-// ─── Types ──────────────────────────────────────────────────────────
+// ─── Types locaux ────────────────────────────────────────────────────────────
 interface ResetPasswordForm {
   password:              string;
   password_confirmation: string;
@@ -19,13 +22,19 @@ interface ResetPasswordForm {
 
 /**
  * ResetPasswordPage — saisie du nouveau mot de passe.
- * Laravel envoie un lien : /reset-password?token=xxx&email=yyy@zzz.com
- * Endpoint : POST /api/v1/auth/reset-password
+ *
+ * Laravel envoie un lien de la forme :
+ *   /reset-password?token=xxx&email=yyy@zzz.com
+ *
+ * Passe par authApi.resetPassword() — jamais de httpClient direct.
+ * Après reset réussi, le backend révoque tous les tokens Bearer actifs.
+ * Redirection automatique vers /login après 2 secondes.
  */
 const ResetPasswordPage = () => {
   const [searchParams] = useSearchParams();
   const navigate       = useNavigate();
 
+  // Paramètres extraits du lien email
   const token = searchParams.get('token') ?? '';
   const email = searchParams.get('email') ?? '';
 
@@ -38,7 +47,7 @@ const ResetPasswordPage = () => {
   const [message, setMessage]         = useState('');
   const [isLoading, setIsLoading]     = useState(false);
 
-  // ── Lien invalide — token ou email manquant ──
+  // ── Lien invalide — token ou email manquant dans l'URL ───────────────────
   if (!token || !email) {
     return (
       <AuthLayout>
@@ -58,6 +67,7 @@ const ResetPasswordPage = () => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+    // Efface l'erreur du champ modifié à la frappe
     if (fieldErrors[name]) setFieldErrors((prev) => ({ ...prev, [name]: null }));
   };
 
@@ -66,7 +76,7 @@ const ResetPasswordPage = () => {
     setFieldErrors({});
     setStatus(null);
 
-    // Validation côté client
+    // Validation côté client avant l'appel réseau
     if (form.password !== form.password_confirmation) {
       setFieldErrors({ password_confirmation: 'Les mots de passe ne correspondent pas.' });
       return;
@@ -74,7 +84,8 @@ const ResetPasswordPage = () => {
 
     setIsLoading(true);
     try {
-      const res = await httpClient.post('/api/v1/auth/reset-password', {
+      // Passe par authApi — URL centralisée dans ENDPOINTS
+      const res = await authApi.resetPassword({
         token,
         email,
         password:              form.password,
@@ -82,27 +93,29 @@ const ResetPasswordPage = () => {
       });
 
       setStatus('success');
-      setMessage(res.data.message || 'Mot de passe réinitialisé avec succès.');
+      setMessage(res.data.message ?? 'Mot de passe réinitialisé avec succès.');
 
       // Redirection vers /login après 2 secondes
       setTimeout(() => navigate('/login'), 2000);
 
     } catch (err) {
-      const axiosErr = err as AxiosError<{
-        errors?: Record<string, string | string[]>;
-        message?: string;
-      }>;
-      const errors = axiosErr.response?.data?.errors;
+      if (axios.isAxiosError(err)) {
+        const errors = err.response?.data?.errors;
 
-      if (errors) {
-        const mapped: FieldErrors = {};
-        Object.entries(errors).forEach(([key, msgs]) => {
-          mapped[key] = Array.isArray(msgs) ? msgs[0] : msgs;
-        });
-        setFieldErrors(mapped);
+        if (errors) {
+          // Erreurs de validation Laravel (token invalide, password trop court, etc.)
+          const mapped: FieldErrors = {};
+          Object.entries(errors).forEach(([key, msgs]) => {
+            mapped[key] = Array.isArray(msgs) ? msgs[0] : (msgs as string);
+          });
+          setFieldErrors(mapped);
+        } else {
+          setStatus('error');
+          setMessage(err.response?.data?.message ?? 'Ce lien est invalide ou a expiré.');
+        }
       } else {
         setStatus('error');
-        setMessage(axiosErr.response?.data?.message || 'Ce lien est invalide ou a expiré.');
+        setMessage('Erreur de connexion au serveur.');
       }
     } finally {
       setIsLoading(false);
@@ -140,7 +153,7 @@ const ResetPasswordPage = () => {
       {status !== 'success' && (
         <form onSubmit={handleSubmit} className={styles.form} noValidate>
 
-          {/* Email en lecture seule — confirmation visuelle du compte */}
+          {/* Email en lecture seule — confirmation visuelle du compte ciblé */}
           <div className={styles.emailReadonly}>
             <span className={styles.emailReadonlyLabel}>Compte</span>
             <span className={styles.emailReadonlyValue}>{email}</span>
@@ -199,7 +212,6 @@ const ResetPasswordPage = () => {
             icon={ShieldIcon}
           />
 
-          {/* ── Bouton submit ── */}
           <button
             type="submit"
             className={styles.submitBtn}
@@ -220,7 +232,6 @@ const ResetPasswordPage = () => {
         </form>
       )}
 
-      {/* ── Lien nouveau lien — visible tant que pas de succès ── */}
       {status !== 'success' && (
         <>
           <div className={styles.divider}>
@@ -236,10 +247,10 @@ const ResetPasswordPage = () => {
   );
 };
 
-// ─── Helpers ────────────────────────────────────────────────────────
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-// ─── Logique force mot de passe ──────────────────────────────────────
 const getPasswordStrength = (password: string): PasswordStrength => {
   if (!password) return { score: 0, level: 'none', label: '' };
   let score = 0;
@@ -252,7 +263,7 @@ const getPasswordStrength = (password: string): PasswordStrength => {
   return { score, level: levels[score], label: labels[score] };
 };
 
-// ─── Icons ──────────────────────────────────────────────────────────
+// ─── Icons ───────────────────────────────────────────────────────────────────
 const LockIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>

@@ -1,55 +1,68 @@
+// src/pages/auth/ForgotPasswordPage/ForgotPasswordPage.tsx
+
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import type { FormEvent } from 'react';
+import axios from 'axios';
 
-import AuthLayout     from '@/components/auth/AuthLayoutComponent/AuthLayout';    // Layout simple pour les pages de login/register/forgot-password
-import FormInput      from '@/components/auth/FormInputComponent/FormInput';      // Input stylisé avec label et gestion d'erreur
-import httpClient     from '@/api/httpClient';                                    // Wrapper autour d'axios avec baseURL et gestion des tokens                      
-import usePageTitle   from '@/hooks/usePageTitle';                                // Hook pour mettre à jour le titre de la page (document.title) 
-                                                                                  // de manière déclarative     
+import AuthLayout   from '@/components/auth/AuthLayoutComponent/AuthLayout';
+import FormInput    from '@/components/auth/FormInputComponent/FormInput';
+import authApi      from '@/api/auth.api';
+import usePageTitle from '@/hooks/usePageTitle';
 
-import styles from './ForgotPasswordPage.module.css';                             // CSS module local à cette page, 
-                                                                                  // pour éviter les conflits de classes et faciliter la maintenance
+import styles from './ForgotPasswordPage.module.css';
 
-
-// ─── Types ──────────────────────────────────────────────────────────
+// ─── Types locaux ────────────────────────────────────────────────────────────
 type Status = 'success' | 'error' | null;
 
 /**
- * ForgotPasswordPage — envoie un lien de réinitialisation par email.
- * Endpoint Laravel : POST /api/v1/auth/forgot-password
- * Retour attendu   : { message: string }
+ * ForgotPasswordPage — demande de réinitialisation de mot de passe.
+ *
+ * Passe par authApi.forgotPassword() — jamais de httpClient direct.
+ * Le backend retourne toujours 200 (protection anti-énumération d'emails).
  */
 const ForgotPasswordPage = () => {
-  const [email, setEmail]               = useState('');
-  const [emailError, setEmailError]     = useState('');
-  const [status, setStatus]             = useState<Status>(null);
-  const [message, setMessage]           = useState('');
-  const [isLoading, setIsLoading]       = useState(false);
+  const [email, setEmail]         = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [status, setStatus]       = useState<Status>(null);
+  const [message, setMessage]     = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setEmailError('');
     setStatus(null);
 
-    if (!email) {
-      setEmailError('L\'adresse e-mail est requise.');
+    // Validation minimale côté client avant l'appel réseau
+    if (!email.trim()) {
+      setEmailError("L'adresse e-mail est requise.");
       return;
     }
 
     setIsLoading(true);
     try {
-      const res = await httpClient.post('/api/v1/auth/forgot-password', { email });
+      // Passe par authApi — URL centralisée dans ENDPOINTS, pas en dur ici
+      const res = await authApi.forgotPassword(email);
       setStatus('success');
-      setMessage(res.data.message || 'Un lien de réinitialisation a été envoyé à votre adresse e-mail.');
-    } catch (err: unknown) {
-      const error   = err as { response?: { data?: { errors?: { email?: string | string[] }; message?: string } } };
-      const errors  = error.response?.data?.errors;
-
-      if (errors?.email) {
-        setEmailError(Array.isArray(errors.email) ? errors.email[0] : errors.email);
+      setMessage(
+        res.data.message ??
+        'Si un compte est associé à cette adresse, un email de réinitialisation vient d\'être envoyé.'
+      );
+    } catch (err) {
+      // Le backend retourne toujours 200 pour cette route —
+      // une erreur ici signifie un problème réseau ou serveur
+      if (axios.isAxiosError(err)) {
+        const errors = err.response?.data?.errors;
+        if (errors?.email) {
+          // Erreur de validation sur le champ email (format invalide)
+          setEmailError(Array.isArray(errors.email) ? errors.email[0] : errors.email);
+        } else {
+          setStatus('error');
+          setMessage(err.response?.data?.message ?? 'Une erreur est survenue. Réessayez.');
+        }
       } else {
         setStatus('error');
-        setMessage(error.response?.data?.message || 'Une erreur est survenue. Réessayez.');
+        setMessage('Erreur de connexion au serveur.');
       }
     } finally {
       setIsLoading(false);
@@ -61,7 +74,7 @@ const ForgotPasswordPage = () => {
   return (
     <AuthLayout>
 
-      {/* En-tête */}
+      {/* ── En-tête ── */}
       <div className={styles.header}>
         <h1 className={styles.title}>Mot de passe oublié</h1>
         <p className={styles.subtitle}>
@@ -69,7 +82,7 @@ const ForgotPasswordPage = () => {
         </p>
       </div>
 
-      {/* Feedback global */}
+      {/* ── Feedback global ── */}
       {status === 'success' && (
         <div className={styles.alertSuccess} role="status">
           <CheckIcon />
@@ -83,9 +96,10 @@ const ForgotPasswordPage = () => {
         </div>
       )}
 
-      {/* Formulaire masqué après succès */}
+      {/* ── Formulaire masqué après succès ── */}
       {status !== 'success' && (
         <form onSubmit={handleSubmit} className={styles.form} noValidate>
+
           <FormInput
             label="Adresse e-mail"
             type="email"
@@ -105,7 +119,7 @@ const ForgotPasswordPage = () => {
             disabled={isLoading}
           >
             {isLoading ? (
-              <><span className={styles.spinner} />Envoi en cours…</>
+              <><span className={styles.spinner} aria-hidden="true" />Envoi en cours…</>
             ) : (
               <><span>Envoyer le lien</span><ArrowIcon /></>
             )}
@@ -120,32 +134,30 @@ const ForgotPasswordPage = () => {
       <Link to="/login" className={styles.backLink}>
         ← Retour à la connexion
       </Link>
+
     </AuthLayout>
   );
 };
 
-// ─── Icons ──────────────────────────────────────────────────────────
+// ─── Icons ───────────────────────────────────────────────────────────────────
 const MailIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
     <polyline points="22,6 12,13 2,6"/>
   </svg>
 );
-
 const ArrowIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
     <line x1="5" y1="12" x2="19" y2="12"/>
     <polyline points="12,5 19,12 12,19"/>
   </svg>
 );
-
 const CheckIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
     <polyline points="22,4 12,14.01 9,11.01"/>
   </svg>
 );
-
 const AlertIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
     <circle cx="12" cy="12" r="10"/>

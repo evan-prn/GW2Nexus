@@ -7,25 +7,22 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
- * Gère la déconnexion en mode Sanctum SPA cookie.
+ * Gère la déconnexion en mode Sanctum Bearer Token.
  *
- * En mode SPA, Sanctum utilise un TransientToken (session) et non un
- * token stocké en base. La déconnexion se fait via Auth::logout()
- * + invalidation + régénération du token CSRF.
+ * En mode Bearer, Sanctum émet un token opaque stocké en base (personal_access_tokens).
+ * La déconnexion consiste à révoquer ce token — pas de session à invalider.
  */
 class LogoutController extends Controller
 {
     /**
-     * Déconnexion de la session courante.
+     * Révoque le token Bearer courant (déconnexion de l'appareil actuel).
+     *
+     * DELETE /api/v1/auth/logout
      */
     public function destroy(Request $request): JsonResponse
     {
-        // Déconnecte l'utilisateur de la session
-        auth()->guard('web')->logout();
-
-        // Invalide la session et régénère le token CSRF
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        // Révoque uniquement le token utilisé pour cette requête
+        $request->user()->currentAccessToken()->delete();
 
         return response()->json([
             'message' => 'Déconnexion réussie.',
@@ -33,15 +30,15 @@ class LogoutController extends Controller
     }
 
     /**
-     * Déconnexion globale — invalide la session courante.
-     * En mode SPA cookie, il n'y a qu'une session par navigateur.
+     * Révoque tous les tokens Bearer de l'utilisateur (déconnexion globale).
+     * Utile pour "déconnecter tous les appareils" ou après un changement de mot de passe.
+     *
+     * DELETE /api/v1/auth/logout/all
      */
     public function destroyAll(Request $request): JsonResponse
     {
-        auth()->guard('web')->logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        // Révoque tous les tokens actifs de l'utilisateur en base
+        $request->user()->tokens()->delete();
 
         return response()->json([
             'message' => 'Toutes vos sessions ont été fermées.',
