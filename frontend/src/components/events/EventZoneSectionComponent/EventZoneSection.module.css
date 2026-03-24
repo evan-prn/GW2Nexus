@@ -1,0 +1,90 @@
+/* =============================================================
+   EventZoneSection.module.css
+   Section d'une zone/carte dans le timer
+   ============================================================= */
+
+/* ── Section ───────────────────────────────────────────────── */
+.section {
+  background-color: rgba(255, 255, 255, 0.018);
+  border: 1px solid rgba(255, 255, 255, 0.065);
+  border-radius: 5px;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+/* Bordure dorée si un event est actif dans cette zone */
+.section.sectionActive {
+  border-color: rgba(201, 168, 76, 0.28);
+}
+
+/* ── En-tête ───────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 14px 9px 0;
+  background-color: rgba(0, 0, 0, 0.22);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+  position: relative;
+}
+
+/* Barre colorée verticale tout à gauche */
+.colorBar {
+  width: 4px;
+  align-self: stretch;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+/* Icône de zone */
+.zoneIcon {
+  font-size: 1rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Nom de la zone — couleur injectée via style inline */
+.zoneName {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* Légère désaturation pour ne pas agresser l'œil */
+  filter: brightness(1.05) saturate(0.85);
+}
+
+/* Badge "EN COURS" */
+.activeTag {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-gold, #c9a84c);
+  padding: 2px 7px;
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  border-radius: 3px;
+  background-color: rgba(201, 168, 76, 0.1);
+  white-space: nowrap;
+  flex-shrink: 0;
+  animation: tagPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes tagPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.55; }
+}
+
+/* ── Liste des events ────────────────────────────────────────
+.eventsList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 0;
+} */

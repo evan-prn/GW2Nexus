@@ -1,0 +1,340 @@
+// =============================================================
+// data/events.data.ts
+// Horaires statiques des événements GW2
+//
+// Source officielle : https://wiki.guildwars2.com/wiki/Event_timers
+// Les créneaux sont en minutes depuis minuit UTC.
+// Mise à jour : 2024 — à ajuster si ArenaNet modifie les horaires.
+// =============================================================
+
+import type { EventExpansionGroup } from '../types/events.types';
+
+// ─────────────────────────────────────────────────────────────
+// Utilitaires internes
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Convertit "HH:MM" (UTC) en minutes depuis minuit.
+ * Exemple : hm("07:30") → 450
+ */
+const hm = (hhMm: string): number => {
+  const [h, m] = hhMm.split(':').map(Number);
+  return h * 60 + m;
+};
+
+/**
+ * Génère 12 créneaux espacés de 2h à partir d'une heure de départ.
+ * Utilisé pour les world bosses dont le cycle est de 2h.
+ *
+ * Exemple : cycle2h("01:00", 15) génère des slots à 01:00, 03:00, 05:00...
+ */
+const cycle2h = (startHHMM: string, durationMin: number, preEventMin = 5) => {
+  const base = hm(startHHMM);
+  return Array.from({ length: 12 }, (_, i) => ({
+    startMinutes: (base + i * 120) % 1440,
+    durationMinutes: durationMin,
+    preEventMinutes: preEventMin,
+  }));
+};
+
+// ─────────────────────────────────────────────────────────────
+// JANTHIR WILDS — zones du screenshot du Bus Magique
+// ─────────────────────────────────────────────────────────────
+
+const JW_GROUP: EventExpansionGroup = {
+  id: 'jw',
+  label: 'Janthir Wilds',
+  zones: [
+    {
+      id: 'rive-aux-epaves',
+      name: 'Rive aux Épaves',
+      color: '#c9619a',
+      icon: '⚓',
+      events: [
+        {
+          id: 'bagarre-cerf-marteau',
+          name: 'Bagarre des Cerf-Marteau !',
+          zone: 'Rive aux Épaves',
+          category: 'jw',
+          isTwoHourCycle: true,
+          slots: cycle2h('01:40', 20, 5),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Janthir_Wilds',
+        },
+      ],
+    },
+    {
+      id: 'bois-etoile',
+      name: 'Bois Étoilé',
+      color: '#c9619a',
+      icon: '🌳',
+      events: [
+        {
+          id: 'secrets-du-bois',
+          name: 'Secrets du Bois',
+          zone: 'Bois Étoilé',
+          category: 'jw',
+          isTwoHourCycle: true,
+          // Le Bus Magique montre deux créneaux visibles : 09:00 et 10:40
+          slots: cycle2h('01:00', 15, 5),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Janthir_Wilds',
+        },
+      ],
+    },
+    {
+      id: 'bava-nisos',
+      name: 'Bava Nisos',
+      color: '#4a90d9',
+      icon: '🏝️',
+      events: [
+        {
+          id: 'voyage-titanesque',
+          name: 'Un Voyage Titanesque',
+          zone: 'Bava Nisos',
+          category: 'jw',
+          isTwoHourCycle: true,
+          slots: cycle2h('01:20', 25, 5),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Janthir_Wilds',
+        },
+      ],
+    },
+    {
+      id: 'convergences-mont-balrior',
+      name: 'Convergences : Mont Balrior',
+      color: '#4a90d9',
+      icon: '⛰️',
+      events: [
+        {
+          id: 'convergences-balrior',
+          name: 'Convergences',
+          zone: 'Convergences : Mont Balrior',
+          category: 'jw',
+          isTwoHourCycle: true,
+          slots: cycle2h('02:00', 20, 5),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Convergences',
+        },
+      ],
+    },
+    {
+      id: 'syntri-de-janthir',
+      name: 'Syntri de Janthir',
+      color: '#4a90d9',
+      icon: '🌐',
+      events: [
+        {
+          id: 'syntri-meta',
+          name: 'Méta de Syntri',
+          zone: 'Syntri de Janthir',
+          category: 'jw',
+          isTwoHourCycle: true,
+          slots: cycle2h('01:30', 30, 10),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Janthir_Wilds',
+        },
+      ],
+    },
+  ],
+};
+
+// ─────────────────────────────────────────────────────────────
+// WORLD BOSSES — Tyrie Centrale, horaires fixes
+// Source : https://wiki.guildwars2.com/wiki/World_boss
+// ─────────────────────────────────────────────────────────────
+
+const WORLD_BOSSES_GROUP: EventExpansionGroup = {
+  id: 'world_bosses',
+  label: 'World Bosses',
+  zones: [
+    {
+      id: 'cote-maree-sanglante',
+      name: 'Côte de la Marée Sanglante',
+      color: '#4a90d9',
+      icon: '🌊',
+      events: [
+        {
+          id: 'tequatl',
+          name: 'Tequatl le Sans-Soleil',
+          zone: 'Côte de la Marée Sanglante',
+          category: 'world_boss',
+          isTwoHourCycle: false,
+          // Horaires fixes Tequatl (UTC)
+          slots: [
+            { startMinutes: hm('00:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('03:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('07:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('11:30'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('16:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('19:00'), durationMinutes: 30, preEventMinutes: 10 },
+          ],
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Tequatl_the_Sunless',
+        },
+      ],
+    },
+    {
+      id: 'champs-gendarran',
+      name: 'Champs de Gendarran',
+      color: '#c9619a',
+      icon: '⚔️',
+      events: [
+        {
+          id: 'triple-terreur',
+          name: 'Triple Terreur',
+          zone: 'Champs de Gendarran',
+          category: 'world_boss',
+          isTwoHourCycle: false,
+          // Horaires fixes Triple Terreur (UTC)
+          slots: [
+            { startMinutes: hm('01:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('04:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('08:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('12:30'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('17:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('20:00'), durationMinutes: 30, preEventMinutes: 10 },
+          ],
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Triple_Trouble',
+        },
+      ],
+    },
+    {
+      id: 'rive-aux-epaves-wb',
+      name: 'Rive aux Épaves',
+      color: '#c9619a',
+      icon: '👥',
+      events: [
+        {
+          id: 'behemoth-ombres',
+          name: 'Béhémoth des Ombres',
+          zone: 'Rive aux Épaves',
+          category: 'world_boss',
+          isTwoHourCycle: true,
+          slots: cycle2h('01:00', 15, 5),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Shadow_Behemoth',
+        },
+      ],
+    },
+    {
+      id: 'pays-kessex',
+      name: 'Pays de Kessex',
+      color: '#c9619a',
+      icon: '⚙️',
+      events: [
+        {
+          id: 'golem-mark-ii',
+          name: 'Golem Mark II',
+          zone: 'Pays de Kessex',
+          category: 'world_boss',
+          isTwoHourCycle: true,
+          slots: cycle2h('01:30', 20, 5),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Golem_Mark_II',
+        },
+      ],
+    },
+    {
+      id: 'hautes-plaines',
+      name: 'Hautes Plaines Brûlées',
+      color: '#c9619a',
+      icon: '🔥',
+      events: [
+        {
+          id: 'megadestructeur',
+          name: 'Le Mégadestructeur',
+          zone: 'Hautes Plaines Brûlées',
+          category: 'world_boss',
+          isTwoHourCycle: true,
+          slots: cycle2h('00:30', 20, 5),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/The_Megadestroyer',
+        },
+      ],
+    },
+  ],
+};
+
+// ─────────────────────────────────────────────────────────────
+// HEART OF THORNS — Méta-événements HoT
+// ─────────────────────────────────────────────────────────────
+
+const HOT_GROUP: EventExpansionGroup = {
+  id: 'hot',
+  label: 'Heart of Thorns',
+  zones: [
+    {
+      id: 'oree-emeraude',
+      name: "Orée d'Émeraude",
+      color: '#6ab04c',
+      icon: '🌿',
+      events: [
+        {
+          id: 'oree-meta',
+          name: "Méta de l'Orée d'Émeraude",
+          zone: "Orée d'Émeraude",
+          category: 'hot',
+          isTwoHourCycle: true,
+          slots: cycle2h('01:00', 90, 10),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Verdant_Brink_meta_event_chain',
+        },
+      ],
+    },
+    {
+      id: 'bassin-aurique',
+      name: 'Bassin Aurique',
+      color: '#f0c040',
+      icon: '🏆',
+      events: [
+        {
+          id: 'auric-basin-meta',
+          name: 'Octovine',
+          zone: 'Bassin Aurique',
+          category: 'hot',
+          isTwoHourCycle: true,
+          slots: cycle2h('00:45', 20, 15),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Auric_Basin_meta_event_chain',
+        },
+      ],
+    },
+    {
+      id: 'profondeurs-verdoyantes',
+      name: 'Profondeurs Verdoyantes',
+      color: '#9b59b6',
+      icon: '🕳️',
+      events: [
+        {
+          id: 'chak-gerent',
+          name: 'Chak Gérent',
+          zone: 'Profondeurs Verdoyantes',
+          category: 'hot',
+          isTwoHourCycle: true,
+          slots: cycle2h('00:30', 20, 10),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Chak_Gerent',
+        },
+      ],
+    },
+    {
+      id: 'repli-dragon',
+      name: 'Repli du Dragon',
+      color: '#e74c3c',
+      icon: '🐉',
+      events: [
+        {
+          id: 'liberation-soleil-dragon',
+          name: 'Libération du Soleil Dragon',
+          zone: 'Repli du Dragon',
+          category: 'hot',
+          isTwoHourCycle: true,
+          slots: cycle2h('01:30', 20, 5),
+          wikiUrl: "https://wiki.guildwars2.com/wiki/Dragon%27s_Stand_meta_event_chain",
+        },
+      ],
+    },
+  ],
+};
+
+// ─────────────────────────────────────────────────────────────
+// Export principal — ordre d'affichage dans l'UI
+// ─────────────────────────────────────────────────────────────
+
+export const EVENT_GROUPS: EventExpansionGroup[] = [
+  JW_GROUP,
+  WORLD_BOSSES_GROUP,
+  HOT_GROUP,
+];
+
+/** IDs des groupes pour les filtres */
+export const EXPANSION_FILTER_IDS = EVENT_GROUPS.map((g) => g.id);

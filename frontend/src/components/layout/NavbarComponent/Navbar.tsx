@@ -32,7 +32,7 @@ const NAV_LINKS: NavLink[] = [
   { label: 'Builds',     href: '/builds',     icon: '🛡' },
   { label: 'Guildes',    href: '/guildes',    icon: '🏰' },
   { label: 'Objets',     href: '/objets',     icon: '💎' },
-  { label: 'Événements', href: '/evenements', icon: '🗺' },
+  { label: 'Événements', href: '/events',     icon: '🗺' },
 ];
 
 // ─── Composant ──────────────────────────────────────────────────────

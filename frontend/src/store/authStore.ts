@@ -1,15 +1,16 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import authApi from '../api/auth.api';
+import useProfileStore from './profileStore'; 
 
 export interface User {
-  id:          number;
-  nom:         string;
-  email:       string;
-  pseudo_gw2?: string | null;
-  avatar?:     string | null;
-  role?:       string;
-  has_api_key?: boolean;  // ← ajout Sprint 2
+  id:           number;
+  nom:          string;
+  email:        string;
+  pseudo_gw2?:  string | null;
+  avatar?:      string | null;
+  role?:        string;
+  has_api_key?: boolean;
 }
 
 interface AuthState {
@@ -36,6 +37,7 @@ const useAuthStore = create<AuthState>()(
       setUser: (user) =>
         set({ user, isAuthenticated: true, error: null }),
 
+      // Reset auth seul (utilisé en interne ou si besoin d'un reset partiel)
       clearAuth: () =>
         set({ user: null, isAuthenticated: false, error: null }),
 
@@ -46,16 +48,18 @@ const useAuthStore = create<AuthState>()(
         } catch {
           // Déconnexion côté client même si le serveur échoue
         } finally {
+          // Reset auth + profil simultanément
           set({ user: null, isAuthenticated: false, error: null, isLoading: false });
+          useProfileStore.getState().reset();
         }
       },
 
-      setLoading:  (isLoading) => set({ isLoading }),
-      setError:    (error)     => set({ error, isLoading: false }),
-      clearError:  ()          => set({ error: null }),
+      setLoading: (isLoading) => set({ isLoading }),
+      setError:   (error)     => set({ error, isLoading: false }),
+      clearError: ()          => set({ error: null }),
     }),
     {
-      name: 'gw2nexus-auth',
+      name:    'gw2nexus-auth',
       storage: createJSONStorage(() => sessionStorage),
       partialize: (state) => ({
         user:            state.user,

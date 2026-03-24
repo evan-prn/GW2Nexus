@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Api\Profile\AvatarController;
 use App\Http\Controllers\Api\Profile\UserProfileController;
+use App\Http\Controllers\Api\Events\EventController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,7 +34,7 @@ use Illuminate\Support\Facades\Route;
 // ---------------------------------------------------------------------------
 // Healthcheck — utilisé par Docker et les outils de monitoring
 // ---------------------------------------------------------------------------
-Route::get('/health', static fn () => response()->json(['status-backend' => 'ok']));
+Route::get('/health', static fn() => response()->json(['status-backend' => 'ok']));
 
 // ---------------------------------------------------------------------------
 // Routes versionnées — préfixe /api/v1
@@ -81,6 +82,20 @@ Route::prefix('v1')->group(function (): void {
     Route::post('contact', [ContactController::class, 'send'])
         ->name('contact.send')
         ->middleware('throttle:3,10');
+
+    // Point d'extension — futures routes publiques
+    Route::prefix('events')->name('events.')->group(function () {
+
+        // GET /api/v1/events/schedule
+        // Retourne les horaires des événements GW2.
+        // Public — pas d'authentification requise.
+        Route::prefix('events')->name('events.')->group(function (): void {
+            Route::get('schedule', [EventController::class, 'schedule'])
+                ->name('schedule')
+                ->middleware('throttle:60,1');
+        });
+
+    });
 
     /*
     |--------------------------------------------------------------------------

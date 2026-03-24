@@ -1,0 +1,114 @@
+/* =============================================================
+   TimelineHeader.module.css
+   En-tête sticky de la timeline
+   ============================================================= */
+
+/* ── Layout 3 colonnes (identique à EventRow) ──────────────── */
+.header {
+  display: grid;
+  grid-template-columns: 260px 130px 1fr;
+  align-items: center;
+  padding: 10px 0 8px;
+  border-bottom: 2px solid rgba(201, 168, 76, 0.28);
+  margin-bottom: 6px;
+  /* Collant en haut lors du scroll */
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  /* Fond opaque pour masquer le contenu qui défile derrière */
+  background-color: var(--color-bg, #0e0e12);
+}
+
+/* ── Col 1 : Info ──────────────────────────────────────────── */
+.infoCol {
+  padding: 0 14px;
+}
+
+.colLabel {
+  font-family: 'Cinzel', serif;
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.28);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ── Col 2 : Horloges ──────────────────────────────────────── */
+.clockCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+}
+
+.clockBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.clockTime {
+  font-family: 'Cinzel', serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+/* UTC = orange, comme Le Bus Magique */
+.clockTime[data-type='utc'] {
+  color: #e5862a;
+}
+
+/* Heure locale = dorée GW2Nexus */
+.clockTime[data-type='local'] {
+  color: var(--color-gold, #c9a84c);
+}
+
+.clockLabel {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.28);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+}
+
+/* ── Col 3 : Créneaux ──────────────────────────────────────── */
+.timelineCol {
+  display: flex;
+}
+
+.timeSlot {
+  flex: 1;
+  padding-left: 5px;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Créneau courant mis en valeur */
+.timeSlotCurrent {
+  border-left-color: rgba(201, 168, 76, 0.45);
+}
+
+.slotLabel {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.02em;
+}
+
+.timeSlotCurrent .slotLabel {
+  color: var(--color-gold, #c9a84c);
+  font-weight: 600;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .header {
+    grid-template-columns: 1fr 110px;
+  }
+
+  .timelineCol {
+    display: none; /* Caché sur mobile — la timeline complète est dans EventRow */
+  }
+}

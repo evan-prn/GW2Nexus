@@ -29,7 +29,7 @@ class ContactMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from:     new Address(config('mail.from.address'), 'GW2Nexus - Contact'),
+            from:     new Address(config('mail.from.address'), config('mail.from.name') - ' Contact'),
             replyTo: [new Address($this->senderEmail, $this->senderName)],
             subject:  '[GW2Nexus] ' . $this->getSubjectLabel(),
         );

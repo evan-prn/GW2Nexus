@@ -1,0 +1,173 @@
+/* =============================================================
+   EventRow.module.css
+   Ligne d'un événement dans le timer
+   ============================================================= */
+
+/* ── Layout 3 colonnes ─────────────────────────────────────── */
+.row {
+  display: grid;
+  grid-template-columns: 260px 130px 1fr;
+  align-items: center;
+  min-height: 46px;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+  transition: background-color 0.25s ease;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row:hover {
+  background-color: rgba(255, 255, 255, 0.025);
+}
+
+/* Surlignage de la ligne active */
+.row.status_active {
+  background-color: rgba(201, 168, 76, 0.055);
+}
+
+/* ── Col 1 : Infos ─────────────────────────────────────────── */
+.infoCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  min-width: 0;
+}
+
+.icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 3px;
+  object-fit: cover;
+  flex-shrink: 0;
+  /* Encadrement discret façon GW2 */
+  outline: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.iconFallback {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.nameBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.eventName {
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.25s ease;
+}
+
+/* Nom doré si l'event est actif */
+.status_active .eventName {
+  color: var(--color-gold, #c9a84c);
+}
+
+.zoneName {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Col 2 : Badge ─────────────────────────────────────────── */
+.badgeCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+}
+
+/* ── Col 3 : Timeline ──────────────────────────────────────── */
+.timelineCell {
+  position: relative;
+  height: 38px;
+}
+
+/* Grille de fond */
+.timelineGrid {
+  position: absolute;
+  inset: 0;
+  display: flex;
+}
+
+.gridCol {
+  flex: 1;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Colonne de l'heure courante */
+.gridColCurrent {
+  background-color: rgba(255, 255, 255, 0.025);
+  border-left-color: rgba(201, 168, 76, 0.35);
+}
+
+/* Barre de créneau d'event */
+.eventBar {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 22px;
+  border-radius: 3px;
+  opacity: 0.72;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  transition: opacity 0.2s ease;
+  cursor: default;
+}
+
+.eventBar:hover {
+  opacity: 1;
+  z-index: 2;
+}
+
+/* Barre d'un event actif : plus visible */
+.eventBarActive {
+  opacity: 0.92;
+  box-shadow: 0 0 10px rgba(201, 168, 76, 0.3);
+}
+
+/* Label dans la barre */
+.barLabel {
+  font-family: 'Cinzel', serif;
+  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .row {
+    grid-template-columns: 1fr 110px;
+    grid-template-rows: auto auto;
+  }
+
+  .timelineCell {
+    grid-column: 1 / -1;
+    height: 24px;
+  }
+}

@@ -19,38 +19,49 @@ export const ENDPOINTS = {
 
   // ─── Authentification ────────────────────────────────────────────────────
   auth: {
-    register:         `${API_VERSION}/auth/register`,         // POST — Inscription
-    login:            `${API_VERSION}/auth/login`,            // POST — Connexion, retourne un token Sanctum
-    logout:           `${API_VERSION}/auth/logout`,           // POST — Révocation du token courant
-    logoutAll:        `${API_VERSION}/auth/logout-all`,       // POST — Révocation de tous les tokens
-    me:               `${API_VERSION}/auth/me`,               // GET  — Utilisateur authentifié courant
-    forgotPassword:   `${API_VERSION}/auth/forgot-password`,  // POST — Envoi du lien de réinitialisation
-    resetPassword:    `${API_VERSION}/auth/reset-password`,   // POST — Réinitialisation via token email
+    register:       `${API_VERSION}/auth/register`,         // POST — Inscription
+    login:          `${API_VERSION}/auth/login`,            // POST — Connexion, retourne un token Sanctum
+    logout:         `${API_VERSION}/auth/logout`,           // POST — Révocation du token courant
+    logoutAll:      `${API_VERSION}/auth/logout-all`,       // POST — Révocation de tous les tokens
+    me:             `${API_VERSION}/auth/me`,               // GET  — Utilisateur authentifié courant
+    forgotPassword: `${API_VERSION}/auth/forgot-password`,  // POST — Envoi du lien de réinitialisation
+    resetPassword:  `${API_VERSION}/auth/reset-password`,   // POST — Réinitialisation via token email
   },
 
   // ─── Profil utilisateur ──────────────────────────────────────────────────
   profile: {
-    show:    `${API_VERSION}/profile`,              // GET    — Données complètes du profil
-    update:  `${API_VERSION}/profile`,              // PUT    — Mise à jour nom / pseudo_gw2
-    avatar:  `${API_VERSION}/profile/avatar`,       // POST   — Upload de l'avatar
-    apiKey:  `${API_VERSION}/profile/api-key`,      // POST / DELETE — Gestion clé API GW2
-    gw2Data: `${API_VERSION}/profile/gw2-data`,     // GET    — Données GW2 fraîches (cache Redis)
+    show:    `${API_VERSION}/profile`,          // GET    — Données complètes du profil
+    update:  `${API_VERSION}/profile`,          // PUT    — Mise à jour nom / pseudo_gw2
+    avatar:  `${API_VERSION}/profile/avatar`,   // POST   — Upload de l'avatar
+    apiKey:  `${API_VERSION}/profile/api-key`,  // POST / DELETE — Gestion clé API GW2
+    gw2Data: `${API_VERSION}/profile/gw2-data`, // GET    — Données GW2 fraîches (cache Redis)
   },
 
   // ─── Contact ─────────────────────────────────────────────────────────────
   contact: {
-    submit: `${API_VERSION}/contact`,             // POST — Envoi d'un message de contact
+    submit: `${API_VERSION}/contact`,           // POST — Envoi d'un message de contact
+  },
+
+  // ─── Événements GW2 ──────────────────────────────────────────────────────
+  //
+  // Sprint 2 : /schedule retourne l'heure serveur UTC + note de version.
+  // Sprint 4 : sera enrichi avec les horaires dynamiques issus du cache Redis
+  //            (synchronisés via Gw2ApiService + Artisan scheduler).
+  //
+  // La page Events est publique — pas d'authentification requise.
+  events: {
+    schedule: `${API_VERSION}/events/schedule`, // GET — Horaires des événements GW2
   },
 
   // ─── Back-office admin ───────────────────────────────────────────────────
   admin: {
-    stats: `${API_VERSION}/admin/stats`,          // GET  — Statistiques globales de la plateforme
+    stats: `${API_VERSION}/admin/stats`,        // GET — Statistiques globales de la plateforme
 
     users: {
-      index:  `${API_VERSION}/admin/users`,                               // GET    — Liste paginée + filtres
-      show:   (id: number) => `${API_VERSION}/admin/users/${id}`,         // GET    — Détail + historique bans
-      ban:    (id: number) => `${API_VERSION}/admin/users/${id}/ban`,     // POST   — Appliquer un ban
-      unban:  (id: number) => `${API_VERSION}/admin/users/${id}/ban`,     // DELETE — Lever le ban actif
+      index:  `${API_VERSION}/admin/users`,                           // GET    — Liste paginée + filtres
+      show:   (id: number) => `${API_VERSION}/admin/users/${id}`,     // GET    — Détail + historique bans
+      ban:    (id: number) => `${API_VERSION}/admin/users/${id}/ban`, // POST   — Appliquer un ban
+      unban:  (id: number) => `${API_VERSION}/admin/users/${id}/ban`, // DELETE — Lever le ban actif
     },
   },
 

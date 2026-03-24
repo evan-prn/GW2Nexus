@@ -30,7 +30,7 @@ const COLUMNS: FooterColumn[] = [
       { label: 'Forum',      href: '/forum'      },
       { label: 'Guildes',    href: '/guildes'    },
       { label: 'Builds',     href: '/builds'     },
-      { label: 'Événements', href: '/evenements' },
+      { label: 'Événements', href: '/events' },
     ],
   },
   {

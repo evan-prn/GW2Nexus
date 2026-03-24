@@ -48,26 +48,30 @@ const RootLayout = () => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Pages publiques
-const HomePage = lazy(() => import('../pages/HomePage/HomePage'));
-const AboutPage = lazy(() => import('../pages/AboutPage/AboutPage'));
-const ContactPage = lazy(() => import('../pages/ContactPage/ContactPage'));
-const RulesPage = lazy(() => import('../pages/RulesPage/RulesPage'));
+const HomePage            = lazy(() => import('../pages/HomePage/HomePage'));
+const AboutPage           = lazy(() => import('../pages/AboutPage/AboutPage'));
+const ContactPage         = lazy(() => import('../pages/ContactPage/ContactPage'));
+const RulesPage           = lazy(() => import('../pages/RulesPage/RulesPage'));
 
 // Auth (visiteur non connecté uniquement)
-const LoginPage = lazy(() => import('../pages/Auth/LoginPage/LoginPage'));
-const RegisterPage = lazy(() => import('../pages/Auth/RegisterPage/RegisterPage'));
-const ForgotPasswordPage = lazy(() => import('../pages/Auth/ForgotPasswordPage/ForgotPasswordPage'));
-const ResetPasswordPage = lazy(() => import('../pages/Auth/ResetPasswordPage/ResetPasswordPage'));
+const LoginPage           = lazy(() => import('../pages/Auth/LoginPage/LoginPage'));
+const RegisterPage        = lazy(() => import('../pages/Auth/RegisterPage/RegisterPage'));
+const ForgotPasswordPage  = lazy(() => import('../pages/Auth/ForgotPasswordPage/ForgotPasswordPage'));
+const ResetPasswordPage   = lazy(() => import('../pages/Auth/ResetPasswordPage/ResetPasswordPage'));
 
 // App — utilisateur connecté
-const ProfilePage = lazy(() => import('../pages/ProfilePage/ProfilePage'));
+const ProfilePage         = lazy(() => import('../pages/ProfilePage/ProfilePage'));
+
+// ── Sprint 2 — Timer d'événements GW2 ────────────────────────────────────────
+// Page publique : pas besoin d'être connecté pour consulter les horaires.
+const EventsPage          = lazy(() => import('../pages/EventsPage/EventsPage'));
 
 // Admin — rôle 'admin' obligatoire
-const AdminOverviewPage = lazy(() => import('../pages/Admin/AdminOverviewPage/AdminOverviewPage'));
-const AdminUserPage = lazy(() => import('../pages/Admin/AdminUserPage/AdminUserPage'));
+const AdminOverviewPage   = lazy(() => import('../pages/Admin/AdminOverviewPage/AdminOverviewPage'));
+const AdminUserPage       = lazy(() => import('../pages/Admin/AdminUserPage/AdminUserPage'));
 
 // Erreur
-const NotFoundPage = lazy(() => import('../pages/NotFoundPage/NotFoundPage'));
+const NotFoundPage        = lazy(() => import('../pages/NotFoundPage/NotFoundPage'));
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Router
@@ -83,19 +87,22 @@ const router = createBrowserRouter([
     children: [
 
       // ── Routes publiques ──────────────────────────────────────────────────
-      { path: '/', element: <S><HomePage /></S> },
-      { path: '/about', element: <S><AboutPage /></S> },
-      { path: '/rules', element: <S><RulesPage /></S> },
+      { path: '/',        element: <S><HomePage /></S>    },
+      { path: '/about',   element: <S><AboutPage /></S>   },
+      { path: '/rules',   element: <S><RulesPage /></S>   },
+
+      // ── Événements ────────────────────────────────────────────────────────
+      { path: '/events',  element: <S><EventsPage /></S>  },
 
       // ── Routes Guest — visiteur non connecté uniquement ───────────────────
       // Redirige vers /profile si déjà authentifié
       {
         element: <GuestRoute />,
         children: [
-          { path: '/login', element: <S><LoginPage /></S> },
-          { path: '/register', element: <S><RegisterPage /></S> },
-          { path: '/forgot-password', element: <S><ForgotPasswordPage /></S> },
-          { path: '/reset-password', element: <S><ResetPasswordPage /></S> },
+          { path: '/login',            element: <S><LoginPage /></S>           },
+          { path: '/register',         element: <S><RegisterPage /></S>        },
+          { path: '/forgot-password',  element: <S><ForgotPasswordPage /></S>  },
+          { path: '/reset-password',   element: <S><ResetPasswordPage /></S>   },
         ],
       },
 
@@ -116,14 +123,13 @@ const router = createBrowserRouter([
           // Sprint 4 — API GW2 avancée
           // { path: '/items',     element: <S><ItemsPage /></S>      },
           // { path: '/items/:id', element: <S><ItemDetailPage /></S> },
-          // { path: '/events',    element: <S><EventsPage /></S>     },
 
           // Sprint 5 — Guildes & Builds
-          // { path: '/guildes',        element: <S><GuildesPage /></S>    },
+          // { path: '/guildes',        element: <S><GuildesPage /></S>      },
           // { path: '/guildes/:id',    element: <S><GuildeDetailPage /></S> },
-          // { path: '/builds',         element: <S><BuildsPage /></S>     },
+          // { path: '/builds',         element: <S><BuildsPage /></S>       },
           // { path: '/builds/:id',     element: <S><BuildDetailPage /></S>  },
-          // { path: '/builds/nouveau', element: <S><NewBuildPage /></S>   },
+          // { path: '/builds/nouveau', element: <S><NewBuildPage /></S>     },
         ],
       },
     ],
@@ -133,7 +139,7 @@ const router = createBrowserRouter([
   // Arbre admin — layout séparé (sidebar, pas de Navbar/Footer publique)
   //
   // AdminRoute vérifie :
-  //   1. isAuthenticated    → sinon redirige vers /login
+  //   1. isAuthenticated       → sinon redirige vers /login
   //   2. user.role === 'admin' → sinon redirige vers /profile
   //
   // AdminLayout fournit la sidebar de navigation admin.
@@ -160,7 +166,7 @@ const router = createBrowserRouter([
     ],
   },
 
-  // ── 404 ───────────────────────────────────────────────────────────────
+  // ── 404 ───────────────────────────────────────────────────────────────────
   { path: '*', element: <S><NotFoundPage /></S> },
 
 ]);
