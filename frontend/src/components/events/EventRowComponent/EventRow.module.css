@@ -1,5 +1,5 @@
 /* =============================================================
-   EventRow.module.css
+   EventRow.module.css — v2
    Ligne d'un événement dans le timer
    ============================================================= */
 
@@ -9,9 +9,11 @@
   grid-template-columns: 260px 130px 1fr;
   align-items: center;
   min-height: 46px;
-  padding: 5px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.045);
-  transition: background-color 0.25s ease;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background-color 0.2s ease;
+  /* Empêche le contenu de déborder */
+  overflow: hidden;
 }
 
 .row:last-child {
@@ -19,12 +21,11 @@
 }
 
 .row:hover {
-  background-color: rgba(255, 255, 255, 0.025);
+  background-color: rgba(255, 255, 255, 0.022);
 }
 
-/* Surlignage de la ligne active */
 .row.status_active {
-  background-color: rgba(201, 168, 76, 0.055);
+  background-color: rgba(201, 168, 76, 0.05);
 }
 
 /* ── Col 1 : Infos ─────────────────────────────────────────── */
@@ -42,7 +43,6 @@
   border-radius: 3px;
   object-fit: cover;
   flex-shrink: 0;
-  /* Encadrement discret façon GW2 */
   outline: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -52,29 +52,32 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
   flex-shrink: 0;
-  opacity: 0.6;
+  font-size: 0.9rem;
+  opacity: 0.5;
+  /* Cercle discret en guise d'icône générique */
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .nameBlock {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
   min-width: 0;
 }
 
 .eventName {
   font-family: 'Cinzel', serif;
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.87);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: color 0.25s ease;
+  transition: color 0.2s ease;
 }
 
-/* Nom doré si l'event est actif */
 .status_active .eventName {
   color: var(--color-gold, #c9a84c);
 }
@@ -82,7 +85,7 @@
 .zoneName {
   font-family: 'Crimson Pro', serif;
   font-size: 0.68rem;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.28);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -100,27 +103,29 @@
 .timelineCell {
   position: relative;
   height: 38px;
+  /* Empêche les barres de déborder */
+  overflow: hidden;
 }
 
-/* Grille de fond */
+/* Grille de colonnes de fond */
 .timelineGrid {
   position: absolute;
   inset: 0;
   display: flex;
+  pointer-events: none;
 }
 
 .gridCol {
   flex: 1;
-  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: 1px solid rgba(255, 255, 255, 0.045);
 }
 
-/* Colonne de l'heure courante */
 .gridColCurrent {
-  background-color: rgba(255, 255, 255, 0.025);
-  border-left-color: rgba(201, 168, 76, 0.35);
+  background-color: rgba(201, 168, 76, 0.03);
+  border-left-color: rgba(201, 168, 76, 0.32);
 }
 
-/* Barre de créneau d'event */
+/* Barre d'un créneau d'event */
 .eventBar {
   position: absolute;
   top: 50%;
@@ -132,8 +137,10 @@
   display: flex;
   align-items: center;
   padding: 0 6px;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, box-shadow 0.2s ease;
   cursor: default;
+  /* Empêche le label de sortir de la barre */
+  min-width: 4px;
 }
 
 .eventBar:hover {
@@ -141,33 +148,44 @@
   z-index: 2;
 }
 
-/* Barre d'un event actif : plus visible */
 .eventBarActive {
-  opacity: 0.92;
-  box-shadow: 0 0 10px rgba(201, 168, 76, 0.3);
+  opacity: 0.95;
+  box-shadow: 0 0 12px rgba(201, 168, 76, 0.25);
 }
 
 /* Label dans la barre */
 .barLabel {
   font-family: 'Cinzel', serif;
-  font-size: 0.62rem;
-  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.9);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   pointer-events: none;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
 }
 
-/* ── Responsive ────────────────────────────────────────────── */
+/* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .row {
-    grid-template-columns: 1fr 110px;
+    grid-template-columns: 1fr 115px;
     grid-template-rows: auto auto;
+    padding: 6px 0;
   }
 
+  /* La timeline prend toute la largeur sur la 2e ligne */
   .timelineCell {
     grid-column: 1 / -1;
-    height: 24px;
+    height: 22px;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    margin-top: 4px;
+  }
+
+  .eventBar {
+    height: 14px;
+  }
+
+  .barLabel {
+    display: none; /* Trop petit sur mobile */
   }
 }

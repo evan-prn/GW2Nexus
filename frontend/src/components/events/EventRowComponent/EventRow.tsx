@@ -1,11 +1,11 @@
 // =============================================================
-// components/events/EventRowComponent/EventRow.tsx
+// components/events/EventRowComponent/EventRow.tsx — v2
 // Ligne d'un événement dans le timer
 //
-// Layout en 3 colonnes (identique à EventTimer/TimelineHeader) :
-//   col 1 (260px) — icône + nom + zone
-//   col 2 (130px) — badge de statut
-//   col 3 (1fr)   — barres de créneaux sur la timeline visuelle
+// Améliorations v2 :
+//  - tooltip heure UTC sur chaque barre (title attribut)
+//  - iconFallback avec style cohérent (pas d'emoji brut)
+//  - overflow:hidden sur timelineCell pour éviter les débordements
 // =============================================================
 
 import React, { useMemo } from 'react';
@@ -16,12 +16,11 @@ import styles from './EventRow.module.css';
 interface EventRowProps {
   eventState: EventState;
   timelineSlots: TimelineSlot[];
-  /** Couleur de la zone parente (barres de la timeline) */
   zoneColor: string;
 }
 
 // ─────────────────────────────────────────────────────────────
-// Utilitaire : positionner une barre sur la timeline
+// Calcul de position d'une barre sur la timeline
 // ─────────────────────────────────────────────────────────────
 
 interface BarPosition {
@@ -29,11 +28,6 @@ interface BarPosition {
   widthPercent: number;
 }
 
-/**
- * Calcule la position et la largeur (en %) d'un créneau d'événement
- * par rapport à la fenêtre de la timeline.
- * Retourne null si le créneau est hors de la fenêtre visible.
- */
 const computeBarPosition = (
   slotStartMin: number,
   slotDurationMin: number,
@@ -42,7 +36,8 @@ const computeBarPosition = (
   if (slots.length < 2) return null;
 
   const windowStart = slots[0].minutes;
-  const windowEnd   = slots[slots.length - 1].minutes + 30; // +30 min pour la dernière colonne
+  // +30 min pour inclure la dernière colonne complète
+  const windowEnd = slots[slots.length - 1].minutes + 30;
   const windowRange = windowEnd - windowStart;
   if (windowRange <= 0) return null;
 
@@ -51,17 +46,23 @@ const computeBarPosition = (
   // Hors fenêtre
   if (slotStartMin >= windowEnd || slotEnd <= windowStart) return null;
 
-  // Clipper dans la fenêtre
   const clampedStart = Math.max(slotStartMin, windowStart);
-  const clampedEnd   = Math.min(slotEnd, windowEnd);
+  const clampedEnd = Math.min(slotEnd, windowEnd);
 
-  const leftPercent  = ((clampedStart - windowStart) / windowRange) * 100;
+  const leftPercent = ((clampedStart - windowStart) / windowRange) * 100;
   const widthPercent = ((clampedEnd - clampedStart) / windowRange) * 100;
 
   return {
-    leftPercent:  Math.max(0, Math.min(100, leftPercent)),
-    widthPercent: Math.max(0, Math.min(100 - leftPercent, widthPercent)),
+    leftPercent: Math.max(0, Math.min(100, leftPercent)),
+    widthPercent: Math.max(0.5, Math.min(100 - leftPercent, widthPercent)), // min 0.5% pour rester visible
   };
+};
+
+/** Formate les minutes UTC en "HH:MM UTC" pour les tooltips */
+const formatUtcTime = (minutes: number): string => {
+  const h = Math.floor(minutes / 60) % 24;
+  const m = minutes % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')} UTC`;
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -72,16 +73,19 @@ const EventRow: React.FC<EventRowProps> = ({ eventState, timelineSlots, zoneColo
   const { event, status, nextStartLocal, secondsUntilStart, progressPercent, secondsRemaining } =
     eventState;
 
-  // Calcul des positions des barres (mémoïsé car les slots changent rarement)
   const bars = useMemo(
     () =>
       event.slots
         .map((slot, idx) => {
           const pos = computeBarPosition(slot.startMinutes, slot.durationMinutes, timelineSlots);
           if (!pos) return null;
-          return { ...pos, key: `${event.id}-${idx}`, slot };
+          return {
+            ...pos,
+            key: `${event.id}-${idx}`,
+            tooltipLabel: `${event.name} — ${formatUtcTime(slot.startMinutes)}`,
+          };
         })
-        .filter(Boolean) as (BarPosition & { key: string })[],
+        .filter(Boolean) as (BarPosition & { key: string; tooltipLabel: string })[],
     [event.slots, event.id, timelineSlots],
   );
 
@@ -94,9 +98,14 @@ const EventRow: React.FC<EventRowProps> = ({ eventState, timelineSlots, zoneColo
       {/* ── Col 1 : Infos ────────────────────────────────────────────── */}
       <div className={styles.infoCell}>
         {event.iconUrl ? (
-          <img src={event.iconUrl} alt="" className={styles.icon} aria-hidden="true" />
+          <img
+            src={event.iconUrl}
+            alt={event.name}
+            className={styles.icon}
+            loading="lazy"
+          />
         ) : (
-          <span className={styles.iconFallback} aria-hidden="true">⚔️</span>
+          <span className={styles.iconFallback} aria-hidden="true">⚔</span>
         )}
         <div className={styles.nameBlock}>
           <span className={styles.eventName}>{event.name}</span>
@@ -116,8 +125,8 @@ const EventRow: React.FC<EventRowProps> = ({ eventState, timelineSlots, zoneColo
       </div>
 
       {/* ── Col 3 : Timeline ─────────────────────────────────────────── */}
-      <div className={styles.timelineCell} role="presentation">
-        {/* Grille de fond (colonnes par créneau de 30 min) */}
+      <div className={styles.timelineCell} aria-hidden="true">
+        {/* Grille de fond */}
         <div className={styles.timelineGrid}>
           {timelineSlots.map((s) => (
             <div
@@ -127,7 +136,7 @@ const EventRow: React.FC<EventRowProps> = ({ eventState, timelineSlots, zoneColo
           ))}
         </div>
 
-        {/* Barres des créneaux d'événement */}
+        {/* Barres de créneaux */}
         {bars.map((bar) => (
           <div
             key={bar.key}
@@ -137,10 +146,9 @@ const EventRow: React.FC<EventRowProps> = ({ eventState, timelineSlots, zoneColo
               width: `${bar.widthPercent}%`,
               backgroundColor: zoneColor,
             }}
-            aria-hidden="true"
+            title={bar.tooltipLabel}
           >
-            {/* Label dans la barre si assez large (> 8%) */}
-            {bar.widthPercent > 8 && (
+            {bar.widthPercent > 7 && (
               <span className={styles.barLabel}>{event.name}</span>
             )}
           </div>

@@ -1,13 +1,7 @@
 // =============================================================
-// components/events/TimelineHeaderComponent/TimelineHeader.tsx
-// En-tête sticky de la timeline
-//
-// Affiche (en 3 colonnes, alignées sur EventRow) :
-//   col 1 — label "Événement"
-//   col 2 — horloges UTC (heure serveur) et locale
-//   col 3 — créneaux horaires toutes les 30 min
-//
-// Réplique fidèle de l'UI du Bus Magique (lebusmagique.fr).
+// components/events/TimelineHeaderComponent/TimelineHeader.tsx — v2
+// En-tête sticky : horloges UTC/locale + colonnes horaires
+// Ajout : label "Heure suivante" sur la dernière colonne
 // =============================================================
 
 import React from 'react';
@@ -24,24 +18,33 @@ const TimelineHeader: React.FC<TimelineHeaderProps> = ({ timelineSlots }) => {
 
   return (
     <div className={styles.header} role="rowgroup">
-      {/* ── Col 1 : Titre ────────────────────────────────────────────── */}
+
+      {/* ── Col 1 : Label ────────────────────────────────────────────── */}
       <div className={styles.infoCol}>
         <span className={styles.colLabel}>Événement</span>
       </div>
 
       {/* ── Col 2 : Horloges ─────────────────────────────────────────── */}
-      <div className={styles.clockCol} aria-label="Horloges">
+      <div className={styles.clockCol}>
         {/* Heure serveur GW2 = UTC */}
         <div className={styles.clockBlock}>
-          <span className={styles.clockTime} data-type="utc" aria-label="Heure serveur">
+          <span
+            className={styles.clockTime}
+            data-type="utc"
+            aria-label={`Heure serveur : ${utcTime}`}
+          >
             {utcTime}
           </span>
           <span className={styles.clockLabel}>Heure serveur</span>
         </div>
 
-        {/* Heure locale du navigateur */}
+        {/* Heure locale navigateur */}
         <div className={styles.clockBlock}>
-          <span className={styles.clockTime} data-type="local" aria-label="Votre heure">
+          <span
+            className={styles.clockTime}
+            data-type="local"
+            aria-label={`Votre heure : ${localTime}`}
+          >
             {localTime}
           </span>
           <span className={styles.clockLabel}>Votre heure</span>
@@ -49,16 +52,32 @@ const TimelineHeader: React.FC<TimelineHeaderProps> = ({ timelineSlots }) => {
       </div>
 
       {/* ── Col 3 : Créneaux horaires ─────────────────────────────────── */}
-      <div className={styles.timelineCol} role="row" aria-label="Créneaux horaires">
-        {timelineSlots.map((slot) => (
-          <div
-            key={slot.minutes}
-            className={`${styles.timeSlot} ${slot.isCurrent ? styles.timeSlotCurrent : ''}`}
-            aria-current={slot.isCurrent ? 'true' : undefined}
-          >
-            <span className={styles.slotLabel}>{slot.label}</span>
-          </div>
-        ))}
+      <div className={styles.timelineCol} aria-label="Créneaux horaires UTC">
+        {timelineSlots.map((slot, index) => {
+          const isLast = index === timelineSlots.length - 1;
+
+          return (
+            <div
+              key={slot.minutes}
+              className={[
+                styles.timeSlot,
+                slot.isCurrent ? styles.timeSlotCurrent : '',
+                isLast        ? styles.timeSlotNext    : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+              aria-current={slot.isCurrent ? 'true' : undefined}
+            >
+              <span className={styles.slotLabel}>{slot.label}</span>
+              {/* Sous-label discret uniquement sur la dernière colonne */}
+              {isLast && (
+                <span className={styles.nextHourLabel} aria-hidden="true">
+                  suivante
+                </span>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

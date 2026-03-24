@@ -1,19 +1,26 @@
 /* =============================================================
-   EventBadge.module.css
+   EventBadge.module.css — v2
    Badge de statut d'un événement GW2
+   =============================================================
+
+   Largeur fixe sur tous les états pour éviter le layout shift
+   lors des transitions active → upcoming → idle.
    ============================================================= */
 
 /* ── Base ──────────────────────────────────────────────────── */
 .badge {
+  /* Largeur fixe : garantit que la col 2 ne "saute" pas */
+  width: 112px;
+  box-sizing: border-box;
+
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
+  padding: 5px 10px;
   border-radius: 4px;
   font-family: 'Cinzel', serif;
   font-size: 0.7rem;
   letter-spacing: 0.04em;
-  min-width: 110px;
   white-space: nowrap;
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
@@ -26,22 +33,24 @@
   padding: 6px 10px;
   background-color: rgba(201, 168, 76, 0.12);
   border: 1px solid rgba(201, 168, 76, 0.45);
+  height: auto; /* laisse grandir verticalement */
 }
 
 .activeLabel {
   color: var(--color-gold, #c9a84c);
   font-weight: 700;
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  animation: pulse 2s ease-in-out infinite;
+  animation: activePulse 2s ease-in-out infinite;
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.55; }
+@keyframes activePulse {
+  0%, 100% { opacity: 1;   }
+  50%       { opacity: 0.5; }
 }
 
+/* Barre de progression */
 .progressBar {
   width: 100%;
   height: 3px;
@@ -54,20 +63,20 @@
   height: 100%;
   background: linear-gradient(90deg, #c9a84c 0%, #e8c96a 100%);
   border-radius: 2px;
-  /* Transition lissée d'1s pour correspondre au tick de l'interval */
   transition: width 1s linear;
 }
 
 .timeRemaining {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.62rem;
   text-align: right;
+  font-family: 'Cinzel', serif;
 }
 
 /* ── Upcoming ──────────────────────────────────────────────── */
 .badge[data-status='upcoming'] {
-  background-color: rgba(74, 144, 217, 0.12);
-  border: 1px solid rgba(74, 144, 217, 0.35);
+  background-color: rgba(74, 144, 217, 0.1);
+  border: 1px solid rgba(74, 144, 217, 0.32);
 }
 
 .upcomingDot {
@@ -77,25 +86,31 @@
   border-radius: 50%;
   background-color: #4a90d9;
   flex-shrink: 0;
-  animation: blink 1.2s ease-in-out infinite;
+  animation: dotBlink 1.2s ease-in-out infinite;
 }
 
-@keyframes blink {
-  0%, 100% { opacity: 1;   transform: scale(1);   }
-  50%       { opacity: 0.3; transform: scale(0.75); }
+@keyframes dotBlink {
+  0%, 100% { opacity: 1;   transform: scale(1);    }
+  50%       { opacity: 0.3; transform: scale(0.7);  }
 }
 
 .countdown {
   color: #6aafec;
   font-weight: 600;
+  /* Chiffres fixes pour éviter les sauts (Cinzel est proportionnel) */
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
 }
 
 /* ── Idle ──────────────────────────────────────────────────── */
 .badge[data-status='idle'] {
   background-color: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  justify-content: center;
 }
 
 .nextTime {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.38);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
 }

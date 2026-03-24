@@ -1,33 +1,34 @@
 /* =============================================================
-   TimelineHeader.module.css
+   TimelineHeader.module.css — v2
    En-tête sticky de la timeline
    ============================================================= */
 
-/* ── Layout 3 colonnes (identique à EventRow) ──────────────── */
+/* ── Layout 3 colonnes ─────────────────────────────────────── */
 .header {
   display: grid;
   grid-template-columns: 260px 130px 1fr;
   align-items: center;
-  padding: 10px 0 8px;
-  border-bottom: 2px solid rgba(201, 168, 76, 0.28);
-  margin-bottom: 6px;
-  /* Collant en haut lors du scroll */
+  padding: 10px 0 10px;
+  border-bottom: 2px solid rgba(201, 168, 76, 0.25);
+  margin-bottom: 8px;
   position: sticky;
   top: 0;
   z-index: 20;
-  /* Fond opaque pour masquer le contenu qui défile derrière */
   background-color: var(--color-bg, #0e0e12);
+  /* Léger flou pour masquer le scroll derrière */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
-/* ── Col 1 : Info ──────────────────────────────────────────── */
+/* ── Col 1 : label ─────────────────────────────────────────── */
 .infoCol {
   padding: 0 14px;
 }
 
 .colLabel {
   font-family: 'Cinzel', serif;
-  font-size: 0.68rem;
-  color: rgba(255, 255, 255, 0.28);
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.25);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -37,8 +38,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 0 8px;
+  gap: 3px;
+  padding: 0 6px;
+  /* Séparateurs visuels entre les horloges */
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .clockBlock {
@@ -46,55 +50,74 @@
   flex-direction: column;
   align-items: center;
   line-height: 1;
+  gap: 2px;
 }
 
 .clockTime {
   font-family: 'Cinzel', serif;
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.04em;
+  /* Légère ombre pour lisibilité sur fond sombre */
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
-/* UTC = orange, comme Le Bus Magique */
+/* UTC — orange, réplique le Bus Magique */
 .clockTime[data-type='utc'] {
   color: #e5862a;
 }
 
-/* Heure locale = dorée GW2Nexus */
+/* Heure locale — or GW2Nexus */
 .clockTime[data-type='local'] {
   color: var(--color-gold, #c9a84c);
 }
 
 .clockLabel {
   font-family: 'Crimson Pro', serif;
-  font-size: 0.6rem;
-  color: rgba(255, 255, 255, 0.28);
+  font-size: 0.58rem;
+  color: rgba(255, 255, 255, 0.25);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-top: 2px;
 }
 
-/* ── Col 3 : Créneaux ──────────────────────────────────────── */
+/* ── Col 3 : Timeline ──────────────────────────────────────── */
 .timelineCol {
   display: flex;
+  /* Aligner avec les barres des EventRow */
+  height: 100%;
+  align-items: stretch;
 }
 
 .timeSlot {
   flex: 1;
-  padding-left: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 3px 4px 3px 5px;
   border-left: 1px solid rgba(255, 255, 255, 0.06);
+  /* Empêche tout débordement vers la colonne suivante */
+  overflow: hidden;
 }
 
-/* Créneau courant mis en valeur */
+/* Créneau de l'heure courante */
 .timeSlotCurrent {
-  border-left-color: rgba(201, 168, 76, 0.45);
+  border-left-color: rgba(201, 168, 76, 0.5);
+  background-color: rgba(201, 168, 76, 0.03);
+}
+
+/* Dernier créneau */
+.timeSlotNext {
+  border-left-color: rgba(255, 255, 255, 0.12);
 }
 
 .slotLabel {
   font-family: 'Cinzel', serif;
-  font-size: 0.65rem;
-  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.63rem;
+  color: rgba(255, 255, 255, 0.3);
   letter-spacing: 0.02em;
+  white-space: nowrap;
+  line-height: 1;
 }
 
 .timeSlotCurrent .slotLabel {
@@ -102,13 +125,31 @@
   font-weight: 600;
 }
 
+/*
+ * "suivante" — sous l'heure, dans la même colonne, discret.
+ * Une seule ligne courte, jamais de débordement.
+ */
+.nextHourLabel {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.54rem;
+  color: rgba(255, 255, 255, 0.2);
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  line-height: 1;
+  display: block;
+  letter-spacing: 0.02em;
+}
+
 /* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .header {
-    grid-template-columns: 1fr 110px;
+    grid-template-columns: 1fr 120px;
   }
 
+  /* Cacher la timeline sur mobile (les EventRow la montrent à la place) */
   .timelineCol {
-    display: none; /* Caché sur mobile — la timeline complète est dans EventRow */
+    display: none;
   }
 }
