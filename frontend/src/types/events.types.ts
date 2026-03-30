@@ -13,7 +13,8 @@ export type EventCategory =
   | 'icebrood'   // Épopée du Givre (IBS)
   | 'eod'        // End of Dragons
   | 'soto'       // Secrets of the Obscure
-  | 'jw';        // Janthir Wilds
+  | 'jw'         // Janthir Wilds
+  | 'voe';       // Visions of Eternity
 
 /**
  * Statut calculé en temps réel d'un événement.
@@ -51,6 +52,13 @@ export interface GW2Event {
   iconUrl?: string;
   /** Lien wiki GW2 (optionnel) */
   wikiUrl?: string;
+  /**
+   * Identifiant officiel dans l'API GW2 (/v2/worldbosses).
+   * Présent uniquement sur les world bosses Core Tyria.
+   * Permet de croiser avec /v2/account/worldbosses pour le statut
+   * "déjà tué aujourd'hui".
+   */
+  gw2ApiId?: string;
   /** Créneaux horaires fixes dans la journée UTC */
   slots: EventSlot[];
   /**

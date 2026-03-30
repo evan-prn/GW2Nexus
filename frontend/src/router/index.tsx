@@ -64,7 +64,8 @@ const ProfilePage         = lazy(() => import('@/pages/ProfilePage/ProfilePage')
 
 // ── Sprint 2 — Timer d'événements GW2 ────────────────────────────────────────
 // Page publique : pas besoin d'être connecté pour consulter les horaires.
-const EventsPage          = lazy(() => import('@/pages/EventsPage/EventsPage'));
+const EventsPage          = lazy(() => import('@/pages/Events/EventsPage/EventsPage'));
+const EventDetailPage     = lazy(() => import('@/pages/Events/EventDetailPage/EventDetailPage'));
 
 // Admin — rôle 'admin' obligatoire
 const AdminOverviewPage   = lazy(() => import('@/pages/Admin/AdminOverviewPage/AdminOverviewPage'));
@@ -92,7 +93,8 @@ const router = createBrowserRouter([
       { path: '/rules',   element: <S><RulesPage /></S>   },
 
       // ── Événements ────────────────────────────────────────────────────────
-      { path: '/events',  element: <S><EventsPage /></S>  },
+      { path: '/events',            element: <S><EventsPage /></S>  },
+      { path: '/events/:eventId',   element: <S><EventDetailPage /></S>  },
 
       // ── Routes Guest — visiteur non connecté uniquement ───────────────────
       // Redirige vers /profile si déjà authentifié

@@ -4,13 +4,13 @@
 // =============================================================
 
 import React, { useState, useMemo } from 'react';
-import { EVENT_GROUPS } from '../../data/events.data';
+import { EVENT_GROUPS } from '@/data/events.data';
 import { useTimeline, useEventTimer } from '@/hooks/event/useEventTimer';
 import TimelineHeader from '@/components/events/TimeLineHeaderComponent/TimeLineHeader';
 import EventZoneSection from '@/components/events/EventZoneSectionComponent/EventZoneSection';
 import usePageTitle from '@/hooks/usePageTitle';
 import styles from './EventsPage.module.css';
-import type { EventExpansionGroup } from '../../types/events.types';
+import type { EventExpansionGroup } from '@/types/events.types';
 
 // ─────────────────────────────────────────────────────────────
 // Sous-composant : un groupe d'expansion avec ses zones

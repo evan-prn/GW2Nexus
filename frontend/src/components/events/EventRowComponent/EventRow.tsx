@@ -1,16 +1,18 @@
 // =============================================================
-// components/events/EventRowComponent/EventRow.tsx — v2
+// components/events/EventRowComponent/EventRow.tsx — v3
 // Ligne d'un événement dans le timer
 //
-// Améliorations v2 :
+// Améliorations v3 :
+//  - clic sur le nom de l'event → navigation vers /events/{id}
 //  - tooltip heure UTC sur chaque barre (title attribut)
 //  - iconFallback avec style cohérent (pas d'emoji brut)
 //  - overflow:hidden sur timelineCell pour éviter les débordements
 // =============================================================
 
 import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { EventState, TimelineSlot } from '../../../types/events.types';
-import EventBadge from '../EventBadgeComponent/EventBadge';
+import EventBadge from '@/components/events/EventBadgeComponent/EventBadge';
 import styles from './EventRow.module.css';
 
 interface EventRowProps {
@@ -54,7 +56,8 @@ const computeBarPosition = (
 
   return {
     leftPercent: Math.max(0, Math.min(100, leftPercent)),
-    widthPercent: Math.max(0.5, Math.min(100 - leftPercent, widthPercent)), // min 0.5% pour rester visible
+    // min 0.5% pour rester visible
+    widthPercent: Math.max(0.5, Math.min(100 - leftPercent, widthPercent)),
   };
 };
 
@@ -72,6 +75,8 @@ const formatUtcTime = (minutes: number): string => {
 const EventRow: React.FC<EventRowProps> = ({ eventState, timelineSlots, zoneColor }) => {
   const { event, status, nextStartLocal, secondsUntilStart, progressPercent, secondsRemaining } =
     eventState;
+
+  const navigate = useNavigate();
 
   const bars = useMemo(
     () =>
@@ -108,7 +113,17 @@ const EventRow: React.FC<EventRowProps> = ({ eventState, timelineSlots, zoneColo
           <span className={styles.iconFallback} aria-hidden="true">⚔</span>
         )}
         <div className={styles.nameBlock}>
-          <span className={styles.eventName}>{event.name}</span>
+          {/* Clic sur le nom → page détail de l'event */}
+          <span
+            className={styles.eventName}
+            onClick={() => navigate(`/events/${event.id}`)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && navigate(`/events/${event.id}`)}
+            aria-label={`Voir le détail de ${event.name}`}
+          >
+            {event.name}
+          </span>
           <span className={styles.zoneName}>{event.zone}</span>
         </div>
       </div>

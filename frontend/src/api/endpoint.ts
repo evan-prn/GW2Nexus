@@ -50,7 +50,7 @@ export const ENDPOINTS = {
   //
   // La page Events est publique — pas d'authentification requise.
   events: {
-    schedule: `${API_VERSION}/events/schedule`, // GET — Horaires des événements GW2
+    schedule: `${API_VERSION}/events/schedule`, // GET — Heure serveur UTC + métadonnées
   },
 
   // ─── Back-office admin ───────────────────────────────────────────────────
@@ -63,6 +63,19 @@ export const ENDPOINTS = {
       ban:    (id: number) => `${API_VERSION}/admin/users/${id}/ban`, // POST   — Appliquer un ban
       unban:  (id: number) => `${API_VERSION}/admin/users/${id}/ban`, // DELETE — Lever le ban actif
     },
+  },
+
+  // ─── API officielle Guild Wars 2 (externe) ───────────────────────────────
+  //
+  // Appels directs à l'API ArenaNet — pas de proxy backend.
+  // Authentification via Bearer Token (clé API utilisateur).
+  //
+  // /v2/worldbosses          : liste des IDs de world bosses Core Tyria
+  // /v2/account/worldbosses  : world bosses tués depuis le dernier reset
+  //                            quotidien — nécessite scope "progression"
+  gw2: {
+    worldBosses:        'https://api.guildwars2.com/v2/worldbosses',         // GET — public
+    accountWorldBosses: 'https://api.guildwars2.com/v2/account/worldbosses', // GET — authentifié
   },
 
 } as const;
