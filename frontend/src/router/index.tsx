@@ -48,30 +48,30 @@ const RootLayout = () => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Pages publiques
-const HomePage            = lazy(() => import('../pages/HomePage/HomePage'));
-const AboutPage           = lazy(() => import('../pages/AboutPage/AboutPage'));
-const ContactPage         = lazy(() => import('../pages/ContactPage/ContactPage'));
-const RulesPage           = lazy(() => import('../pages/RulesPage/RulesPage'));
+const HomePage            = lazy(() => import('@/pages/HomePage/HomePage'));
+const AboutPage           = lazy(() => import('@/pages/AboutPage/AboutPage'));
+const ContactPage         = lazy(() => import('@/pages/ContactPage/ContactPage'));
+const RulesPage           = lazy(() => import('@/pages/RulesPage/RulesPage'));
 
 // Auth (visiteur non connecté uniquement)
-const LoginPage           = lazy(() => import('../pages/Auth/LoginPage/LoginPage'));
-const RegisterPage        = lazy(() => import('../pages/Auth/RegisterPage/RegisterPage'));
-const ForgotPasswordPage  = lazy(() => import('../pages/Auth/ForgotPasswordPage/ForgotPasswordPage'));
-const ResetPasswordPage   = lazy(() => import('../pages/Auth/ResetPasswordPage/ResetPasswordPage'));
+const LoginPage           = lazy(() => import('@/pages/Auth/LoginPage/LoginPage'));
+const RegisterPage        = lazy(() => import('@/pages/Auth/RegisterPage/RegisterPage'));
+const ForgotPasswordPage  = lazy(() => import('@/pages/Auth/ForgotPasswordPage/ForgotPasswordPage'));
+const ResetPasswordPage   = lazy(() => import('@/pages/Auth/ResetPasswordPage/ResetPasswordPage'));
 
 // App — utilisateur connecté
-const ProfilePage         = lazy(() => import('../pages/ProfilePage/ProfilePage'));
+const ProfilePage         = lazy(() => import('@/pages/ProfilePage/ProfilePage'));
 
 // ── Sprint 2 — Timer d'événements GW2 ────────────────────────────────────────
 // Page publique : pas besoin d'être connecté pour consulter les horaires.
-const EventsPage          = lazy(() => import('../pages/EventsPage/EventsPage'));
+const EventsPage          = lazy(() => import('@/pages/EventsPage/EventsPage'));
 
 // Admin — rôle 'admin' obligatoire
-const AdminOverviewPage   = lazy(() => import('../pages/Admin/AdminOverviewPage/AdminOverviewPage'));
-const AdminUserPage       = lazy(() => import('../pages/Admin/AdminUserPage/AdminUserPage'));
+const AdminOverviewPage   = lazy(() => import('@/pages/Admin/AdminOverviewPage/AdminOverviewPage'));
+const AdminUserPage       = lazy(() => import('@/pages/Admin/AdminUserPage/AdminUserPage'));
 
 // Erreur
-const NotFoundPage        = lazy(() => import('../pages/NotFoundPage/NotFoundPage'));
+const NotFoundPage        = lazy(() => import('@/pages/NotFoundPage/NotFoundPage'));
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Router

@@ -4,7 +4,7 @@
 //
 // Source officielle : https://wiki.guildwars2.com/wiki/Event_timers
 // Les créneaux sont en minutes depuis minuit UTC.
-// Mise à jour : 2024 — à ajuster si ArenaNet modifie les horaires.
+// Mise à jour : 2025 — à ajuster si ArenaNet modifie les horaires.
 // =============================================================
 
 import type { EventExpansionGroup } from '../types/events.types';
@@ -24,9 +24,9 @@ const hm = (hhMm: string): number => {
 
 /**
  * Génère 12 créneaux espacés de 2h à partir d'une heure de départ.
- * Utilisé pour les world bosses dont le cycle est de 2h.
+ * Utilisé pour les méta-événements dont le cycle est fixe de 2h.
  *
- * Exemple : cycle2h("01:00", 15) génère des slots à 01:00, 03:00, 05:00...
+ * Exemple : cycle2h("01:00", 15) → slots à 01:00, 03:00, 05:00...
  */
 const cycle2h = (startHHMM: string, durationMin: number, preEventMin = 5) => {
   const base = hm(startHHMM);
@@ -35,103 +35,6 @@ const cycle2h = (startHHMM: string, durationMin: number, preEventMin = 5) => {
     durationMinutes: durationMin,
     preEventMinutes: preEventMin,
   }));
-};
-
-// ─────────────────────────────────────────────────────────────
-// JANTHIR WILDS — zones du screenshot du Bus Magique
-// ─────────────────────────────────────────────────────────────
-
-const JW_GROUP: EventExpansionGroup = {
-  id: 'jw',
-  label: 'Janthir Wilds',
-  zones: [
-    {
-      id: 'rive-aux-epaves',
-      name: 'Rive aux Épaves',
-      color: '#c9619a',
-      icon: '⚓',
-      events: [
-        {
-          id: 'bagarre-cerf-marteau',
-          name: 'Bagarre des Cerf-Marteau !',
-          zone: 'Rive aux Épaves',
-          category: 'jw',
-          isTwoHourCycle: true,
-          slots: cycle2h('01:40', 20, 5),
-          wikiUrl: 'https://wiki.guildwars2.com/wiki/Janthir_Wilds',
-        },
-      ],
-    },
-    {
-      id: 'bois-etoile',
-      name: 'Bois Étoilé',
-      color: '#c9619a',
-      icon: '🌳',
-      events: [
-        {
-          id: 'secrets-du-bois',
-          name: 'Secrets du Bois',
-          zone: 'Bois Étoilé',
-          category: 'jw',
-          isTwoHourCycle: true,
-          // Le Bus Magique montre deux créneaux visibles : 09:00 et 10:40
-          slots: cycle2h('01:00', 15, 5),
-          wikiUrl: 'https://wiki.guildwars2.com/wiki/Janthir_Wilds',
-        },
-      ],
-    },
-    {
-      id: 'bava-nisos',
-      name: 'Bava Nisos',
-      color: '#4a90d9',
-      icon: '🏝️',
-      events: [
-        {
-          id: 'voyage-titanesque',
-          name: 'Un Voyage Titanesque',
-          zone: 'Bava Nisos',
-          category: 'jw',
-          isTwoHourCycle: true,
-          slots: cycle2h('01:20', 25, 5),
-          wikiUrl: 'https://wiki.guildwars2.com/wiki/Janthir_Wilds',
-        },
-      ],
-    },
-    {
-      id: 'convergences-mont-balrior',
-      name: 'Convergences : Mont Balrior',
-      color: '#4a90d9',
-      icon: '⛰️',
-      events: [
-        {
-          id: 'convergences-balrior',
-          name: 'Convergences',
-          zone: 'Convergences : Mont Balrior',
-          category: 'jw',
-          isTwoHourCycle: true,
-          slots: cycle2h('02:00', 20, 5),
-          wikiUrl: 'https://wiki.guildwars2.com/wiki/Convergences',
-        },
-      ],
-    },
-    {
-      id: 'syntri-de-janthir',
-      name: 'Syntri de Janthir',
-      color: '#4a90d9',
-      icon: '🌐',
-      events: [
-        {
-          id: 'syntri-meta',
-          name: 'Méta de Syntri',
-          zone: 'Syntri de Janthir',
-          category: 'jw',
-          isTwoHourCycle: true,
-          slots: cycle2h('01:30', 30, 10),
-          wikiUrl: 'https://wiki.guildwars2.com/wiki/Janthir_Wilds',
-        },
-      ],
-    },
-  ],
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -155,7 +58,7 @@ const WORLD_BOSSES_GROUP: EventExpansionGroup = {
           zone: 'Côte de la Marée Sanglante',
           category: 'world_boss',
           isTwoHourCycle: false,
-          // Horaires fixes Tequatl (UTC)
+          // Horaires fixes Tequatl (UTC) — source : wiki GW2
           slots: [
             { startMinutes: hm('00:00'), durationMinutes: 30, preEventMinutes: 10 },
             { startMinutes: hm('03:00'), durationMinutes: 30, preEventMinutes: 10 },
@@ -180,7 +83,7 @@ const WORLD_BOSSES_GROUP: EventExpansionGroup = {
           zone: 'Champs de Gendarran',
           category: 'world_boss',
           isTwoHourCycle: false,
-          // Horaires fixes Triple Terreur (UTC)
+          // Horaires fixes Triple Terreur (UTC) — source : wiki GW2
           slots: [
             { startMinutes: hm('01:00'), durationMinutes: 30, preEventMinutes: 10 },
             { startMinutes: hm('04:00'), durationMinutes: 30, preEventMinutes: 10 },
@@ -249,6 +152,7 @@ const WORLD_BOSSES_GROUP: EventExpansionGroup = {
 
 // ─────────────────────────────────────────────────────────────
 // HEART OF THORNS — Méta-événements HoT
+// Source : https://wiki.guildwars2.com/wiki/Event_timers
 // ─────────────────────────────────────────────────────────────
 
 const HOT_GROUP: EventExpansionGroup = {
@@ -327,14 +231,368 @@ const HOT_GROUP: EventExpansionGroup = {
 };
 
 // ─────────────────────────────────────────────────────────────
+// PATH OF FIRE — Méta-événements PoF
+// Source : https://wiki.guildwars2.com/wiki/Event_timers
+// ─────────────────────────────────────────────────────────────
+
+const POF_GROUP: EventExpansionGroup = {
+  id: 'pof',
+  label: 'Path of Fire',
+  zones: [
+    {
+      id: 'deserts-cristal',
+      name: 'Déserts de Cristal',
+      color: '#e8a030',
+      icon: '🏜️',
+      events: [
+        {
+          id: 'palawadan',
+          name: 'Palawadan, Joyau du Désert',
+          zone: 'Déserts de Cristal',
+          category: 'pof',
+          isTwoHourCycle: false,
+          // Horaires fixes toutes les 2h à xx:00 (UTC)
+          slots: [
+            { startMinutes: hm('00:00'), durationMinutes: 30, preEventMinutes: 5 },
+            { startMinutes: hm('02:00'), durationMinutes: 30, preEventMinutes: 5 },
+            { startMinutes: hm('04:00'), durationMinutes: 30, preEventMinutes: 5 },
+            { startMinutes: hm('06:00'), durationMinutes: 30, preEventMinutes: 5 },
+            { startMinutes: hm('08:00'), durationMinutes: 30, preEventMinutes: 5 },
+            { startMinutes: hm('10:00'), durationMinutes: 30, preEventMinutes: 5 },
+            { startMinutes: hm('12:00'), durationMinutes: 30, preEventMinutes: 5 },
+            { startMinutes: hm('14:00'), durationMinutes: 30, preEventMinutes: 5 },
+            { startMinutes: hm('16:00'), durationMinutes: 30, preEventMinutes: 5 },
+            { startMinutes: hm('18:00'), durationMinutes: 30, preEventMinutes: 5 },
+            { startMinutes: hm('20:00'), durationMinutes: 30, preEventMinutes: 5 },
+            { startMinutes: hm('22:00'), durationMinutes: 30, preEventMinutes: 5 },
+          ],
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Palawadan,_Jewel_of_the_Desert',
+        },
+      ],
+    },
+    {
+      id: 'domaine-vabbi',
+      name: 'Domaine de Vabbi',
+      color: '#e8a030',
+      icon: '🕌',
+      events: [
+        {
+          id: 'grand-court-sekhara',
+          name: 'La Grande Cour de Sekhara',
+          zone: 'Domaine de Vabbi',
+          category: 'pof',
+          isTwoHourCycle: true,
+          slots: cycle2h('00:30', 20, 5),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/The_Grand_Court_of_Sekhara',
+        },
+      ],
+    },
+    {
+      id: 'bassin-elon',
+      name: "Bassin d'Elon",
+      color: '#e8a030',
+      icon: '🌊',
+      events: [
+        {
+          id: 'boucher-abomination',
+          name: "Abomination du Boucher",
+          zone: "Bassin d'Elon",
+          category: 'pof',
+          isTwoHourCycle: true,
+          slots: cycle2h('01:00', 20, 5),
+          wikiUrl: "https://wiki.guildwars2.com/wiki/Elon_Riverlands",
+        },
+      ],
+    },
+  ],
+};
+
+// ─────────────────────────────────────────────────────────────
+// END OF DRAGONS — Méta-événements EoD
+// Source : https://wiki.guildwars2.com/wiki/Event_timers
+// ─────────────────────────────────────────────────────────────
+
+const EOD_GROUP: EventExpansionGroup = {
+  id: 'eod',
+  label: 'End of Dragons',
+  zones: [
+    {
+      id: 'fin-du-dragon',
+      name: "Fin du Dragon",
+      color: '#4a90d9',
+      icon: '🐲',
+      events: [
+        {
+          id: 'temple-moisson',
+          name: 'Temple de la Moisson',
+          zone: "Fin du Dragon",
+          category: 'eod',
+          isTwoHourCycle: false,
+          // Horaires fixes toutes les 2h à xx:00 (UTC)
+          slots: [
+            { startMinutes: hm('00:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('02:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('04:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('06:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('08:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('10:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('12:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('14:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('16:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('18:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('20:00'), durationMinutes: 30, preEventMinutes: 10 },
+            { startMinutes: hm('22:00'), durationMinutes: 30, preEventMinutes: 10 },
+          ],
+          wikiUrl: "https://wiki.guildwars2.com/wiki/Dragon%27s_End",
+        },
+      ],
+    },
+    {
+      id: 'nouvelle-kaineng',
+      name: 'Nouvelle Kaineng',
+      color: '#4a90d9',
+      icon: '🏙️',
+      events: [
+        {
+          id: 'kaineng-surpeuplee',
+          name: 'Surpopulation de Kaineng',
+          zone: 'Nouvelle Kaineng',
+          category: 'eod',
+          isTwoHourCycle: true,
+          slots: cycle2h('00:45', 20, 5),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/New_Kaineng_City',
+        },
+      ],
+    },
+    {
+      id: 'echos-ecarlates',
+      name: 'Échos Écarlates',
+      color: '#4a90d9',
+      icon: '🎋',
+      events: [
+        {
+          id: 'arborstone',
+          name: 'Méta Arborstone',
+          zone: 'Échos Écarlates',
+          category: 'eod',
+          isTwoHourCycle: true,
+          slots: cycle2h('01:15', 20, 5),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Seitung_Province',
+        },
+      ],
+    },
+  ],
+};
+
+// ─────────────────────────────────────────────────────────────
+// SECRETS OF THE OBSCURE — Méta-événements SotO
+// Source : https://wiki.guildwars2.com/wiki/Event_timers
+// ─────────────────────────────────────────────────────────────
+
+const SOTO_GROUP: EventExpansionGroup = {
+  id: 'soto',
+  label: 'Secrets of the Obscure',
+  zones: [
+    {
+      id: 'skywatch-archipelago',
+      name: 'Archipel de Skywatch',
+      color: '#8e44ad',
+      icon: '☁️',
+      events: [
+        {
+          id: 'skywatch-meta',
+          name: "Méta de l'Archipel de Skywatch",
+          zone: 'Archipel de Skywatch',
+          category: 'soto',
+          isTwoHourCycle: true,
+          slots: cycle2h('00:00', 20, 5),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Skywatch_Archipelago',
+        },
+      ],
+    },
+    {
+      id: 'amnytas',
+      name: 'Amnytas',
+      color: '#8e44ad',
+      icon: '🌌',
+      events: [
+        {
+          id: 'amnytas-meta',
+          name: "Méta d'Amnytas",
+          zone: 'Amnytas',
+          category: 'soto',
+          isTwoHourCycle: true,
+          slots: cycle2h('01:00', 30, 10),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Amnytas',
+        },
+      ],
+    },
+  ],
+};
+
+// ─────────────────────────────────────────────────────────────
+// JANTHIR WILDS — Méta-événements JW
+// Source : https://wiki.guildwars2.com/wiki/Event_timers
+// Note : syntri-meta démarre à xx:40 (confirmé wiki GW2)
+// ─────────────────────────────────────────────────────────────
+
+const JW_GROUP: EventExpansionGroup = {
+  id: 'jw',
+  label: 'Janthir Wilds',
+  zones: [
+    {
+      id: 'rive-aux-epaves',
+      name: 'Rive aux Épaves',
+      color: '#c9619a',
+      icon: '⚓',
+      events: [
+        {
+          id: 'bagarre-cerf-marteau',
+          name: 'Bagarre des Cerf-Marteau !',
+          zone: 'Rive aux Épaves',
+          category: 'jw',
+          isTwoHourCycle: true,
+          slots: cycle2h('01:40', 20, 5),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Janthir_Wilds',
+        },
+      ],
+    },
+    {
+      id: 'bois-etoile',
+      name: 'Bois Étoilé',
+      color: '#c9619a',
+      icon: '🌳',
+      events: [
+        {
+          id: 'secrets-du-bois',
+          name: 'Secrets du Bois',
+          zone: 'Bois Étoilé',
+          category: 'jw',
+          isTwoHourCycle: true,
+          slots: cycle2h('01:00', 15, 5),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Janthir_Wilds',
+        },
+      ],
+    },
+    {
+      id: 'bava-nisos',
+      name: 'Bava Nisos',
+      color: '#4a90d9',
+      icon: '🏝️',
+      events: [
+        {
+          id: 'voyage-titanesque',
+          name: 'Un Voyage Titanesque',
+          zone: 'Bava Nisos',
+          category: 'jw',
+          isTwoHourCycle: true,
+          slots: cycle2h('01:20', 25, 5),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Janthir_Wilds',
+        },
+      ],
+    },
+    {
+      id: 'convergences-mont-balrior',
+      name: 'Convergences : Mont Balrior',
+      color: '#4a90d9',
+      icon: '⛰️',
+      events: [
+        {
+          id: 'convergences-balrior',
+          name: 'Convergences',
+          zone: 'Convergences : Mont Balrior',
+          category: 'jw',
+          isTwoHourCycle: true,
+          slots: cycle2h('02:00', 20, 5),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Convergences',
+        },
+      ],
+    },
+    {
+      id: 'syntri-de-janthir',
+      name: 'Syntri de Janthir',
+      color: '#4a90d9',
+      icon: '🌐',
+      events: [
+        {
+          id: 'syntri-meta',
+          name: 'Méta de Syntri',
+          zone: 'Syntri de Janthir',
+          category: 'jw',
+          isTwoHourCycle: true,
+          // Départ xx:40 — confirmé wiki GW2 (Of Mists and Monsters)
+          slots: cycle2h('00:40', 30, 10),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Of_Mists_and_Monsters',
+        },
+      ],
+    },
+  ],
+};
+
+// ─────────────────────────────────────────────────────────────
+// VISIONS OF ETERNITY — Méta-événements VoE
+// Source : https://wiki.guildwars2.com/wiki/Event_timers
+// Hammerhart Rumble + Secrets of the Weald : cycle 2h, départ xx:40
+// Confirmé : wiki GW2 + gw2tldr.com live timer
+// ─────────────────────────────────────────────────────────────
+
+const VOE_GROUP: EventExpansionGroup = {
+  id: 'voe',
+  label: 'Visions of Eternity',
+  zones: [
+    {
+      id: 'shipwreck-strand',
+      name: 'Rive aux Épaves de Castora',
+      color: '#3d8bbf',
+      icon: '⚓',
+      events: [
+        {
+          id: 'hammerhart-rumble',
+          name: 'Bagarre des Hammerhart !',
+          zone: 'Rive aux Épaves de Castora',
+          category: 'voe',
+          isTwoHourCycle: true,
+          // Départ xx:40 — confirmé wiki GW2 + gw2tldr live timer
+          slots: cycle2h('00:40', 20, 5),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Hammerhart_Rumble!',
+        },
+      ],
+    },
+    {
+      id: 'starlit-weald',
+      name: 'Forêt Étoilée',
+      color: '#6a5acd',
+      icon: '🌟',
+      events: [
+        {
+          id: 'secrets-of-the-weald',
+          name: 'Secrets de la Forêt',
+          zone: 'Forêt Étoilée',
+          category: 'voe',
+          isTwoHourCycle: true,
+          // Départ xx:40 — même fenêtre que Hammerhart Rumble
+          slots: cycle2h('00:40', 25, 5),
+          wikiUrl: 'https://wiki.guildwars2.com/wiki/Secrets_of_the_Weald',
+        },
+      ],
+    },
+  ],
+};
+
+// ─────────────────────────────────────────────────────────────
 // Export principal — ordre d'affichage dans l'UI
+// Ordre chronologique des extensions GW2
 // ─────────────────────────────────────────────────────────────
 
 export const EVENT_GROUPS: EventExpansionGroup[] = [
-  JW_GROUP,
-  WORLD_BOSSES_GROUP,
-  HOT_GROUP,
+  WORLD_BOSSES_GROUP, // Core Tyria
+  HOT_GROUP,          // Heart of Thorns (2015)
+  POF_GROUP,          // Path of Fire (2017)
+  EOD_GROUP,          // End of Dragons (2022)
+  SOTO_GROUP,         // Secrets of the Obscure (2023)
+  JW_GROUP,           // Janthir Wilds (2024)
+  VOE_GROUP,          // Visions of Eternity (2025)
 ];
 
-/** IDs des groupes pour les filtres */
+/** IDs des groupes pour les filtres de l'UI */
 export const EXPANSION_FILTER_IDS = EVENT_GROUPS.map((g) => g.id);

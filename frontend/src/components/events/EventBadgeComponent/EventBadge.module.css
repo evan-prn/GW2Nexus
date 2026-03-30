@@ -1,25 +1,22 @@
 /* =============================================================
-   EventBadge.module.css — v2
+   EventBadge.module.css — v3
    Badge de statut d'un événement GW2
    =============================================================
-
    Largeur fixe sur tous les états pour éviter le layout shift
    lors des transitions active → upcoming → idle.
    ============================================================= */
 
 /* ── Base ──────────────────────────────────────────────────── */
 .badge {
-  /* Largeur fixe : garantit que la col 2 ne "saute" pas */
   width: 112px;
   box-sizing: border-box;
-
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 5px 10px;
   border-radius: 4px;
   font-family: 'Cinzel', serif;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   letter-spacing: 0.04em;
   white-space: nowrap;
   transition: background-color 0.3s ease, border-color 0.3s ease;
@@ -31,15 +28,15 @@
   align-items: stretch;
   gap: 3px;
   padding: 6px 10px;
-  background-color: rgba(201, 168, 76, 0.12);
-  border: 1px solid rgba(201, 168, 76, 0.45);
-  height: auto; /* laisse grandir verticalement */
+  background-color: rgba(201, 168, 76, 0.15);
+  border: 1px solid rgba(201, 168, 76, 0.55);
+  height: auto;
 }
 
 .activeLabel {
-  color: var(--color-gold, #c9a84c);
+  color: #d4b060;
   font-weight: 700;
-  font-size: 0.62rem;
+  font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   animation: activePulse 2s ease-in-out infinite;
@@ -54,7 +51,7 @@
 .progressBar {
   width: 100%;
   height: 3px;
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.1);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -67,16 +64,18 @@
 }
 
 .timeRemaining {
-  color: rgba(255, 255, 255, 0.45);
-  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.65rem;
   text-align: right;
   font-family: 'Cinzel', serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
 }
 
 /* ── Upcoming ──────────────────────────────────────────────── */
 .badge[data-status='upcoming'] {
-  background-color: rgba(74, 144, 217, 0.1);
-  border: 1px solid rgba(74, 144, 217, 0.32);
+  background-color: rgba(74, 144, 217, 0.12);
+  border: 1px solid rgba(74, 144, 217, 0.45);
 }
 
 .upcomingDot {
@@ -84,20 +83,19 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: #4a90d9;
+  background-color: #5ba3e8;
   flex-shrink: 0;
   animation: dotBlink 1.2s ease-in-out infinite;
 }
 
 @keyframes dotBlink {
-  0%, 100% { opacity: 1;   transform: scale(1);    }
-  50%       { opacity: 0.3; transform: scale(0.7);  }
+  0%, 100% { opacity: 1;   transform: scale(1);   }
+  50%       { opacity: 0.3; transform: scale(0.7); }
 }
 
 .countdown {
-  color: #6aafec;
+  color: #7dbff5;
   font-weight: 600;
-  /* Chiffres fixes pour éviter les sauts (Cinzel est proportionnel) */
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum';
 }
@@ -105,12 +103,12 @@
 /* ── Idle ──────────────────────────────────────────────────── */
 .badge[data-status='idle'] {
   background-color: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   justify-content: center;
 }
 
 .nextTime {
-  color: rgba(255, 255, 255, 0.38);
+  color: rgba(255, 255, 255, 0.55);
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum';
 }

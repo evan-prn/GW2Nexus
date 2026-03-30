@@ -1,5 +1,5 @@
 /* =============================================================
-   TimelineHeader.module.css — v2
+   TimelineHeader.module.css — v3
    En-tête sticky de la timeline
    ============================================================= */
 
@@ -8,14 +8,13 @@
   display: grid;
   grid-template-columns: 260px 130px 1fr;
   align-items: center;
-  padding: 10px 0 10px;
-  border-bottom: 2px solid rgba(201, 168, 76, 0.25);
+  padding: 10px 0;
+  border-bottom: 2px solid rgba(201, 168, 76, 0.4);
   margin-bottom: 8px;
   position: sticky;
   top: 0;
   z-index: 20;
   background-color: var(--color-bg, #0e0e12);
-  /* Léger flou pour masquer le scroll derrière */
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
@@ -27,9 +26,9 @@
 
 .colLabel {
   font-family: 'Cinzel', serif;
-  font-size: 0.65rem;
-  color: rgba(255, 255, 255, 0.25);
-  letter-spacing: 0.12em;
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
@@ -40,9 +39,8 @@
   align-items: center;
   gap: 3px;
   padding: 0 6px;
-  /* Séparateurs visuels entre les horloges */
-  border-left: 1px solid rgba(255, 255, 255, 0.07);
-  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .clockBlock {
@@ -55,35 +53,31 @@
 
 .clockTime {
   font-family: 'Cinzel', serif;
-  font-size: 1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  /* Légère ombre pour lisibilité sur fond sombre */
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
 }
 
-/* UTC — orange, réplique le Bus Magique */
 .clockTime[data-type='utc'] {
-  color: #e5862a;
+  color: #f09540;
 }
 
-/* Heure locale — or GW2Nexus */
 .clockTime[data-type='local'] {
-  color: var(--color-gold, #c9a84c);
+  color: #d4b060;
 }
 
 .clockLabel {
   font-family: 'Crimson Pro', serif;
-  font-size: 0.58rem;
-  color: rgba(255, 255, 255, 0.25);
+  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.4);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 
 /* ── Col 3 : Timeline ──────────────────────────────────────── */
 .timelineCol {
   display: flex;
-  /* Aligner avec les barres des EventRow */
   height: 100%;
   align-items: stretch;
 }
@@ -95,44 +89,37 @@
   justify-content: center;
   gap: 2px;
   padding: 3px 4px 3px 5px;
-  border-left: 1px solid rgba(255, 255, 255, 0.06);
-  /* Empêche tout débordement vers la colonne suivante */
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
 }
 
-/* Créneau de l'heure courante */
 .timeSlotCurrent {
-  border-left-color: rgba(201, 168, 76, 0.5);
-  background-color: rgba(201, 168, 76, 0.03);
+  border-left-color: rgba(201, 168, 76, 0.6);
+  background-color: rgba(201, 168, 76, 0.04);
 }
 
-/* Dernier créneau */
 .timeSlotNext {
-  border-left-color: rgba(255, 255, 255, 0.12);
+  border-left-color: rgba(255, 255, 255, 0.18);
 }
 
 .slotLabel {
   font-family: 'Cinzel', serif;
-  font-size: 0.63rem;
-  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.55);
   letter-spacing: 0.02em;
   white-space: nowrap;
   line-height: 1;
 }
 
 .timeSlotCurrent .slotLabel {
-  color: var(--color-gold, #c9a84c);
-  font-weight: 600;
+  color: #d4b060;
+  font-weight: 700;
 }
 
-/*
- * "suivante" — sous l'heure, dans la même colonne, discret.
- * Une seule ligne courte, jamais de débordement.
- */
 .nextHourLabel {
   font-family: 'Crimson Pro', serif;
-  font-size: 0.54rem;
-  color: rgba(255, 255, 255, 0.2);
+  font-size: 0.57rem;
+  color: rgba(255, 255, 255, 0.32);
   font-style: italic;
   white-space: nowrap;
   overflow: hidden;
@@ -148,7 +135,6 @@
     grid-template-columns: 1fr 120px;
   }
 
-  /* Cacher la timeline sur mobile (les EventRow la montrent à la place) */
   .timelineCol {
     display: none;
   }

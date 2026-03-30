@@ -1,5 +1,5 @@
 /* =============================================================
-   EventRow.module.css — v2
+   EventRow.module.css — v3
    Ligne d'un événement dans le timer
    ============================================================= */
 
@@ -10,9 +10,8 @@
   align-items: center;
   min-height: 46px;
   padding: 4px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   transition: background-color 0.2s ease;
-  /* Empêche le contenu de déborder */
   overflow: hidden;
 }
 
@@ -21,11 +20,11 @@
 }
 
 .row:hover {
-  background-color: rgba(255, 255, 255, 0.022);
+  background-color: rgba(255, 255, 255, 0.035);
 }
 
 .row.status_active {
-  background-color: rgba(201, 168, 76, 0.05);
+  background-color: rgba(201, 168, 76, 0.07);
 }
 
 /* ── Col 1 : Infos ─────────────────────────────────────────── */
@@ -43,7 +42,7 @@
   border-radius: 3px;
   object-fit: cover;
   flex-shrink: 0;
-  outline: 1px solid rgba(255, 255, 255, 0.1);
+  outline: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .iconFallback {
@@ -54,11 +53,10 @@
   justify-content: center;
   flex-shrink: 0;
   font-size: 0.9rem;
-  opacity: 0.5;
-  /* Cercle discret en guise d'icône générique */
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.06);
   border-radius: 3px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  opacity: 0.7;
 }
 
 .nameBlock {
@@ -70,8 +68,8 @@
 
 .eventName {
   font-family: 'Cinzel', serif;
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.87);
+  font-size: 0.83rem;
+  color: rgba(255, 255, 255, 0.92);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -79,13 +77,13 @@
 }
 
 .status_active .eventName {
-  color: var(--color-gold, #c9a84c);
+  color: #d4b060;
 }
 
 .zoneName {
   font-family: 'Crimson Pro', serif;
-  font-size: 0.68rem;
-  color: rgba(255, 255, 255, 0.28);
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.42);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -103,7 +101,6 @@
 .timelineCell {
   position: relative;
   height: 38px;
-  /* Empêche les barres de déborder */
   overflow: hidden;
 }
 
@@ -117,12 +114,12 @@
 
 .gridCol {
   flex: 1;
-  border-left: 1px solid rgba(255, 255, 255, 0.045);
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .gridColCurrent {
-  background-color: rgba(201, 168, 76, 0.03);
-  border-left-color: rgba(201, 168, 76, 0.32);
+  background-color: rgba(201, 168, 76, 0.04);
+  border-left-color: rgba(201, 168, 76, 0.45);
 }
 
 /* Barre d'un créneau d'event */
@@ -130,16 +127,15 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  height: 22px;
+  height: 24px;
   border-radius: 3px;
-  opacity: 0.72;
+  opacity: 0.82;
   overflow: hidden;
   display: flex;
   align-items: center;
   padding: 0 6px;
   transition: opacity 0.2s ease, box-shadow 0.2s ease;
   cursor: default;
-  /* Empêche le label de sortir de la barre */
   min-width: 4px;
 }
 
@@ -149,20 +145,20 @@
 }
 
 .eventBarActive {
-  opacity: 0.95;
-  box-shadow: 0 0 12px rgba(201, 168, 76, 0.25);
+  opacity: 1;
+  box-shadow: 0 0 14px rgba(201, 168, 76, 0.35);
 }
 
 /* Label dans la barre */
 .barLabel {
   font-family: 'Cinzel', serif;
-  font-size: 0.6rem;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.63rem;
+  color: rgba(255, 255, 255, 0.95);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   pointer-events: none;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
 }
 
 /* ── Responsive ─────────────────────────────────────────────── */
@@ -173,11 +169,10 @@
     padding: 6px 0;
   }
 
-  /* La timeline prend toute la largeur sur la 2e ligne */
   .timelineCell {
     grid-column: 1 / -1;
     height: 22px;
-    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
     margin-top: 4px;
   }
 
@@ -186,6 +181,6 @@
   }
 
   .barLabel {
-    display: none; /* Trop petit sur mobile */
+    display: none;
   }
 }

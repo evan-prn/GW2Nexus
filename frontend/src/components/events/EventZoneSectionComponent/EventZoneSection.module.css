@@ -1,19 +1,19 @@
 /* =============================================================
-   EventZoneSection.module.css — v2
+   EventZoneSection.module.css — v3
    Section d'une zone/carte dans le timer
    ============================================================= */
 
 /* ── Section ───────────────────────────────────────────────── */
 .section {
-  background-color: rgba(255, 255, 255, 0.016);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background-color: rgba(255, 255, 255, 0.022);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 5px;
   overflow: hidden;
   transition: border-color 0.35s ease;
 }
 
 .section.sectionActive {
-  border-color: rgba(201, 168, 76, 0.26);
+  border-color: rgba(201, 168, 76, 0.38);
 }
 
 /* ── En-tête ───────────────────────────────────────────────── */
@@ -21,10 +21,9 @@
   display: flex;
   align-items: center;
   gap: 9px;
-  /* Le padding-left est géré par la colorBar (4px) + gap (9px) */
   padding: 8px 14px 8px 0;
-  background-color: rgba(0, 0, 0, 0.2);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   position: relative;
   min-height: 38px;
 }
@@ -34,7 +33,7 @@
   width: 4px;
   align-self: stretch;
   flex-shrink: 0;
-  opacity: 0.8;
+  opacity: 1;
 }
 
 /* Icône de zone */
@@ -47,7 +46,7 @@
 /* Nom de la zone */
 .zoneName {
   font-family: 'Cinzel', serif;
-  font-size: 0.82rem;
+  font-size: 0.86rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -57,21 +56,22 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  /* Couleur injectée via style inline + léger filtre */
-  filter: brightness(1.05) saturate(0.82);
+  color: rgba(255, 255, 255, 0.9);
+  /* Laisse la couleur inline s'appliquer sans la dégrader */
+  filter: brightness(1.15) saturate(1.0);
 }
 
 /* Badge "EN COURS" */
 .activeTag {
   font-family: 'Cinzel', serif;
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.12em;
-  color: var(--color-gold, #c9a84c);
+  color: #d4b060;
   padding: 2px 7px;
-  border: 1px solid rgba(201, 168, 76, 0.38);
+  border: 1px solid rgba(201, 168, 76, 0.55);
   border-radius: 3px;
-  background-color: rgba(201, 168, 76, 0.1);
+  background-color: rgba(201, 168, 76, 0.15);
   white-space: nowrap;
   flex-shrink: 0;
   animation: tagPulse 2.5s ease-in-out infinite;

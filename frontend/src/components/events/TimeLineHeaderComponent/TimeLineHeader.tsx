@@ -7,7 +7,7 @@
 import React from 'react';
 import type { TimelineSlot } from '@/types/events.types';
 import { useServerClock } from '@/hooks/event/useEventTimer';
-import styles from './TimelineHeader.module.css';
+import styles from './TimeLineHeader.module.css';
 
 interface TimelineHeaderProps {
   timelineSlots: TimelineSlot[];
