@@ -17,7 +17,7 @@ export interface User {
   has_api_key?: boolean;
 }
 
-interface AuthState {
+export interface AuthState {
   // ─── État ──────────────────────────────────────────────────────────────────
   user:            User | null;
   isAuthenticated: boolean;
