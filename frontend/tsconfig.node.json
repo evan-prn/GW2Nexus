@@ -19,5 +19,5 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true
   },
-  "include": ["vite.config.js"]
+  "include": ["vite.config.ts"]
 }
