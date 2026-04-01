@@ -9,7 +9,6 @@
 .env
 .env.*              # Couvre .env.prod, .env.local, .env.staging, etc.
 .env.prod
-.env.prod.*
 !.env.example       # Exception : le template sans secrets est commité
 !.env.prod.example  # Exception : le template prod sans secrets est commité
 
