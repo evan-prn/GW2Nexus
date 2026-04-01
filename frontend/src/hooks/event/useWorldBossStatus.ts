@@ -3,6 +3,8 @@
 // Récupère les world bosses déjà tués aujourd'hui via l'API GW2
 //
 // Nécessite une clé API utilisateur avec le scope "progression".
+// On vérifie has_api_key (booléen) — la clé en clair n'est jamais
+// exposée côté frontend pour des raisons de sécurité.
 // Le token Bearer est injecté automatiquement par httpClient.
 // =============================================================
 
@@ -11,31 +13,32 @@ import { fetchWorldBossStatus } from '@/api/events.api';
 import useAuthStore from '@/store/authStore';
 
 interface WorldBossStatusResult {
-  data: Set<string> | null;
+  data:      Set<string> | null;
   isLoading: boolean;
-  isError: boolean;
+  isError:   boolean;
 }
 
 export const useWorldBossStatus = (): WorldBossStatusResult => {
-  const apiKey = useAuthStore((s) => s.user?.api_key ?? null);
+  // has_api_key indique si l'utilisateur a une clé API GW2 enregistrée
+  // On ne récupère jamais la clé en clair depuis le store frontend
+  const hasApiKey = useAuthStore((s: { user: { has_api_key: any; }; }) => s.user?.has_api_key ?? false);
 
-  const [data, setData]         = useState<Set<string> | null>(null);
+  const [data,      setData]    = useState<Set<string> | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
-  const [isError, setError]     = useState<boolean>(false);
+  const [isError,   setError]   = useState<boolean>(false);
 
   useEffect(() => {
-    // Pas de clé API — on ne tente pas l'appel
-    if (!apiKey) {
+    // Pas de clé API enregistrée — on ne tente pas l'appel GW2
+    if (!hasApiKey) {
       setData(null);
       return;
     }
 
     let cancelled = false;
 
-    const fetch = async () => {
+    const loadStatus = async () => {
       setLoading(true);
       setError(false);
-
       try {
         const ids = await fetchWorldBossStatus();
         if (!cancelled) setData(new Set(ids));
@@ -46,11 +49,11 @@ export const useWorldBossStatus = (): WorldBossStatusResult => {
       }
     };
 
-    fetch();
+    loadStatus();
 
     // Cleanup — évite les setState sur un composant démonté
     return () => { cancelled = true; };
-  }, [apiKey]);
+  }, [hasApiKey]);
 
   return { data, isLoading, isError };
 };
