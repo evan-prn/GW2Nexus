@@ -4,7 +4,7 @@ import useAuthStore from '../store/authStore';
 /**
  * ProtectedRoute — redirige vers /login si non authentifié.
  *
- * @param {string[]} [roles] — si fourni, vérifie aussi le rôle de l'utilisateur.
+ * @param {string[]} [role] — si fourni, vérifie aussi le rôle de l'utilisateur.
  *   Exemple : <ProtectedRoute roles={['admin', 'moderateur']} />
  *
  * Flux :
@@ -13,22 +13,22 @@ import useAuthStore from '../store/authStore';
  *   3. roles fournis && rôle non autorisé → / (403 silencieux)
  *   4. OK → <Outlet />
  */
-const ProtectedRoute = ({ roles } = {}) => {
+const ProtectedRoute = ({ role } = {}) => {
   const { isAuthenticated, isLoading, user } = useAuthStore();
 
   if (isLoading) {
     return (
-      <div className="gw2-loading-screen">
-        <div className="gw2-loading-spinner" />
-      </div>
+        <div className="gw2-loading-screen">
+          <div className="gw2-loading-spinner" />
+        </div>
     );
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !user) {
     return <Navigate to="/login" replace />;
   }
 
-  if (roles && roles.length > 0 && !roles.includes(user?.role)) {
+  if (roles.length > 0 && (!user.role || !roles.includes(user.role))) {
     return <Navigate to="/" replace />;
   }
 
