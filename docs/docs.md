@@ -324,17 +324,6 @@ SESSION_DOMAIN=localhost
 VITE_API_URL=
 ```
 
-#### `.env.testing` (backend)
-
-```dotenv
-APP_ENV=testing
-DB_CONNECTION=sqlite
-DB_DATABASE=:memory:
-CACHE_STORE=array
-QUEUE_CONNECTION=sync
-MAIL_MAILER=array
-```
-
 ### Commandes Docker fréquentes
 
 ```bash
