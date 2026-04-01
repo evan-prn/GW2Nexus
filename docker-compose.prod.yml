@@ -1,0 +1,184 @@
+# ═══════════════════════════════════════════════════════════════════
+# GW2Nexus — Docker Compose PRODUCTION (VPS OVH)
+#
+#   ✓ entrypoint prod branché   (config:cache au lieu de config:clear)
+#   ✓ Nginx reverse proxy       (entrée unique publique, port 80)
+#   ✓ phpMyAdmin sur 127.0.0.1  (accès SSH tunnel uniquement)
+#   ✓ Restart policies          (auto-redémarrage après reboot VPS)
+#   ✓ env_file → .env.prod      (jamais commité sur GitHub)
+#
+# Prérequis sur le VPS :
+#   - Fichier .env.prod créé manuellement (voir .env.prod.example)
+#   - docker-entrypoint.prod.sh exécutable (chmod +x)
+#
+# Usage :
+#   Premier démarrage : docker compose -f docker-compose.prod.yml up -d --build
+#   Redémarrage       : docker compose -f docker-compose.prod.yml up -d
+#   Logs en direct    : docker compose -f docker-compose.prod.yml logs -f
+#   Arrêt propre      : docker compose -f docker-compose.prod.yml down
+#   Reset complet     : docker compose -f docker-compose.prod.yml down -v
+# ═══════════════════════════════════════════════════════════════════
+
+services:
+
+  # ─── MySQL 8 ────────────────────────────────────────────────────
+  # Base de données principale — aucun port exposé publiquement.
+  # Accès depuis ton poste local via SSH tunnel uniquement :
+  #   ssh -L 3307:localhost:3306 deploy@VPS_IP -N
+  #   puis DBeaver → 127.0.0.1:3307
+  #
+  # Les variables MYSQL_* sont lues depuis .env.prod :
+  #   MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD, MYSQL_ROOT_PASSWORD
+  mysql:
+    image: mysql:8.0
+    container_name: gw2nexus_mysql
+    restart: unless-stopped
+    env_file:
+      - .env.prod
+    volumes:
+      # Volume nommé — les données survivent aux redémarrages et rebuilds
+      # Ne jamais supprimer mysql_data en production sans backup préalable
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      # Vérifie que MySQL accepte les connexions avant de démarrer Laravel
+      # Le service laravel attend ce healthcheck via depends_on
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s    # Laisse MySQL initialiser son storage engine au premier démarrage
+    networks:
+      - gw2nexus_network
+    # Intentionnellement pas de 'ports' — MySQL n'est jamais joignable depuis internet
+
+  # ─── Laravel — API REST ─────────────────────────────────────────
+  # Backend principal buildé depuis backend/Dockerfile (même image que dev).
+  # En prod, deux différences majeures vs le dev :
+  #   1. Pas de volume mount du code source → le code est dans l'image
+  #   2. entrypoint prod → config:cache / route:cache (pas config:clear)
+  #
+  # Le container n'expose aucun port — Nginx proxyfie /api/* vers laravel:8000
+  laravel:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile        # Même Dockerfile que le dev
+    container_name: gw2nexus_laravel
+    restart: unless-stopped
+
+    # ── Entrypoint de production ───────────────────────────────────
+    # Surcharge l'ENTRYPOINT défini dans le Dockerfile (docker-entrypoint.sh dev).
+    # En prod, on compile le cache au lieu de le vider :
+    #   config:cache / route:cache / view:cache → meilleures performances
+    # Le fichier doit être exécutable : chmod +x backend/docker-entrypoint.prod.sh
+    entrypoint: ["./docker-entrypoint.prod.sh"]
+    cmd: ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+
+    env_file:
+      - .env.prod                   # Toutes les variables Laravel de production
+    environment:
+      # Ces deux valeurs surchargent celles du .env.prod
+      # car les noms de services Docker remplacent les adresses IP/localhost
+      DB_HOST: mysql                # Nom du service Docker (résolution DNS interne)
+      MAIL_HOST: ${MAIL_HOST}       # SMTP externe défini dans .env.prod
+
+    depends_on:
+      mysql:
+        condition: service_healthy  # Attend que MySQL soit prêt avant de démarrer
+
+    healthcheck:
+      # Vérifie que Laravel répond sur /api/health avant que Nginx envoie du trafic
+      # Route définie dans backend/routes/api.php :
+      #   Route::get('/health', fn() => response()->json(['status-backend' => 'ok']));
+      test: ["CMD-SHELL", "curl -f -4 http://localhost:8000/api/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s             # Laisse le temps aux migrations + cache de s'exécuter
+
+    networks:
+      - gw2nexus_network
+    # Intentionnellement pas de 'ports' — jamais exposé directement sur internet
+
+  # ─── React — Frontend statique ──────────────────────────────────
+  # Image multi-stage (frontend/Dockerfile.prod) :
+  #   Stage 1 : Node 20 — npm run build → génère frontend/dist/
+  #   Stage 2 : Nginx alpine — sert les fichiers statiques du dist/
+  #
+  # Vite n'est plus utilisé en prod — uniquement les fichiers buildés.
+  # VITE_API_URL="" dans Dockerfile.prod → Nginx route /api/* vers Laravel.
+  react:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod   # Multi-stage dédié production
+    container_name: gw2nexus_react
+    restart: unless-stopped
+    networks:
+      - gw2nexus_network
+    # Pas de 'ports' — Nginx proxyfie /* vers react:80 (interne)
+
+  # ─── Nginx — Reverse proxy public ───────────────────────────────
+  # Seul service exposé sur internet (port 80).
+  # Agit comme point d'entrée unique et route le trafic :
+  #   /api/*     → laravel:8000  (API REST Laravel)
+  #   /sanctum/* → laravel:8000  (si besoin futur)
+  #   /*         → react:80      (SPA React — Nginx statique interne)
+  #
+  # Config dans docker/nginx/prod.conf (montée en lecture seule)
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: gw2nexus_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"                     # Seul port ouvert publiquement sur le VPS
+    volumes:
+      # Config montée en lecture seule — modification sans rebuild de l'image
+      - ./docker/nginx/prod.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      laravel:
+        condition: service_healthy  # Attend que Laravel réponde avant d'accepter du trafic
+      react:
+        condition: service_started  # Nginx interne du React démarre instantanément
+    networks:
+      - gw2nexus_network
+
+  # ─── phpMyAdmin ─────────────────────────────────────────────────
+  # Interface web de gestion MySQL — jamais exposée publiquement.
+  # Le binding 127.0.0.1:8080 garantit que seul le VPS lui-même y accède.
+  #
+  # Accès depuis ton poste local via SSH tunnel :
+  #   Étape 1 : ssh -L 8080:localhost:8080 deploy@VPS_IP -N
+  #   Étape 2 : ouvrir http://localhost:8080 dans ton navigateur
+  #   Connexion : root / MYSQL_ROOT_PASSWORD (défini dans .env.prod)
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: gw2nexus_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:80"        # ← 127.0.0.1 critique — jamais 0.0.0.0
+    environment:
+      PMA_HOST: mysql               # Nom du service Docker MySQL
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1              # Permet de choisir l'hôte MySQL à la connexion
+      UPLOAD_LIMIT: 64M             # Taille max pour les imports SQL
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - gw2nexus_network
+
+# ─── Volumes nommés ──────────────────────────────────────────────────
+volumes:
+  mysql_data:
+    # Données MySQL persistantes — survivent aux docker compose down
+    # ⚠️  Ne jamais supprimer sans backup en production
+    driver: local
+
+# ─── Réseau interne ──────────────────────────────────────────────────
+# Réseau bridge isolé — les containers communiquent par nom de service :
+#   laravel → mysql      : mysql:3306
+#   nginx   → laravel    : laravel:8000
+#   nginx   → react      : react:80
+#   phpmyadmin → mysql   : mysql:3306
+networks:
+  gw2nexus_network:
+    driver: bridge

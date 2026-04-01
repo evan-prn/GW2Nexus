@@ -1,24 +1,67 @@
-*.log
-.DS_Store
+# ═══════════════════════════════════════════════════════════════════
+# GW2Nexus — .gitignore Backend (Laravel 11 / PHP 8.3)
+# Emplacement : backend/.gitignore
+# ═══════════════════════════════════════════════════════════════════
+
+# ───────────────────────────────────────────────────────────────────
+# VARIABLES D'ENVIRONNEMENT
+# ───────────────────────────────────────────────────────────────────
 .env
-.env.backup
-.env.production
-.phpactor.json
-.phpunit.result.cache
-/.fleet
-/.idea
-/.nova
-/.phpunit.cache
-/.vscode
-/.zed
-/auth.json
-/node_modules
-/public/build
-/public/hot
-/public/storage
-/storage/*.key
-/storage/pail
-/vendor
+.env.*                  # Couvre .env.backup, .env.production, .env.staging, etc.
+!.env.example           # Template sans secrets — commité
+!.env.testing           # Config de test sans secrets — commité
+!.env.testing.ci        # Config CI GitHub Actions — commité
+
+# ───────────────────────────────────────────────────────────────────
+# DÉPENDANCES
+# ───────────────────────────────────────────────────────────────────
+/vendor/                # Dépendances Composer — installées via composer install
+/node_modules/          # Dépendances npm Laravel (vite, tailwind...) si utilisées
+
+# ───────────────────────────────────────────────────────────────────
+# BUILD & ASSETS COMPILÉS
+# ───────────────────────────────────────────────────────────────────
+/public/build/          # Assets buildés par Vite (mix-manifest, js, css compilés)
+/public/hot             # Fichier HMR Vite dev server — généré au démarrage
+/public/storage         # Lien symbolique généré par php artisan storage:link
+
+# ───────────────────────────────────────────────────────────────────
+# LARAVEL — fichiers générés au runtime
+# ───────────────────────────────────────────────────────────────────
+/storage/*.key          # Clés de chiffrement générées par Laravel
+/storage/pail           # Logs Pail (outil de log temps réel Laravel)
+
+# ───────────────────────────────────────────────────────────────────
+# TESTS
+# ───────────────────────────────────────────────────────────────────
+.phpunit.result.cache   # Cache des résultats PHPUnit entre les runs
+/.phpunit.cache/        # Cache PHPUnit (versions récentes)
+
+# ───────────────────────────────────────────────────────────────────
+# IDE & ÉDITEURS
+# ───────────────────────────────────────────────────────────────────
+/.idea/                 # JetBrains (PhpStorm)
+/.vscode/               # Visual Studio Code
+/.fleet/                # JetBrains Fleet
+/.nova/                 # Nova (macOS)
+/.zed/                  # Zed editor
+.phpactor.json          # PHPActor (LSP PHP)
+/auth.json              # Credentials Composer privés (tokens GitHub/Packagist)
+
+# ───────────────────────────────────────────────────────────────────
+# HOMESTEAD — environnement Vagrant Laravel (non utilisé sur ce projet)
+# Conservé par convention Laravel pour les devs qui l'utilisent
+# ───────────────────────────────────────────────────────────────────
 Homestead.json
 Homestead.yaml
-Thumbs.db
+
+# ───────────────────────────────────────────────────────────────────
+# LOGS
+# ───────────────────────────────────────────────────────────────────
+*.log                   # Tous les fichiers de log (Laravel, PHP, Composer...)
+
+# ───────────────────────────────────────────────────────────────────
+# SYSTÈME D'EXPLOITATION
+# ───────────────────────────────────────────────────────────────────
+.DS_Store               # macOS
+Thumbs.db               # Windows

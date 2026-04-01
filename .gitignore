@@ -1,23 +1,108 @@
 # ═══════════════════════════════════════════════════════════════════
 # GW2Nexus — .gitignore racine
+# Monorepo : backend/ (Laravel) + frontend/ (React/Vite)
 # ═══════════════════════════════════════════════════════════════════
 
-# ─── Variables d'environnement ───────────────────────────────────────
-# Jamais commiter les .env — ils contiennent des secrets
+# ───────────────────────────────────────────────────────────────────
+# VARIABLES D'ENVIRONNEMENT — contiennent des secrets, jamais commitées
+# ───────────────────────────────────────────────────────────────────
 .env
+.env.*              # Couvre .env.prod, .env.local, .env.staging, etc.
+!.env.example       # Exception : le template sans secrets est commité
+!.env.prod.example  # Exception : le template prod sans secrets est commité
+
 backend/.env
+backend/.env.*
+!backend/.env.example
+!backend/.env.testing       # Commité — contient uniquement la config de test (pas de secrets)
+!backend/.env.testing.ci    # Commité — utilisé par GitHub Actions CI
+
 frontend/.env
+frontend/.env.*
+!frontend/.env.example
 
-# ─── Dépendances ─────────────────────────────────────────────────────
-node_modules/
-vendor/
+# ───────────────────────────────────────────────────────────────────
+# DÉPENDANCES — installées localement, jamais commitées
+# ───────────────────────────────────────────────────────────────────
+node_modules/           # npm/yarn — frontend et tout sous-dossier
+vendor/                 # Composer — backend/vendor/
+backend/vendor/
+frontend/node_modules/
 
-# ─── IDE & OS ────────────────────────────────────────────────────────
-.idea/
-.vscode/
-*.DS_Store
-Thumbs.db
+# ───────────────────────────────────────────────────────────────────
+# BUILD & COMPILATION — générés automatiquement
+# ───────────────────────────────────────────────────────────────────
+frontend/dist/          # Build Vite de production (généré par npm run build)
+frontend/.vite/         # Cache interne Vite
+backend/public/hot      # Fichier HMR Laravel Vite (dev uniquement)
+backend/public/build/   # Assets buildés par Vite côté Laravel (si utilisé)
 
-# ─── Docker ──────────────────────────────────────────────────────────
-# Les volumes Docker sont gérés par Docker, pas Git
-docker/volumes/
+# ───────────────────────────────────────────────────────────────────
+# LARAVEL — fichiers générés au runtime
+# ───────────────────────────────────────────────────────────────────
+backend/bootstrap/cache/*.php   # Cache compilé Laravel (config, routes, services)
+!backend/bootstrap/cache/.gitignore
+
+backend/storage/app/public/*    # Fichiers uploadés par les utilisateurs
+!backend/storage/app/public/.gitignore
+
+backend/storage/framework/cache/data/*  # Cache applicatif Laravel
+!backend/storage/framework/cache/data/.gitignore
+
+backend/storage/framework/sessions/*    # Sessions Laravel (driver file)
+!backend/storage/framework/sessions/.gitignore
+
+backend/storage/framework/views/*       # Vues Blade compilées
+!backend/storage/framework/views/.gitignore
+
+backend/storage/logs/*.log              # Logs Laravel (peuvent contenir des données sensibles)
+
+backend/database/database.sqlite        # SQLite de dev — chaque dev a le sien
+
+# ───────────────────────────────────────────────────────────────────
+# DOCKER — volumes et fichiers générés par Docker
+# ───────────────────────────────────────────────────────────────────
+docker/volumes/         # Volumes Docker montés localement (si applicable)
+
+# ───────────────────────────────────────────────────────────────────
+# IDE & ÉDITEURS — configuration locale des développeurs
+# ───────────────────────────────────────────────────────────────────
+.idea/                  # JetBrains (PhpStorm, WebStorm...)
+.vscode/                # Visual Studio Code
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+*.code-workspace
+
+# ───────────────────────────────────────────────────────────────────
+# SYSTÈME D'EXPLOITATION
+# ───────────────────────────────────────────────────────────────────
+.DS_Store               # macOS — métadonnées de dossier
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db               # Windows — miniatures
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ───────────────────────────────────────────────────────────────────
+# TESTS & COUVERTURE
+# ───────────────────────────────────────────────────────────────────
+backend/coverage/       # Rapports de couverture PHPUnit (HTML)
+.phpunit.result.cache   # Cache des résultats PHPUnit
+backend/.phpunit.result.cache
+
+# ───────────────────────────────────────────────────────────────────
+# LOGS & FICHIERS TEMPORAIRES
+# ───────────────────────────────────────────────────────────────────
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*~                      # Fichiers de backup des éditeurs (vim, emacs...)

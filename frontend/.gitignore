@@ -1,24 +1,59 @@
-# Logs
-logs
+# ═══════════════════════════════════════════════════════════════════
+# GW2Nexus — .gitignore Frontend (React/Vite/TypeScript)
+# Emplacement : frontend/.gitignore
+# ═══════════════════════════════════════════════════════════════════
+
+# ───────────────────────────────────────────────────────────────────
+# VARIABLES D'ENVIRONNEMENT
+# ───────────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example       # Template sans secrets — commité
+
+# ───────────────────────────────────────────────────────────────────
+# DÉPENDANCES
+# ───────────────────────────────────────────────────────────────────
+node_modules/
+
+# ───────────────────────────────────────────────────────────────────
+# BUILD & COMPILATION
+# ───────────────────────────────────────────────────────────────────
+dist/               # Build Vite de production (généré par npm run build)
+dist-ssr/           # Build SSR si activé un jour
+.vite/              # Cache interne Vite
+
+# ───────────────────────────────────────────────────────────────────
+# TYPESCRIPT
+# ───────────────────────────────────────────────────────────────────
+*.tsbuildinfo       # Cache de compilation TypeScript incrémentale
+
+# ───────────────────────────────────────────────────────────────────
+# LOGS
+# ───────────────────────────────────────────────────────────────────
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
+# ───────────────────────────────────────────────────────────────────
+# IDE & ÉDITEURS
+# ───────────────────────────────────────────────────────────────────
 .vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
+!.vscode/extensions.json    # Exception : recommandations d'extensions partagées
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.swp
+*.swo
+
+# ───────────────────────────────────────────────────────────────────
+# SYSTÈME D'EXPLOITATION
+# ───────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini

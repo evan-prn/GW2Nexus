@@ -29,42 +29,45 @@
   --gold-primary:   #C9A84C;   /* Or GW2 signature — boutons, accents */
   --gold-light:     #F0D98A;   /* Or clair — hover states, highlights  */
   --gold-dark:      #8B6914;   /* Or sombre — borders, shadows dorés   */
-  --gold-muted:     #6B5420;   /* Or très sombre — backgrounds subtils */
-  --gold-glow:      rgba(201, 168, 76, 0.25);  /* Halo doré — glows    */
-  --gold-glow-strong: rgba(201, 168, 76, 0.5); /* Halo fort — focus    */
+  --gold-muted:     #7A6030;   /* Or très sombre — backgrounds subtils */
+  --gold-glow:      rgba(201, 168, 76, 0.20);  /* Halo doré — glows    */
+  --gold-glow-strong: rgba(201, 168, 76, 0.45); /* Halo fort — focus   */
 
   /* ── Palette Fond — Noirs & Sombres ────────────────────────────── */
-  --bg-void:        #040404;   /* Noir absolu — fond body              */
-  --bg-deep:        #080808;   /* Noir profond — fond principal        */
-  --bg-surface:     #0E0E0E;   /* Surface légèrement éclairée          */
-  --bg-card:        #121212;   /* Fond des cards                       */
-  --bg-card-hover:  #1A1A1A;   /* Fond card au hover                   */
-  --bg-overlay:     rgba(8, 8, 8, 0.85);       /* Overlays modaux      */
-  --bg-input:       rgba(255, 255, 255, 0.04); /* Fond champs form      */
-  --bg-input-focus: rgba(201, 168, 76, 0.06);  /* Fond champ focus      */
+  /* MODIFIÉ : Fonds relevés de ~10-15% pour plus de lisibilité       */
+  --bg-void:        #0A0A0A;   /* Fond très profond — body             */
+  --bg-deep:        #0E0E12;   /* Fond principal — légèrement bleuté   */
+  --bg-surface:     #16161C;   /* Surface principale — cartes, panels  */
+  --bg-card:        #1C1C24;   /* Fond des cards — nettement visible   */
+  --bg-card-hover:  #242430;   /* Fond card au hover                   */
+  --bg-overlay:     rgba(10, 10, 14, 0.88);    /* Overlays modaux      */
+  --bg-input:       rgba(255, 255, 255, 0.06); /* Fond champs form      */
+  --bg-input-focus: rgba(201, 168, 76, 0.08);  /* Fond champ focus      */
 
   /* ── Palette Texte ──────────────────────────────────────────────── */
-  --text-primary:   #E8E0D0;   /* Texte principal — ivoire chaud       */
-  --text-secondary: #A89880;   /* Texte secondaire — parchemin foncé   */
-  --text-dim:       rgba(232, 224, 208, 0.45); /* Texte discret        */
+  /* MODIFIÉ : Textes plus lumineux pour un meilleur contraste WCAG   */
+  --text-primary:   #F0E8D8;   /* Texte principal — ivoire lumineux    */
+  --text-secondary: #C0A888;   /* Texte secondaire — parchemin lisible */
+  --text-dim:       rgba(240, 232, 216, 0.55); /* Texte discret        */
   --text-gold:      #C9A84C;   /* Texte doré — labels, accents         */
-  --text-inverse:   #080808;   /* Texte sur fond clair (bouton filled) */
+  --text-inverse:   #0E0E12;   /* Texte sur fond clair (bouton filled) */
 
   /* ── Palette Bordures ───────────────────────────────────────────── */
-  --border-subtle:  rgba(201, 168, 76, 0.12);  /* Bordure très discrète */
-  --border-default: rgba(201, 168, 76, 0.25);  /* Bordure standard      */
-  --border-strong:  rgba(201, 168, 76, 0.5);   /* Bordure visible       */
-  --border-focus:   #C9A84C;                   /* Bordure focus champ   */
+  /* MODIFIÉ : Bordures plus visibles au repos                         */
+  --border-subtle:  rgba(201, 168, 76, 0.18);  /* Bordure discrète     */
+  --border-default: rgba(201, 168, 76, 0.35);  /* Bordure standard     */
+  --border-strong:  rgba(201, 168, 76, 0.60);  /* Bordure visible      */
+  --border-focus:   #C9A84C;                   /* Bordure focus champ  */
 
   /* ── Palette Statuts ────────────────────────────────────────────── */
-  --color-success:  #4CAF82;   /* Vert succès                          */
-  --color-success-bg: rgba(76, 175, 130, 0.1);
-  --color-error:    #E05252;   /* Rouge erreur                         */
-  --color-error-bg: rgba(224, 82, 82, 0.1);
-  --color-warning:  #D4A020;   /* Jaune avertissement                  */
-  --color-warning-bg: rgba(212, 160, 32, 0.1);
-  --color-info:     #5B9BD5;   /* Bleu info                            */
-  --color-info-bg:  rgba(91, 155, 213, 0.1);
+  --color-success:  #52C48A;   /* Vert succès — plus lumineux          */
+  --color-success-bg: rgba(82, 196, 138, 0.12);
+  --color-error:    #F06060;   /* Rouge erreur — plus lumineux         */
+  --color-error-bg: rgba(240, 96, 96, 0.12);
+  --color-warning:  #E0B030;   /* Jaune avertissement — plus lumineux  */
+  --color-warning-bg: rgba(224, 176, 48, 0.12);
+  --color-info:     #70AADE;   /* Bleu info — plus lumineux            */
+  --color-info-bg:  rgba(112, 170, 222, 0.12);
 
   /* ── Typographie ────────────────────────────────────────────────── */
   --font-display:   'Cinzel', 'Georgia', serif;      /* Titres heroïques */
@@ -123,13 +126,13 @@
   --radius-full: 9999px;
 
   /* ── Ombres ─────────────────────────────────────────────────────── */
-  --shadow-sm:   0 1px 3px rgba(0, 0, 0, 0.6);
-  --shadow-md:   0 4px 12px rgba(0, 0, 0, 0.7);
-  --shadow-lg:   0 8px 32px rgba(0, 0, 0, 0.8);
-  --shadow-xl:   0 16px 48px rgba(0, 0, 0, 0.9);
-  --shadow-gold: 0 0 20px rgba(201, 168, 76, 0.2);
-  --shadow-gold-strong: 0 0 40px rgba(201, 168, 76, 0.4);
-  --shadow-inset: inset 0 1px 0 rgba(201, 168, 76, 0.1);
+  --shadow-sm:   0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md:   0 4px 12px rgba(0, 0, 0, 0.6);
+  --shadow-lg:   0 8px 32px rgba(0, 0, 0, 0.7);
+  --shadow-xl:   0 16px 48px rgba(0, 0, 0, 0.8);
+  --shadow-gold: 0 0 20px rgba(201, 168, 76, 0.25);
+  --shadow-gold-strong: 0 0 40px rgba(201, 168, 76, 0.45);
+  --shadow-inset: inset 0 1px 0 rgba(201, 168, 76, 0.12);
 
   /* ── Transitions ────────────────────────────────────────────────── */
   --transition-fast:   all 0.15s ease;
@@ -181,10 +184,10 @@ body {
   color: var(--text-primary);
   background-color: var(--bg-deep);
   min-height: 100vh;
-  /* Texture de grain subtile — atmosphère parchemin/forge */
+  /* MODIFIÉ : Gradients plus perceptibles pour créer de la profondeur */
   background-image:
-    radial-gradient(ellipse at 20% 50%, rgba(201, 168, 76, 0.03) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(139, 105, 20, 0.04) 0%, transparent 40%);
+    radial-gradient(ellipse at 20% 50%, rgba(201, 168, 76, 0.05) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 20%, rgba(139, 105, 20, 0.06) 0%, transparent 45%);
 }
 
 /* Scrollbar personnalisée — thème doré */
@@ -360,7 +363,7 @@ body {
   background: linear-gradient(
     105deg,
     transparent 30%,
-    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.10) 50%,
     transparent 70%
   );
   transform: translateX(-100%);
@@ -422,7 +425,7 @@ body {
   border: 1px solid transparent;
 }
 .btnGhost:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.07);
   color: var(--text-primary);
   border-color: var(--border-subtle);
 }
@@ -430,12 +433,12 @@ body {
 /* ── Bouton Danger — Rouge ──────────────────────────────────────── */
 .btnDanger {
   composes: btn;
-  background: rgba(224, 82, 82, 0.15);
+  background: rgba(240, 96, 96, 0.15);
   color: var(--color-error);
-  border: 1px solid rgba(224, 82, 82, 0.3);
+  border: 1px solid rgba(240, 96, 96, 0.35);
 }
 .btnDanger:hover {
-  background: rgba(224, 82, 82, 0.25);
+  background: rgba(240, 96, 96, 0.28);
   border-color: var(--color-error);
   transform: translateY(-1px);
 }
@@ -470,7 +473,7 @@ body {
   padding: var(--space-6);
   position: relative;
   transition: var(--transition-smooth);
-  /* Ligne décorative en haut — signature GW2 */
+  /* MODIFIÉ : Ligne décorative en haut légèrement plus visible */
   overflow: hidden;
 }
 .card::before {
@@ -486,7 +489,7 @@ body {
     var(--gold-primary),
     transparent
   );
-  opacity: 0.4;
+  opacity: 0.55;
 }
 
 /* Card interactive (hover) */
@@ -537,7 +540,7 @@ body {
 
 /* Panel — surface sans bordure forte (sections internes) */
 .panel {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: var(--space-4);
@@ -586,7 +589,7 @@ body {
 
 .formInput:hover {
   border-color: var(--border-default);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .formInput:focus {
@@ -598,21 +601,21 @@ body {
 /* Input en erreur */
 .formInputError {
   composes: formInput;
-  border-color: rgba(224, 82, 82, 0.5);
+  border-color: rgba(240, 96, 96, 0.55);
 }
 .formInputError:focus {
   border-color: var(--color-error);
-  box-shadow: 0 0 0 3px rgba(224, 82, 82, 0.15);
+  box-shadow: 0 0 0 3px rgba(240, 96, 96, 0.18);
 }
 
 /* Input en succès */
 .formInputSuccess {
   composes: formInput;
-  border-color: rgba(76, 175, 130, 0.5);
+  border-color: rgba(82, 196, 138, 0.55);
 }
 .formInputSuccess:focus {
   border-color: var(--color-success);
-  box-shadow: 0 0 0 3px rgba(76, 175, 130, 0.15);
+  box-shadow: 0 0 0 3px rgba(82, 196, 138, 0.18);
 }
 
 /* Message d'aide / erreur sous le champ */
@@ -651,9 +654,10 @@ body {
   z-index: var(--z-overlay);
   display: flex;
   align-items: center;
-  background: rgba(8, 8, 8, 0.9);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  /* MODIFIÉ : Fond légèrement plus clair pour contraste avec le body */
+  background: rgba(18, 18, 24, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border-subtle);
   transition: var(--transition-base);
 }
@@ -661,7 +665,8 @@ body {
 /* Navbar au scroll (ombre renforcée) */
 .navbarScrolled {
   composes: navbar;
-  box-shadow: var(--shadow-lg), 0 1px 0 var(--border-subtle);
+  background: rgba(18, 18, 24, 0.97);
+  box-shadow: var(--shadow-lg), 0 1px 0 var(--border-default);
 }
 
 /* Lien de navigation */
@@ -722,12 +727,12 @@ body {
   border: 1px solid transparent;
 }
 
-.badgeGold    { composes: badge; background: rgba(201, 168, 76, 0.15); color: var(--gold-primary);   border-color: rgba(201, 168, 76, 0.3); }
-.badgeSuccess { composes: badge; background: var(--color-success-bg);  color: var(--color-success);  border-color: rgba(76, 175, 130, 0.3); }
-.badgeError   { composes: badge; background: var(--color-error-bg);    color: var(--color-error);    border-color: rgba(224, 82, 82, 0.3); }
-.badgeWarning { composes: badge; background: var(--color-warning-bg);  color: var(--color-warning);  border-color: rgba(212, 160, 32, 0.3); }
-.badgeInfo    { composes: badge; background: var(--color-info-bg);     color: var(--color-info);     border-color: rgba(91, 155, 213, 0.3); }
-.badgeMuted   { composes: badge; background: rgba(255,255,255,0.05);   color: var(--text-secondary); border-color: var(--border-subtle); }
+.badgeGold    { composes: badge; background: rgba(201, 168, 76, 0.18); color: var(--gold-primary);   border-color: rgba(201, 168, 76, 0.35); }
+.badgeSuccess { composes: badge; background: var(--color-success-bg);  color: var(--color-success);  border-color: rgba(82, 196, 138, 0.35); }
+.badgeError   { composes: badge; background: var(--color-error-bg);    color: var(--color-error);    border-color: rgba(240, 96, 96, 0.35); }
+.badgeWarning { composes: badge; background: var(--color-warning-bg);  color: var(--color-warning);  border-color: rgba(224, 176, 48, 0.35); }
+.badgeInfo    { composes: badge; background: var(--color-info-bg);     color: var(--color-info);     border-color: rgba(112, 170, 222, 0.35); }
+.badgeMuted   { composes: badge; background: rgba(255,255,255,0.06);   color: var(--text-secondary); border-color: var(--border-subtle); }
 
 /* ─── ALERTES ───────────────────────────────────────────────────────
    ────────────────────────────────────────────────────────────────── */
@@ -743,10 +748,10 @@ body {
   line-height: var(--leading-snug);
 }
 
-.alertSuccess { composes: alert; background: var(--color-success-bg); color: var(--color-success); border-color: rgba(76, 175, 130, 0.3); }
-.alertError   { composes: alert; background: var(--color-error-bg);   color: var(--color-error);   border-color: rgba(224, 82, 82, 0.3); }
-.alertWarning { composes: alert; background: var(--color-warning-bg); color: var(--color-warning); border-color: rgba(212, 160, 32, 0.3); }
-.alertInfo    { composes: alert; background: var(--color-info-bg);    color: var(--color-info);    border-color: rgba(91, 155, 213, 0.3); }
+.alertSuccess { composes: alert; background: var(--color-success-bg); color: var(--color-success); border-color: rgba(82, 196, 138, 0.35); }
+.alertError   { composes: alert; background: var(--color-error-bg);   color: var(--color-error);   border-color: rgba(240, 96, 96, 0.35); }
+.alertWarning { composes: alert; background: var(--color-warning-bg); color: var(--color-warning); border-color: rgba(224, 176, 48, 0.35); }
+.alertInfo    { composes: alert; background: var(--color-info-bg);    color: var(--color-info);    border-color: rgba(112, 170, 222, 0.35); }
 
 /* ─── LOADERS ───────────────────────────────────────────────────────
    ────────────────────────────────────────────────────────────────── */
@@ -776,9 +781,9 @@ body {
 .skeleton {
   background: linear-gradient(
     90deg,
-    rgba(201, 168, 76, 0.05) 0%,
-    rgba(201, 168, 76, 0.1) 50%,
-    rgba(201, 168, 76, 0.05) 100%
+    rgba(201, 168, 76, 0.06) 0%,
+    rgba(201, 168, 76, 0.12) 50%,
+    rgba(201, 168, 76, 0.06) 100%
   );
   border-radius: var(--radius-md);
   animation: pulse 1.5s ease-in-out infinite;
