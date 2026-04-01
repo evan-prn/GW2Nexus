@@ -24,7 +24,8 @@ cd "$APP_DIR"
 # ── 1. Récupération du code ──────────────────────────────────────
 echo ""
 echo "📥 [1/5] Pull branche main..."
-git pull origin main
+git fetch origin
+git reset --hard origin/main
 echo "  Commit déployé : $(git log -1 --format='%h — %s')"
 
 # ── 2. Build des images ──────────────────────────────────────────
