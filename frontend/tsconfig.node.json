@@ -5,9 +5,7 @@
     "lib": ["ES2023"],
     "module": "ESNext",
     "skipLibCheck": true,
-
-    "allowJs": true,git add frontend/vite.config.js frontend/tsconfig.node.json
-
+    "allowJs": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -22,6 +20,6 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true
   },
-  "include": ["vite.config.ts"],
+  "include": ["vite.config.js"],
   "exclude": ["node_modules"]
 }
