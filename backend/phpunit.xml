@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
@@ -21,35 +21,27 @@
     </source>
 
     <php>
-        <!-- Environnement de test isolé -->
+        <!-- Environnement de test isolÃ© -->
         <env name="APP_ENV"          value="testing"/>
         <env name="APP_DEBUG"        value="true"/>
 
         <!--
         | APP_KEY : obligatoire pour le cast 'encrypted' sur la colonne api_key.
-        | Sans cette clé, toute instanciation de User plante en 500.
+        | Sans cette clÃ©, toute instanciation de User plante en 500.
         -->
         <env name="APP_KEY"          value="base64:I856Ytd3PzMZ7mltYMUUC9QRumCv8w45r9Hs/Byw+fQ="/>
 
         <!--
-        | Base DÉDIÉE aux tests — séparée de la base de développement.
-        | RefreshDatabase recrée les tables à chaque run : ne jamais pointer
-        | sur la base 'app' qui contient les données de développement.
-        |
-        | Création (une seule fois) :
-        |   docker compose exec mysql mysql -u app -ppassword -e \
-        |     "CREATE DATABASE app_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+        | Base de test en memoire.
+        | Cette configuration rend `php artisan test` executable hors Docker
+        | sans dependre du service MySQL ni du nom DNS `mysql`.
         -->
-        <env name="DB_CONNECTION"    value="mysql"/>
-        <env name="DB_HOST"          value="mysql"/>
-        <env name="DB_PORT"          value="3306"/>
-        <env name="DB_DATABASE"      value="app_test"/>
-        <env name="DB_USERNAME"      value="app"/>
-        <env name="DB_PASSWORD"      value="password"/>
+        <env name="DB_CONNECTION"    value="sqlite"/>
+        <env name="DB_DATABASE"      value=":memory:"/>
 
         <!--
-        | Drivers en mémoire — isolation complète des services externes.
-        | Aucun appel Redis, SMTP ou queue réel pendant les tests.
+        | Drivers en mÃ©moire â€” isolation complÃ¨te des services externes.
+        | Aucun appel Redis, SMTP ou queue rÃ©el pendant les tests.
         -->
         <env name="CACHE_STORE"      value="array"/>
         <env name="SESSION_DRIVER"   value="array"/>

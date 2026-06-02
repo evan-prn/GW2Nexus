@@ -15,7 +15,7 @@ const API_VERSION = '/api/v1';
 export const ENDPOINTS = {
 
   // ─── Santé ──────────────────────────────────────────────────────────────
-  health: `${API_VERSION}/health`,      // GET — Vérifie que le backend est opérationnel
+  health: '/api/health',                // GET — Healthcheck public utilisé aussi par Docker
 
   // ─── Authentification ────────────────────────────────────────────────────
   auth: {

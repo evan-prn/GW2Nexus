@@ -43,18 +43,17 @@ export default function Navbar({ user = null, onLogout }: NavbarProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const location    = useLocation();
 
+  const closeMenus = () => {
+    setMenuOpen(false);
+    setUserOpen(false);
+  };
+
   /* Effet de fond au scroll */
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handler, { passive: true });
     return () => window.removeEventListener('scroll', handler);
   }, []);
-
-  /* Fermeture des menus au changement de route */
-  useEffect(() => {
-    setMenuOpen(false);
-    setUserOpen(false);
-  }, [location.pathname]);
 
   /* Fermeture dropdown au clic extérieur */
   useEffect(() => {
@@ -156,6 +155,7 @@ export default function Navbar({ user = null, onLogout }: NavbarProps) {
                       <Link
                         key={item.href}
                         to={item.href}
+                        onClick={closeMenus}
                         className={styles.dropdownLink}
                       >
                         <span aria-hidden="true">{item.icon}</span>
@@ -164,7 +164,10 @@ export default function Navbar({ user = null, onLogout }: NavbarProps) {
                     ))}
 
                     <button
-                      onClick={onLogout}
+                      onClick={() => {
+                        closeMenus();
+                        onLogout?.();
+                      }}
                       className={styles.dropdownLogout}
                     >
                       <span aria-hidden="true">🚪</span>
@@ -213,6 +216,7 @@ export default function Navbar({ user = null, onLogout }: NavbarProps) {
                 <li key={href}>
                   <Link
                     to={href}
+                    onClick={closeMenus}
                     className={isActive ? styles.mobileLinkActive : styles.mobileLink}
                   >
                     <span className={styles.mobileLinkIcon}>{icon}</span>
@@ -224,7 +228,7 @@ export default function Navbar({ user = null, onLogout }: NavbarProps) {
 
             {!user && (
               <li className={styles.mobileLoginItem}>
-                <Link to="/login" className={styles.mobileLoginLink}>
+                <Link to="/login" onClick={closeMenus} className={styles.mobileLoginLink}>
                   Connexion
                 </Link>
               </li>

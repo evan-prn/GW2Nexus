@@ -47,6 +47,8 @@ const ResetPasswordPage = () => {
   const [message, setMessage]         = useState('');
   const [isLoading, setIsLoading]     = useState(false);
 
+  usePageTitle('Nouveau mot de passe');
+
   // ── Lien invalide — token ou email manquant dans l'URL ───────────────────
   if (!token || !email) {
     return (
@@ -123,8 +125,6 @@ const ResetPasswordPage = () => {
   };
 
   const passwordStrength = getPasswordStrength(form.password);
-
-  usePageTitle('Nouveau mot de passe');
 
   return (
     <AuthLayout>

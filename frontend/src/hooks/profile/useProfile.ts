@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import axios from 'axios';
 import profileApi from '../../api/profile.api';
 import useProfileStore from '../../store/profileStore';
 import useAuthStore from '../../store/authStore';
@@ -6,6 +7,11 @@ import type { UpdateProfilePayload } from '../../types/profile.types';
 
 // ─── Hook profil utilisateur ──────────────────────────────────────
 // Responsabilité : charger et mettre à jour le profil de base.
+
+interface ApiErrorResponse {
+  message?: string;
+  errors?: Record<string, string[]>;
+}
 
 const useProfile = () => {
   const {
@@ -65,10 +71,15 @@ const useProfile = () => {
       });
 
       return { success: true };
-    } catch (err: any) {
-      const message = err.response?.data?.message ?? 'Erreur lors de la mise à jour.';
+    } catch (err: unknown) {
+      const message = axios.isAxiosError<ApiErrorResponse>(err)
+        ? err.response?.data?.message ?? 'Erreur lors de la mise � jour.'
+        : 'Erreur lors de la mise � jour.';
+      const errors = axios.isAxiosError<ApiErrorResponse>(err)
+        ? err.response?.data?.errors
+        : undefined;
       setError(message);
-      return { success: false, error: message, errors: err.response?.data?.errors };
+      return { success: false, error: message, errors };
     } finally {
       setSaving(false);
     }
