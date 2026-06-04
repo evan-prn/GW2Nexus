@@ -143,3 +143,27 @@
 - Alternatives envisagees : conserver `role` assignable pour faciliter seeders/factories ; ajouter une validation globale plus large.
 - Justification : le role est un attribut de privilege et doit etre modifie uniquement par un flux explicite et controle.
 - Impact attendu : reduction du risque de privilege escalation par mass assignment.
+
+## 2026-06-02 - Instructions projet dediees a GW2Nexus
+
+- Contexte : l'utilisateur a fourni un modele d'instructions TimeSmart/C# a adapter a GW2Nexus.
+- Decision : creer `.claude/instructions-claude.md` avec les regles propres a GW2Nexus, a Laravel/React/Docker et au workflow de correction par validation explicite.
+- Alternatives envisagees : conserver le modele TimeSmart en l'etat ; ajouter ces regles uniquement dans le README.
+- Justification : un fichier d'instructions dedie evite les confusions de stack et formalise les regles de collaboration applicables aux assistants IA.
+- Impact attendu : corrections futures plus coherentes, securisees et mieux documentees.
+
+## 2026-06-02 - phpMyAdmin local sur le port 8081
+
+- Contexte : la documentation indiquait `8080`, mais l'utilisateur a confirme que phpMyAdmin est fonctionnel sur `8081` et pas sur `8080`.
+- Decision : conserver `8081:80` dans `docker-compose.yml` et aligner README, audit et instructions IA sur `http://localhost:8081`.
+- Alternatives envisagees : revenir a `8080:80`.
+- Justification : privilegier le port fonctionnel dans l'environnement local reel.
+- Impact attendu : onboarding local plus fiable pour l'acces phpMyAdmin.
+
+## 2026-06-02 - Controle d'encodage dans la consolidation finale
+
+- Contexte : le projet avait deja montre du mojibake et des caracteres de controle Unicode dans des commentaires.
+- Decision : integrer un controle explicite des caracteres de controle et marqueurs mojibake dans la consolidation finale.
+- Alternatives envisagees : se limiter aux tests runtime.
+- Justification : les fichiers YAML et Markdown peuvent devenir invalides ou illisibles a cause de caracteres invisibles.
+- Impact attendu : meilleure fiabilite documentaire et moins de risques de YAML invalide.

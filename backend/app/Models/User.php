@@ -182,6 +182,22 @@ class User extends Authenticatable
     }
 
     /**
+     * Sujets de forum crees par l'utilisateur.
+     */
+    public function forumThreads(): HasMany
+    {
+        return $this->hasMany(ForumThread::class, 'user_id');
+    }
+
+    /**
+     * Messages de forum crees par l'utilisateur.
+     */
+    public function forumPosts(): HasMany
+    {
+        return $this->hasMany(ForumPost::class, 'user_id');
+    }
+
+    /**
      * Ban actuellement actif (relation 1-1 dérivée de bans).
      *
      * Retourne null si l'utilisateur n'est pas banni.

@@ -191,6 +191,36 @@ Etat observe avant la premiere etape :
 - Criteres de validation : tests backend OK et routes API OK.
 - Commandes de test prevues : `php artisan test`, `php artisan route:list --path=api`, `npm.cmd run lint`, `npm.cmd exec tsc -- --noEmit --pretty false`.
 
+## Etape 17 - Instructions Claude/Codex adaptees a GW2Nexus
+
+- Objectif : creer un fichier d'instructions projet adapte a GW2Nexus et au workflow de correction controlee.
+- Fichiers cibles : `.claude/instructions-claude.md`, docs audit.
+- Modifications prevues : documenter stack, ports, workflow, tests, securite, Docker et regles de comportement.
+- Risques : faible ; documentation uniquement.
+- Statut : Appliquee
+- Criteres de validation : fichier present et coherent avec GW2Nexus.
+- Commandes de test prevues : `Test-Path .claude/instructions-claude.md`, `npm.cmd run lint`, `php artisan test`.
+
+## Etape 18 - Consolidation phpMyAdmin sur le port 8081
+
+- Objectif : aligner la documentation sur le port phpMyAdmin reellement fonctionnel.
+- Fichiers cibles : `docker-compose.yml`, `README.md`, `.claude/instructions-claude.md`, docs audit.
+- Modifications prevues : documenter phpMyAdmin sur `http://localhost:8081` au lieu de `8080`.
+- Risques : faible ; alignement documentaire sur le port Docker deja configure.
+- Statut : Appliquee
+- Criteres de validation : les references phpMyAdmin indiquent `8081` et `docker compose config` passe.
+- Commandes de test prevues : `docker compose config`, `php artisan test`, `npm.cmd run lint`.
+
+## Etape 19 - Consolidation finale et controle d'encodage
+
+- Objectif : verifier l'etat final des fichiers touches, les ports documentes et l'absence de caracteres d'encodage suspects.
+- Fichiers cibles : `docker-compose.yml`, `README.md`, `.claude/instructions-claude.md`, docs audit.
+- Modifications prevues : tracer la consolidation finale dans les documents d'audit.
+- Risques : faible ; documentation uniquement.
+- Statut : Appliquee
+- Criteres de validation : aucun caractere de controle ni marqueur mojibake dans les fichiers touches, tests backend/frontend OK.
+- Commandes de test prevues : `docker compose config`, `php artisan test`, `npm.cmd run lint`, `npm.cmd exec tsc -- --noEmit --pretty false`.
+
 ## Etape 6 - Relations backend vers modeles absents
 
 - Objectif : eviter les `Class not found` sur relations futures non implementees.

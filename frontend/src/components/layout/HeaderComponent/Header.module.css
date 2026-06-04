@@ -84,7 +84,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 100px var(--space-6) var(--space-16);
+  padding: 100px var(--space-6) calc(var(--space-16) + 80px);
 }
 
 /* ─── Badge ─────────────────────────────────────────────────────── */
@@ -248,8 +248,9 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0 var(--space-12);
-  margin-top: var(--space-20);
+  gap: var(--space-4) var(--space-12);
+  margin-top: var(--space-16);
+  margin-bottom: var(--space-12);
 }
 
 .stat {
@@ -268,7 +269,7 @@
 .statLabel {
   font-family: var(--font-body);
   font-size: var(--text-xs);
-  color: #4B5563;
+  color: rgba(240, 232, 216, 0.72);
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
   margin: 0;
@@ -277,7 +278,7 @@
 /* ─── Flèche scroll ─────────────────────────────────────────────── */
 .scrollHint {
   position: absolute;
-  bottom: var(--space-8);
+  bottom: var(--space-5);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -290,7 +291,7 @@
 .scrollLabel {
   font-family: var(--font-display);
   font-size: var(--text-xs);
-  color: #4B5563;
+  color: rgba(240, 232, 216, 0.76);
   letter-spacing: var(--tracking-wider);
   text-transform: uppercase;
 }

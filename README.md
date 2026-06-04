@@ -25,7 +25,7 @@ Cette documentation decrit l'etat reel observe pendant l'audit technique du 2026
 | Frontend Vite | http://localhost:5174 | Port frontend de reference du projet |
 | Backend Laravel | http://localhost:8000 | API Laravel directe |
 | Health API | http://localhost:8000/api/health | Route health non versionnee |
-| phpMyAdmin | http://localhost:8080 | Interface MySQL |
+| phpMyAdmin | http://localhost:8081 | Interface MySQL |
 | Mailpit UI | http://localhost:8025 | Emails de dev |
 | Mailpit SMTP | localhost:1025 | SMTP local |
 | MySQL depuis l'hote | localhost:3307 | Mapping Docker hote |
@@ -231,4 +231,5 @@ Fichiers principaux :
 - `docs/audit/PLAN_CORRECTION_GW2NEXUS.md`
 - `docs/audit/CHANGELOG_CORRECTIONS_GW2NEXUS.md`
 - `docs/audit/DECISIONS_TECHNIQUES_GW2NEXUS.md`
+
 

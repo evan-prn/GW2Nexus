@@ -376,3 +376,82 @@ Ce fichier trace uniquement les modifications reellement appliquees apres valida
   - `npm.cmd run lint` reussi.
 - Problemes restants :
   - Si une fonctionnalite future de changement de role est ajoutee, elle devra passer par une methode ou un flux admin explicite.
+
+## 2026-06-02 - Etape 17 - Instructions Claude/Codex adaptees a GW2Nexus
+
+- Fichiers modifies :
+  - `.claude/instructions-claude.md`
+  - `docs/audit/PLAN_CORRECTION_GW2NEXUS.md`
+  - `docs/audit/CHANGELOG_CORRECTIONS_GW2NEXUS.md`
+  - `docs/audit/DECISIONS_TECHNIQUES_GW2NEXUS.md`
+- Resume des changements : creation d'un fichier d'instructions projet adapte a GW2Nexus, a la stack Laravel/React/Docker et au workflow de validation explicite.
+- Raison de la modification : remplacer le modele TimeSmart/C# fourni par des regles utiles pour GW2Nexus et notre utilisation actuelle.
+- Commandes executees :
+  - `git status --short`
+  - `Test-Path .claude/instructions-claude.md`
+  - `Get-Content .claude/instructions-claude.md -TotalCount 80`
+  - `php artisan test`
+  - `npm.cmd run lint`
+- Resultat des tests :
+  - `.claude/instructions-claude.md` existe et son contenu est lisible.
+  - `php artisan test` reussi : 18 tests passes, 59 assertions.
+  - `npm.cmd run lint` reussi.
+  - `npm.cmd exec tsc -- --noEmit --pretty false` reussi.
+- Problemes restants :
+  - Aucun probleme runtime attendu ; changement documentaire uniquement.
+
+## 2026-06-02 - Etape 18 - Consolidation phpMyAdmin sur le port 8081
+
+- Fichiers modifies :
+  - `docker-compose.yml`
+  - `README.md`
+  - `.claude/instructions-claude.md`
+  - `docs/audit/AUDIT_GW2NEXUS.md`
+  - `docs/audit/PLAN_CORRECTION_GW2NEXUS.md`
+  - `docs/audit/CHANGELOG_CORRECTIONS_GW2NEXUS.md`
+  - `docs/audit/DECISIONS_TECHNIQUES_GW2NEXUS.md`
+- Resume des changements : alignement de la documentation phpMyAdmin sur `http://localhost:8081`, port confirme fonctionnel par l'utilisateur.
+- Raison de la modification : `8080` n'est pas fonctionnel dans l'environnement utilisateur, alors que `8081` l'est.
+- Commandes executees :
+  - `git status --short`
+  - `rg -n "8080|8081|phpMyAdmin|phpmyadmin" docker-compose.yml README.md .claude/instructions-claude.md docs/audit`
+  - `docker compose config`
+  - `php artisan test`
+  - `npm.cmd run lint`
+- Resultat des tests :
+  - Recherche ciblee : les references phpMyAdmin dans `docker-compose.yml`, `README.md`, `.claude/instructions-claude.md` et l'audit indiquent `8081`.
+  - `docker compose config` reussi et confirme la publication phpMyAdmin sur `8081`.
+  - `docker compose config` affiche toujours le warning Docker non bloquant sur `C:\Users\oui\.docker\config.json`.
+  - `php artisan test` reussi : 18 tests passes, 59 assertions.
+  - `npm.cmd run lint` reussi.
+  - `npm.cmd exec tsc -- --noEmit --pretty false` reussi.
+- Problemes restants :
+  - Aucun attendu pour phpMyAdmin si `http://localhost:8081` reste le port de reference local.
+
+## 2026-06-02 - Etape 19 - Consolidation finale et controle d'encodage
+
+- Fichiers modifies :
+  - `docs/audit/PLAN_CORRECTION_GW2NEXUS.md`
+  - `docs/audit/CHANGELOG_CORRECTIONS_GW2NEXUS.md`
+  - `docs/audit/DECISIONS_TECHNIQUES_GW2NEXUS.md`
+- Resume des changements : ajout d'une trace de consolidation finale et controle des fichiers touches pour les caracteres de controle Unicode et marqueurs mojibake.
+- Raison de la modification : l'utilisateur a demande de ne pas oublier l'encodage afin d'eviter les caracteres bizarres.
+- Commandes executees :
+  - `git status --short`
+  - `git diff --stat`
+  - controle PowerShell des caracteres de controle et marqueurs mojibake
+  - `rg -n "8080|8081|5173|5174" docker-compose.yml README.md .claude/instructions-claude.md docs/audit`
+  - `docker compose config`
+  - `php artisan test`
+  - `npm.cmd run lint`
+  - `npm.cmd exec tsc -- --noEmit --pretty false`
+- Resultat des tests :
+  - Controle encodage : 0 caractere de controle et 0 marqueur mojibake dans les fichiers controles.
+  - Recherche ports : `5174` et `8081` sont coherents dans les fichiers controles ; les anciennes mentions `5173`/`8080` restantes correspondent a l'historique d'audit.
+  - `docker compose config` reussi et confirme `5174`, `8081`, `3307`, `8000`, `8025` et `1025`.
+  - `docker compose config` affiche toujours le warning Docker non bloquant sur `C:\Users\oui\.docker\config.json`.
+  - `php artisan test` reussi : 18 tests passes, 59 assertions.
+  - `npm.cmd run lint` reussi.
+  - `npm.cmd exec tsc -- --noEmit --pretty false` reussi.
+- Problemes restants :
+  - Aucun probleme d'encodage detecte dans les fichiers controles.

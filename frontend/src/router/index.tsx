@@ -1,7 +1,7 @@
 // frontend/src/router/index.tsx
 
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
-import { lazy, ReactNode, Suspense } from 'react';
+import { createBrowserRouter, RouterProvider, Outlet, useLocation } from 'react-router-dom';
+import { lazy, ReactNode, Suspense, useEffect } from 'react';
 
 import ProtectedRoute from './ProtectedRoute';
 import GuestRoute from './GuestRoute';
@@ -28,11 +28,22 @@ const S = ({ children }: { children: ReactNode }) => (
 // Le layout admin est volontairement séparé (AdminLayout) pour ne pas
 // afficher la Navbar/Footer publique dans le back-office.
 //
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }, [pathname]);
+
+  return null;
+};
+
 const RootLayout = () => {
   const { user, logout } = useAuthStore();
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <ScrollToTop />
       <Navbar user={user} onLogout={logout} />
       <main style={{ flexGrow: 1 }}>
         <Outlet />

@@ -11,6 +11,9 @@ use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Api\Profile\AvatarController;
 use App\Http\Controllers\Api\Profile\UserProfileController;
 use App\Http\Controllers\Api\Events\EventController;
+use App\Http\Controllers\Api\Forum\ForumCategoryController;
+use App\Http\Controllers\Api\Forum\ForumPostController;
+use App\Http\Controllers\Api\Forum\ForumThreadController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -117,6 +120,24 @@ Route::prefix('v1')->group(function (): void {
     |   - ban.check     : bloque les utilisateurs actuellement bannis (403)
     |
     */
+    Route::prefix('forum')->name('forum.')->group(function (): void {
+
+        Route::get('categories', [ForumCategoryController::class, 'index'])
+            ->name('categories.index');
+
+        Route::get('categories/{category:slug}', [ForumCategoryController::class, 'show'])
+            ->name('categories.show');
+
+        Route::get('categories/{category:slug}/threads', [ForumCategoryController::class, 'threads'])
+            ->name('categories.threads');
+
+        Route::get('threads/{thread:slug}', [ForumThreadController::class, 'show'])
+            ->name('threads.show');
+
+        Route::get('threads/{thread:slug}/posts', [ForumPostController::class, 'index'])
+            ->name('threads.posts');
+    });
+
     Route::middleware(['auth:sanctum', 'ban.check'])->group(function (): void {
 
         // POST /api/v1/auth/logout — Révocation du token Bearer courant

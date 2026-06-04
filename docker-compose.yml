@@ -1,25 +1,25 @@
-﻿# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-# GW2Nexus â€” Docker Compose
+﻿# -------------------------------------------------------------------
+# GW2Nexus — Docker Compose
 # Dev stack : Laravel 12 + React/Vite + MySQL 8 + phpMyAdmin + Mailpit
 #
-# PrÃ©requis :
-#   - Copier .env.example â†’ .env (racine)
-#   - Copier backend/.env.example â†’ backend/.env
-#   - Copier frontend/.env.example â†’ frontend/.env
+# Prérequis :
+#   - Copier .env.example → .env (racine)
+#   - Copier backend/.env.example → backend/.env
+#   - Copier frontend/.env.example → frontend/.env
 #
 # Usage :
-#   Premier dÃ©marrage : docker compose up -d --build
-#   DÃ©marrage normal  : docker compose up -d
+#   Premier démarrage : docker compose up -d --build
+#   Démarrage normal  : docker compose up -d
 #   Logs en direct    : docker compose logs -f
-#   ArrÃªt propre      : docker compose down
+#   Arrêt propre      : docker compose down
 #   Reset complet     : docker compose down -v (supprime les volumes)
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# -------------------------------------------------------------------
 
 services:
 
-  # â”€â”€â”€ MySQL 8 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  # Base de donnÃ©es principale de GW2Nexus
-  # Accessible depuis l'hÃ´te : localhost:3307
+  # ─── MySQL 8 ──────────────────────────────────────────────────────
+  # Base de données principale de GW2Nexus
+  # Accessible depuis l'hôte : localhost:3307
   # Accessible depuis les containers : mysql:3306
   mysql:
     image: mysql:8.0
@@ -34,61 +34,58 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      # Volume nommÃ© : les donnÃ©es MySQL survivent aux docker compose down
+      # Volume nommé : les données MySQL survivent aux docker compose down
       - mysql_data:/var/lib/mysql
     networks:
       - gw2nexus_network
     healthcheck:
-      # VÃ©rifie que MySQL accepte les connexions avant de dÃ©marrer les autres services
+      # Vérifie que MySQL accepte les connexions avant de démarrer les autres services
       # Les services Laravel et phpMyAdmin attendent ce healthcheck (depends_on)
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_ROOT_PASSWORD}"]
       interval: 5s
       timeout: 5s
       retries: 10
-      start_period: 20s   # Laisse le temps Ã  MySQL d'initialiser son storage engine
+      start_period: 20s   # Laisse le temps à MySQL d'initialiser son storage engine
 
-  # â”€â”€â”€ phpMyAdmin â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  # Interface web de gestion MySQL â€” dev uniquement
-  # Accessible : http://localhost:8080
-  # Connexion automatique en root (configurÃ©e via PMA_USER/PMA_PASSWORD)
+  # ─── phpMyAdmin ───────────────────────────────────────────────────
+  # Interface web de gestion MySQL — dev uniquement
+  # Accessible : http://localhost:8081
+  # Connexion automatique en root (configurée via PMA_USER/PMA_PASSWORD)
   phpmyadmin:
-    image: phpmyadmin:latest   # Version fixe â€” Ã©vite les ruptures sur latest
+    image: phpmyadmin:5.2-apache
     container_name: gw2nexus_phpmyadmin
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "8081:80"
     environment:
-      PMA_HOST: mysql             # Nom du service MySQL dans le rÃ©seau Docker
+      PMA_HOST: mysql
       PMA_PORT: 3306
-      PMA_ARBITRARY: 1            # Permet de se connecter Ã  n'importe quel host MySQL
-      #PMA_USER: root
-      #PMA_PASSWORD: ${DB_ROOT_PASSWORD}
-      UPLOAD_LIMIT: 64M           # Taille max pour l'import de fichiers SQL
+      UPLOAD_LIMIT: 64M
     depends_on:
       mysql:
-        condition: service_healthy  # Attend que MySQL soit prÃªt
+        condition: service_healthy
     networks:
       - gw2nexus_network
 
-  # â”€â”€â”€ Mailpit â€” serveur mail de dev â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  # Capture tous les emails envoyÃ©s par Laravel (vÃ©rification email, reset passwordâ€¦)
-  # sans les envoyer rÃ©ellement
-  # SMTP      : localhost:1025  (configurÃ© dans backend/.env)
+  # ─── Mailpit — serveur mail de dev ────────────────────────────────
+  # Capture tous les emails envoyés par Laravel (vérification email, reset password…)
+  # sans les envoyer réellement
+  # SMTP      : localhost:1025  (configuré dans backend/.env)
   # Interface : http://localhost:8025
   mailpit:
     image: axllent/mailpit:latest   # Version majeure fixe
     container_name: gw2nexus_mailpit
     restart: unless-stopped
     ports:
-      - "1025:1025"   # SMTP â€” Laravel envoie ses mails ici
-      - "8025:8025"   # Interface web â€” visualiser les emails interceptÃ©s
+      - "1025:1025"   # SMTP — Laravel envoie ses mails ici
+      - "8025:8025"   # Interface web — visualiser les emails interceptés
     networks:
       - gw2nexus_network
 
-  # â”€â”€â”€ Laravel 12 â€” API REST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  # Backend principal : API REST versionnÃ©e (/api/v1/*)
+  # ─── Laravel 12 — API REST ────────────────────────────────────────
+  # Backend principal : API REST versionnée (/api/v1/*)
   # Accessible directement : http://localhost:8000
-  # Accessible via proxy   : http://localhost:5174/api/* (recommandÃ© pour le SPA)
+  # Accessible via proxy   : http://localhost:5174/api/* (recommandé pour le SPA)
   laravel:
     build:
       context: ./backend
@@ -96,24 +93,24 @@ services:
     container_name: gw2nexus_laravel
     restart: unless-stopped
 
-    # â”€â”€ Alignement uid hÃ´te/container â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    # Ã‰vite les problÃ¨mes de permissions sur le volume mount ./backend
-    # UID/GID dÃ©finis dans le .env racine (dÃ©faut : 1000/1000)
+    # ── Alignement uid hôte/container ─────────────────────────────
+    # Évite les problèmes de permissions sur le volume mount ./backend
+    # UID/GID définis dans le .env racine (défaut : 1000/1000)
     user: "${UID:-1000}:${GID:-1000}"
 
     ports:
       - "8000:8000"
 
     volumes:
-      # Mount du code source â€” les modifications PHP sont reflÃ©tÃ©es sans rebuild
+      # Mount du code source — les modifications PHP sont reflétées sans rebuild
       - ./backend:/var/www/html
-      # Volume nommÃ© pour vendor/ â€” Ã©vite les conflits hÃ´te/container
+      # Volume nommé pour vendor/ — évite les conflits hôte/container
       # et les volumes anonymes qui s'accumulent
       - backend_vendor:/var/www/html/vendor
 
-    # â”€â”€ Variables d'environnement â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    # ── Variables d'environnement ──────────────────────────────────
     # env_file charge toutes les variables depuis backend/.env
-    # environment surcharge uniquement les valeurs spÃ©cifiques Ã  Docker
+    # environment surcharge uniquement les valeurs spécifiques à Docker
     # (les noms de service remplacent les adresses localhost)
     env_file:
       - ./backend/.env            # Toutes les variables Laravel
@@ -123,30 +120,30 @@ services:
 
     depends_on:
       mysql:
-        condition: service_healthy  # Attend que MySQL soit prÃªt avant de dÃ©marrer
+        condition: service_healthy  # Attend que MySQL soit prêt avant de démarrer
       mailpit:
-        condition: service_started  # Mailpit n'a pas de healthcheck â€” started suffit
+        condition: service_started  # Mailpit n'a pas de healthcheck — started suffit
 
-    # â”€â”€ Healthcheck Laravel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    # Permet au service react d'attendre que Laravel soit opÃ©rationnel
-    # Endpoint /api/health dÃ©fini dans routes/api.php :
+    # ── Healthcheck Laravel ────────────────────────────────────────
+    # Permet au service react d'attendre que Laravel soit opérationnel
+    # Endpoint /api/health défini dans routes/api.php :
     #   Route::get('/health', fn() => response()->json(['status' => 'ok']));
     healthcheck:
       test: ["CMD-SHELL", "curl -f -4 http://localhost:8000/api/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s   # Laisse le temps aux migrations de s'exÃ©cuter
+      start_period: 30s   # Laisse le temps aux migrations de s'exécuter
 
     networks:
       - gw2nexus_network
 
-  # â”€â”€â”€ React + Vite â€” Frontend SPA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  # ─── React + Vite — Frontend SPA ──────────────────────────────────
   # SPA React/TypeScript servi par le dev server Vite
   # Accessible : http://localhost:5174
-  # HMR actif  : les modifications React sont reflÃ©tÃ©es instantanÃ©ment
-  # Proxy Vite : /api/* et /sanctum/* â†’ http://laravel:8000
-  #   â†’ mÃªme domaine (localhost:5174) â†’ pas de CSRF cross-origin
+  # HMR actif  : les modifications React sont reflétées instantanément
+  # Proxy Vite : /api/* et /sanctum/* → http://laravel:8000
+  #   → même domaine (localhost:5174) → pas de CSRF cross-origin
   react:
     build:
       context: ./frontend
@@ -156,42 +153,43 @@ services:
     ports:
       - "5174:5174"     # Dev server Vite
     volumes:
-      # Mount du code source â€” Vite dÃ©tecte les changements via polling
+      # Mount du code source — Vite détecte les changements via polling
       - ./frontend:/app
-      # Volume nommÃ© pour node_modules/ â€” Ã©vite les conflits hÃ´te/container
+      # Volume nommé pour node_modules/ — évite les conflits hôte/container
       - frontend_node_modules:/app/node_modules
     env_file:
       - ./frontend/.env           # Variables Vite (VITE_*)
     environment:
-      # Polling requis pour dÃ©tecter les changements sur volumes Docker
-      # NÃ©cessaire sur Windows et Mac (inotify ne fonctionne pas sur volumes montÃ©s)
+      # Polling requis pour détecter les changements sur volumes Docker
+      # Nécessaire sur Windows et Mac (inotify ne fonctionne pas sur volumes montés)
       CHOKIDAR_USEPOLLING: "true"
       WATCHPACK_POLLING: "true"
     depends_on:
       laravel:
-        condition: service_healthy  # Attend que l'API Laravel soit prÃªte
+        condition: service_healthy  # Attend que l'API Laravel soit prête
     networks:
       - gw2nexus_network
 
-# â”€â”€â”€ Volumes nommÃ©s â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-# Les volumes nommÃ©s sont gÃ©rÃ©s par Docker et persistent entre les redÃ©marrages
+# ─── Volumes nommés ───────────────────────────────────────────────────
+# Les volumes nommés sont gérés par Docker et persistent entre les redémarrages
 # docker compose down -v pour les supprimer (reset complet)
 volumes:
-  mysql_data:             # DonnÃ©es MySQL â€” ne jamais supprimer en prod
+  mysql_data:             # Données MySQL — ne jamais supprimer en prod
     driver: local
-  backend_vendor:         # DÃ©pendances PHP Composer installÃ©es dans le container
+  backend_vendor:         # Dépendances PHP Composer installées dans le container
     driver: local
-  frontend_node_modules:  # DÃ©pendances JS npm installÃ©es dans le container
+  frontend_node_modules:  # Dépendances JS npm installées dans le container
     driver: local
 
-# â”€â”€â”€ RÃ©seau interne â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-# RÃ©seau bridge isolÃ© â€” les containers se joignent par leur nom de service
+# ─── Réseau interne ───────────────────────────────────────────────────
+# Réseau bridge isolé — les containers se joignent par leur nom de service
 # Exemples :
-#   laravel â†’ mysql      : mysql:3306
-#   laravel â†’ mailpit    : mailpit:1025
-#   react   â†’ laravel    : laravel:8000 (via proxy Vite en dev)
+#   laravel → mysql      : mysql:3306
+#   laravel → mailpit    : mailpit:1025
+#   react   → laravel    : laravel:8000 (via proxy Vite en dev)
 networks:
   gw2nexus_network:
     driver: bridge
+
 
 

@@ -1,4 +1,4 @@
-# Rapport d'audit GW2Nexus
+﻿# Rapport d'audit GW2Nexus
 
 Date de l'audit initial : 2026-06-02
 
@@ -135,7 +135,7 @@ Mise a jour 2026-06-02 : le port frontend de reference a ete valide a `5174` et 
 - Frontend : conflit majeur `5173` / `5174` identifie, puis configuration non secrete alignee sur `5174`.
 - Backend : Laravel expose `8000`, coherent dans Docker.
 - MySQL : host `3307`, container `3306`; `.env.example` racine et commentaire Compose clarifies.
-- phpMyAdmin : `8080`, Mailpit : `8025`, SMTP : `1025`.
+- phpMyAdmin : `8081`, Mailpit : `8025`, SMTP : `1025`.
 
 ## 9. Qualite de code et maintenabilite
 
@@ -158,7 +158,8 @@ Mise a jour 2026-06-02 : le port frontend de reference a ete valide a `5174` et 
 
 - README racine incoherent, encode incorrectement, et documente des features non implementees. Mise a jour 2026-06-02 : le README a ete remplace par une version courte alignee avec l'etat reel audite.
 - Instructions `.env` parlent d'un `.env.example` racine actuellement absent.
-- Ports documentes incoherents avec les configs actuelles. Mise a jour 2026-06-02 : le README documente maintenant `5174`, `8000`, `3307`, `8080`, `8025` et `1025`.
+- Ports documentes incoherents avec les configs actuelles. Mise a jour 2026-06-02 : le README documente maintenant `5174`, `8000`, `3307`, `8081`, `8025` et `1025`.
+- Mise a jour 2026-06-02 : `.claude/instructions-claude.md` formalise maintenant les regles de collaboration IA adaptees a GW2Nexus.
 - Backend README et docs existants ne compensent pas ces incoherences pour un nouveau developpeur.
 
 ## 12. Recommandations prioritaires
@@ -171,3 +172,4 @@ Mise a jour 2026-06-02 : le port frontend de reference a ete valide a `5174` et 
 6. Retirer ou implementer les relations Laravel vers modeles absents.
 7. Documenter l'etat reel du MVP.
 8. Revoir la strategie token/localStorage et `$fillable`.
+
