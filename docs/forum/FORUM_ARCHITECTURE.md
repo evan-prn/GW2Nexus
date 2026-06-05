@@ -212,8 +212,13 @@ Composants recommandes:
 - Seuls les utilisateurs connectes peuvent creer un sujet.
 - Seuls les utilisateurs connectes peuvent repondre.
 - Un utilisateur peut modifier ou supprimer ses propres messages.
+- Un utilisateur connecte peut repondre a un message avec un contexte texte pre-rempli.
+- Un utilisateur connecte peut signaler un message qui n'est pas le sien.
+- Un utilisateur ne peut signaler qu'une seule fois le meme message.
 - Un sujet verrouille refuse les nouvelles reponses.
-- Les roles `moderateur` et `admin` seront prepares pour la moderation future.
+- Les roles `moderateur` et `admin` sont prepares cote UI pour la moderation future.
+- Les actions de moderation de sujet restent inactives tant que les endpoints dedies ne sont pas implementes.
+- La logique frontend est indicative uniquement; la securite et les autorisations restent imposees par Laravel.
 
 ## 8. Securite
 
@@ -235,3 +240,8 @@ Regles:
 - Resources Laravel pour les reponses JSON.
 - CSS Modules cote React.
 - Endpoints centralises dans `ENDPOINTS`.
+- Les vues de sujet sont dedupliquees sur une fenetre courte de 10 minutes par sujet et visiteur.
+- La deduplication des vues evite les doubles comptages en developpement React et limite le gonflage artificiel.
+- Les signalements de messages sont stockes dans `forum_post_reports` avec un statut initial `open`.
+- Les signalements ouverts sont consultables dans le back-office sur `/admin/forum`.
+- Le traitement des signalements par l'equipe de moderation reste a implementer dans une etape dediee.

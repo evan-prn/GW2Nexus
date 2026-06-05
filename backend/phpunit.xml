@@ -21,31 +21,46 @@
     </source>
 
     <php>
-        <!-- Environnement de test isolÃ© -->
-        <env name="APP_ENV"          value="testing"/>
-        <env name="APP_DEBUG"        value="true"/>
+        <!-- Environnement de test isole -->
+        <env name="APP_ENV"          value="testing" force="true"/>
+        <env name="APP_DEBUG"        value="true" force="true"/>
 
         <!--
         | APP_KEY : obligatoire pour le cast 'encrypted' sur la colonne api_key.
-        | Sans cette clÃ©, toute instanciation de User plante en 500.
+        | Sans cette cle, toute instanciation de User plante en 500.
         -->
-        <env name="APP_KEY"          value="base64:I856Ytd3PzMZ7mltYMUUC9QRumCv8w45r9Hs/Byw+fQ="/>
+        <env name="APP_KEY"          value="base64:I856Ytd3PzMZ7mltYMUUC9QRumCv8w45r9Hs/Byw+fQ=/" force="true"/>
 
         <!--
         | Base de test en memoire.
         | Cette configuration rend `php artisan test` executable hors Docker
         | sans dependre du service MySQL ni du nom DNS `mysql`.
         -->
-        <env name="DB_CONNECTION"    value="sqlite"/>
-        <env name="DB_DATABASE"      value=":memory:"/>
+        <env name="DB_CONNECTION"    value="sqlite" force="true"/>
+        <env name="DB_DATABASE"      value=":memory:" force="true"/>
 
         <!--
-        | Drivers en mÃ©moire â€” isolation complÃ¨te des services externes.
-        | Aucun appel Redis, SMTP ou queue rÃ©el pendant les tests.
+        | Drivers en memoire - isolation complete des services externes.
+        | Aucun appel Redis, SMTP ou queue reel pendant les tests.
         -->
-        <env name="CACHE_STORE"      value="array"/>
-        <env name="SESSION_DRIVER"   value="array"/>
-        <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="MAIL_MAILER"      value="array"/>
+        <env name="CACHE_STORE"      value="array" force="true"/>
+        <env name="SESSION_DRIVER"   value="array" force="true"/>
+        <env name="QUEUE_CONNECTION" value="sync" force="true"/>
+        <env name="MAIL_MAILER"      value="array" force="true"/>
+
+        <!--
+        | Docker expose aussi ses variables dans $_SERVER.
+        | Laravel consulte cette source avant getenv(), donc les valeurs de test
+        | doivent etre imposees dans les deux emplacements.
+        -->
+        <server name="APP_ENV"          value="testing"/>
+        <server name="APP_DEBUG"        value="true"/>
+        <server name="APP_KEY"          value="base64:I856Ytd3PzMZ7mltYMUUC9QRumCv8w45r9Hs/Byw+fQ=/"/>
+        <server name="DB_CONNECTION"    value="sqlite"/>
+        <server name="DB_DATABASE"      value=":memory:"/>
+        <server name="CACHE_STORE"      value="array"/>
+        <server name="SESSION_DRIVER"   value="array"/>
+        <server name="QUEUE_CONNECTION" value="sync"/>
+        <server name="MAIL_MAILER"      value="array"/>
     </php>
 </phpunit>

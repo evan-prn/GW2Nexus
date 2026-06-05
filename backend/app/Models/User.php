@@ -198,6 +198,22 @@ class User extends Authenticatable
     }
 
     /**
+     * Signalements de messages forum crees par l'utilisateur.
+     */
+    public function forumPostReports(): HasMany
+    {
+        return $this->hasMany(ForumPostReport::class, 'reporter_id');
+    }
+
+    /**
+     * Signalements de messages forum traites par l'utilisateur.
+     */
+    public function reviewedForumPostReports(): HasMany
+    {
+        return $this->hasMany(ForumPostReport::class, 'reviewed_by');
+    }
+
+    /**
      * Ban actuellement actif (relation 1-1 dérivée de bans).
      *
      * Retourne null si l'utilisateur n'est pas banni.

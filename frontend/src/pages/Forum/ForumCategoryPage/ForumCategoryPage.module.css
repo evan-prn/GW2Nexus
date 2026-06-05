@@ -1,0 +1,128 @@
+.page {
+  min-height: 100vh;
+  padding: calc(var(--navbar-height) + var(--space-10)) var(--space-6) var(--space-20);
+  color: var(--text-primary);
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(201, 168, 76, 0.08), transparent 45%),
+    var(--bg-void);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-6);
+  align-items: flex-end;
+  max-width: var(--container-xl);
+  margin: 0 auto var(--space-8);
+}
+
+.kicker {
+  margin: 0 0 var(--space-2);
+  color: var(--gold-primary);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  color: var(--gold-light);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.6rem);
+}
+
+.subtitle {
+  max-width: 720px;
+  margin: var(--space-3) 0 0;
+  color: rgba(240, 232, 216, 0.76);
+  font-size: var(--text-lg);
+}
+
+.action,
+.actionDisabled,
+.actionSecondary {
+  flex-shrink: 0;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.action {
+  background: var(--gold-primary);
+  color: var(--text-inverse);
+}
+
+.actionDisabled {
+  border: 1px solid rgba(201, 168, 76, 0.36);
+  color: rgba(240, 232, 216, 0.7);
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.actionSecondary {
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+}
+
+.list,
+.state,
+.error,
+.empty,
+.pagination {
+  max-width: var(--container-xl);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.state,
+.error,
+.empty {
+  padding: var(--space-6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: rgba(28, 28, 36, 0.72);
+  text-align: center;
+}
+
+.state,
+.empty {
+  color: var(--text-secondary);
+}
+
+.empty h2 {
+  margin: 0 0 var(--space-2);
+  color: var(--gold-light);
+  font-family: var(--font-display);
+}
+
+.empty p {
+  margin: 0;
+}
+
+.error {
+  color: var(--color-error);
+  border-color: rgba(240, 96, 96, 0.32);
+}
+
+.pagination {
+  margin-top: var(--space-5);
+  color: var(--text-dim);
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

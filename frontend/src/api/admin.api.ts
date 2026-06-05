@@ -3,10 +3,14 @@
 import httpClient from './httpClient';
 import { ENDPOINTS } from './endpoint';
 import type {
+  AdminForumReport,
   AdminStats,
   AdminUser,
   BanPayload,
+  ForumReportFilters,
+  PaginatedForumReports,
   PaginatedUsers,
+  UpdateForumReportPayload,
   UserFilters,
 } from '@/types/admin.types';
 import type { AxiosResponse } from 'axios';
@@ -67,6 +71,29 @@ const adminApi = {
    */
   unbanUser(userId: number): Promise<AxiosResponse<void>> {
     return httpClient.delete(ENDPOINTS.admin.users.unban(userId));
+  },
+
+  /**
+   * GET /api/v1/admin/forum/reports
+   * Liste paginee des signalements forum.
+   */
+  getForumReports(filters: Partial<ForumReportFilters>): Promise<AxiosResponse<PaginatedForumReports>> {
+    return httpClient.get(ENDPOINTS.admin.forum.reports, { params: filters });
+  },
+
+  updateForumReport(
+    reportId: number,
+    payload: UpdateForumReportPayload,
+  ): Promise<AxiosResponse<{ data: AdminForumReport; message: string }>> {
+    return httpClient.patch(ENDPOINTS.admin.forum.report(reportId), payload);
+  },
+
+  toggleForumThreadLock(threadId: number): Promise<AxiosResponse<{ message: string }>> {
+    return httpClient.patch(ENDPOINTS.admin.forum.lockThread(threadId));
+  },
+
+  toggleForumThreadPin(threadId: number): Promise<AxiosResponse<{ message: string }>> {
+    return httpClient.patch(ENDPOINTS.admin.forum.pinThread(threadId));
   },
 
 };

@@ -94,3 +94,63 @@ export interface PaginatedUsers {
     total: number;
   };
 }
+
+export type ForumReportStatus = '' | 'open' | 'reviewed' | 'dismissed';
+export type ForumReportReason = '' | 'spam' | 'insult' | 'harassment' | 'inappropriate' | 'other';
+
+export interface AdminForumReportUser {
+  id: number;
+  nom: string;
+  email: string;
+  role: 'user' | 'moderateur' | 'admin';
+}
+
+export interface AdminForumReport {
+  id: number;
+  reason: Exclude<ForumReportReason, ''>;
+  details: string | null;
+  status: Exclude<ForumReportStatus, ''>;
+  created_at: string;
+  reviewed_at: string | null;
+  reporter: AdminForumReportUser;
+  reviewer: AdminForumReportUser | null;
+  post: {
+    id: number;
+    content: string;
+    created_at: string | null;
+    author: AdminForumReportUser;
+    thread: {
+      id: number;
+      title: string;
+      slug: string;
+      is_locked: boolean;
+      is_pinned: boolean;
+      category: {
+        id: number;
+        name: string;
+        slug: string;
+      };
+    };
+  };
+}
+
+export interface ForumReportFilters {
+  status: ForumReportStatus;
+  reason: ForumReportReason;
+  per_page: number;
+  page: number;
+}
+
+export interface PaginatedForumReports {
+  data: AdminForumReport[];
+  meta: {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+  };
+}
+
+export interface UpdateForumReportPayload {
+  status: 'reviewed' | 'dismissed';
+}

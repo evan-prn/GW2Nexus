@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\AdminUserController;
+use App\Http\Controllers\Api\Admin\AdminForumReportController;
+use App\Http\Controllers\Api\Admin\AdminForumThreadController;
 use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\LogoutController;
@@ -13,6 +15,7 @@ use App\Http\Controllers\Api\Profile\UserProfileController;
 use App\Http\Controllers\Api\Events\EventController;
 use App\Http\Controllers\Api\Forum\ForumCategoryController;
 use App\Http\Controllers\Api\Forum\ForumPostController;
+use App\Http\Controllers\Api\Forum\ForumPostReportController;
 use App\Http\Controllers\Api\Forum\ForumThreadController;
 use Illuminate\Support\Facades\Route;
 
@@ -155,6 +158,24 @@ Route::prefix('v1')->group(function (): void {
         Route::get('auth/me', MeController::class)
             ->name('auth.me');
 
+        Route::prefix('forum')->name('forum.')->group(function (): void {
+
+            Route::post('categories/{category:slug}/threads', [ForumThreadController::class, 'store'])
+                ->name('threads.store');
+
+            Route::post('threads/{thread:slug}/posts', [ForumPostController::class, 'store'])
+                ->name('posts.store');
+
+            Route::patch('posts/{post}', [ForumPostController::class, 'update'])
+                ->name('posts.update');
+
+            Route::delete('posts/{post}', [ForumPostController::class, 'destroy'])
+                ->name('posts.destroy');
+
+            Route::post('posts/{post}/reports', [ForumPostReportController::class, 'store'])
+                ->name('posts.reports.store');
+        });
+
         /*
         |----------------------------------------------------------------------
         | Profil utilisateur
@@ -208,38 +229,44 @@ Route::prefix('v1')->group(function (): void {
         |
         */
         Route::prefix('admin')
-            ->middleware('admin')
             ->name('admin.')
             ->group(function (): void {
 
-                // GET /api/v1/admin/stats — Statistiques globales de la plateforme
-                // Accessible aux admins et modérateurs (voir AdminPolicy::viewStats)
-                Route::get('stats', [AdminUserController::class, 'stats'])
-                    ->name('stats');
+                Route::prefix('forum')
+                    ->middleware('moderator')
+                    ->name('forum.')
+                    ->group(function (): void {
+                        Route::get('reports', [AdminForumReportController::class, 'index'])
+                            ->name('reports.index');
 
-                /*
-                |--------------------------------------------------------------
-                | Gestion des utilisateurs
-                |--------------------------------------------------------------
-                */
-                Route::prefix('users')->name('users.')->group(function (): void {
+                        Route::patch('reports/{report}', [AdminForumReportController::class, 'update'])
+                            ->name('reports.update');
 
-                    // GET /api/v1/admin/users — Liste paginée + filtres (search, role, status)
-                    Route::get('/', [AdminUserController::class, 'index'])
-                        ->name('index');
+                        Route::patch('threads/{thread}/lock', [AdminForumThreadController::class, 'toggleLock'])
+                            ->name('threads.lock');
 
-                    // GET /api/v1/admin/users/{user} — Détail + historique de bans
-                    Route::get('{user}', [AdminUserController::class, 'show'])
-                        ->name('show');
+                        Route::patch('threads/{thread}/pin', [AdminForumThreadController::class, 'togglePin'])
+                            ->name('threads.pin');
+                    });
 
-                    // POST /api/v1/admin/users/{user}/ban — Appliquer un ban
-                    // Révoque immédiatement tous les tokens Bearer de la cible
-                    Route::post('{user}/ban', [AdminUserController::class, 'ban'])
-                        ->name('ban');
+                Route::middleware('admin')->group(function (): void {
+                    Route::get('stats', [AdminUserController::class, 'stats'])
+                        ->name('stats');
 
-                    // DELETE /api/v1/admin/users/{user}/ban — Lever le ban actif
-                    Route::delete('{user}/ban', [AdminUserController::class, 'unban'])
-                        ->name('unban');
+                    Route::prefix('users')->name('users.')->group(function (): void {
+
+                        Route::get('/', [AdminUserController::class, 'index'])
+                            ->name('index');
+
+                        Route::get('{user}', [AdminUserController::class, 'show'])
+                            ->name('show');
+
+                        Route::post('{user}/ban', [AdminUserController::class, 'ban'])
+                            ->name('ban');
+
+                        Route::delete('{user}/ban', [AdminUserController::class, 'unban'])
+                            ->name('unban');
+                    });
                 });
 
                 /*

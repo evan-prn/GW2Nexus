@@ -62,7 +62,7 @@ Authorization: Bearer <token>
 Statut implementation:
 
 - Les endpoints publics de lecture sont implementes.
-- Les endpoints proteges d'ecriture ne sont pas encore implementes.
+- Les endpoints proteges d'ecriture sont implementes.
 
 ### GET /api/v1/forum/categories
 
@@ -186,6 +186,15 @@ Reponses:
 - 401 si non connecte.
 - 422 si validation invalide.
 
+Reponse succes implementee:
+
+```json
+{
+  "message": "Sujet cree avec succes.",
+  "data": {}
+}
+```
+
 ### POST /api/v1/forum/threads/{thread:slug}/posts
 
 Description:
@@ -215,6 +224,15 @@ Reponses:
 - 403 si le sujet est verrouille.
 - 422 si validation invalide.
 
+Reponse succes implementee:
+
+```json
+{
+  "message": "Reponse ajoutee avec succes.",
+  "data": {}
+}
+```
+
 ### PATCH /api/v1/forum/posts/{post}
 
 Description:
@@ -240,6 +258,15 @@ Reponses:
 - 403 si l'utilisateur n'est pas l'auteur, admin ou moderateur.
 - 422 si validation invalide.
 
+Reponse succes implementee:
+
+```json
+{
+  "message": "Message mis a jour.",
+  "data": {}
+}
+```
+
 ### DELETE /api/v1/forum/posts/{post}
 
 Description:
@@ -252,13 +279,128 @@ Authentification:
 
 Reponses:
 
-- 200 ou 204 en cas de succes.
+- 200 en cas de succes.
 - 401 si non connecte.
 - 403 si l'utilisateur n'est pas l'auteur, admin ou moderateur.
+
+Reponse succes implementee:
+
+```json
+{
+  "message": "Message supprime."
+}
+```
+
+### POST /api/v1/forum/posts/{post}/reports
+
+Description:
+
+- Signale un message a l'equipe de moderation.
+
+Authentification:
+
+- Requise.
+
+Payload:
+
+```json
+{
+  "reason": "inappropriate",
+  "details": "Details optionnels pour aider la moderation."
+}
+```
+
+Motifs acceptes:
+
+- `spam`
+- `insult`
+- `harassment`
+- `inappropriate`
+- `other`
+
+Reponses:
+
+- 201 en cas de succes.
+- 401 si non connecte.
+- 422 si le motif est invalide.
+- 422 si l'utilisateur signale son propre message.
+- 422 si l'utilisateur a deja signale ce message.
+
+Reponse succes implementee:
+
+```json
+{
+  "message": "Signalement envoye a la moderation.",
+  "data": {
+    "id": 1,
+    "forum_post_id": 2,
+    "reporter_id": 3,
+    "reason": "inappropriate",
+    "details": "Details optionnels pour aider la moderation.",
+    "status": "open",
+    "reviewed_by": null,
+    "reviewed_at": null,
+    "created_at": "2026-06-05T09:00:00+00:00",
+    "updated_at": "2026-06-05T09:00:00+00:00"
+  }
+}
+```
 
 ## Endpoints de moderation futurs
 
 Ces endpoints sont a preparer mais pas a exposer dans le MVP initial sans validation dediee.
+
+## Endpoints admin forum
+
+### GET /api/v1/admin/forum/reports
+
+Description:
+
+- Retourne les signalements forum pagines pour le back-office.
+- Route utilisee par `/admin/forum`.
+
+Authentification:
+
+- Requise.
+- Reservee aux administrateurs selon le middleware admin existant.
+
+Query params:
+
+- `status`: `open`, `reviewed`, `dismissed`.
+- `reason`: `spam`, `insult`, `harassment`, `inappropriate`, `other`.
+- `page`
+- `per_page`
+
+Reponse succes:
+
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "reason": "inappropriate",
+      "details": "Details optionnels.",
+      "status": "open",
+      "created_at": "2026-06-05T09:00:00+00:00",
+      "reviewed_at": null,
+      "reporter": {},
+      "reviewer": null,
+      "post": {
+        "id": 2,
+        "content": "Message signale.",
+        "author": {},
+        "thread": {
+          "id": 1,
+          "title": "Sujet",
+          "slug": "sujet",
+          "category": {}
+        }
+      }
+    }
+  ],
+  "meta": {}
+}
+```
 
 ### PATCH /api/v1/forum/threads/{thread}/lock
 

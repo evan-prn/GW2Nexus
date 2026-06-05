@@ -1,0 +1,35 @@
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  margin-bottom: var(--space-6);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+}
+
+.item {
+  display: inline-flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.separator {
+  color: rgba(201, 168, 76, 0.45);
+}
+
+.link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: var(--gold-light);
+}
+
+.current {
+  color: var(--text-dim);
+}

@@ -1,0 +1,252 @@
+.page {
+  padding: 2rem 2.5rem;
+}
+
+.pageHeader {
+  margin-bottom: 1.5rem;
+}
+
+.pageTitle {
+  margin: 0 0 0.2rem;
+  color: #fff;
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: 1.6rem;
+}
+
+.pageSubtitle,
+.muted,
+.date {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.pageSubtitle,
+.muted,
+.date,
+.reason,
+.content,
+.details,
+.userName,
+.threadTitle {
+  margin: 0;
+}
+
+.filters {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.select {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.04);
+  font: inherit;
+}
+
+.select:focus {
+  outline: none;
+  border-color: rgba(201, 168, 76, 0.4);
+}
+
+.stateMsg {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 0.85rem;
+  padding: 1rem 0;
+}
+
+.errorMsg {
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(224, 90, 90, 0.15);
+  border-radius: 6px;
+  color: #e05a5a;
+  background: rgba(224, 90, 90, 0.07);
+}
+
+.tableWrapper {
+  overflow: hidden;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.th {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.tr:last-child {
+  border-bottom: none;
+}
+
+.tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.td {
+  max-width: 360px;
+  padding: 0.9rem 1rem;
+  vertical-align: top;
+}
+
+.badge {
+  display: inline-block;
+  margin-bottom: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.badgeRed {
+  border: 1px solid rgba(224, 90, 90, 0.2);
+  color: #e05a5a;
+  background: rgba(224, 90, 90, 0.1);
+}
+
+.badgeGreen {
+  border: 1px solid rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.badgeMuted {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255,255,255,0.42);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.reason,
+.userName,
+.threadTitle {
+  color: #fff;
+  font-size: 0.86rem;
+}
+
+.content {
+  display: -webkit-box;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.84rem;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  white-space: pre-wrap;
+}
+
+.details {
+  margin-top: 0.5rem;
+  color: rgba(201, 168, 76, 0.76);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.actionLink {
+  display: inline-block;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid rgba(201, 168, 76, 0.24);
+  border-radius: 5px;
+  color: var(--gold-primary, #c9a84c);
+  background: rgba(201, 168, 76, 0.08);
+  font-size: 0.75rem;
+  text-decoration: none;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+  min-width: 130px;
+}
+
+.actionButton,
+.successButton,
+.mutedButton {
+  width: 100%;
+  padding: 0.45rem 0.7rem;
+  border-radius: 5px;
+  font: inherit;
+  font-size: 0.75rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.actionButton {
+  border: 1px solid rgba(201, 168, 76, 0.24);
+  color: var(--gold-primary, #c9a84c);
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.successButton {
+  border: 1px solid rgba(76, 175, 80, 0.25);
+  color: #72c476;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.mutedButton {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.58);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.actionButton:disabled,
+.successButton:disabled,
+.mutedButton:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.emptyState {
+  padding: 1.5rem;
+  color: rgba(255, 255, 255, 0.42);
+  text-align: center;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.pageBtn {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+}
+
+.pageBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.pageInfo {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 0.8rem;
+}

@@ -3,6 +3,10 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import useAuthStore from '@/store/authStore';
 
+interface AdminRouteProps {
+  roles?: string[];
+}
+
 // ---------------------------------------------------------------------------
 // AdminRoute — Guard de route réservé aux administrateurs
 //
@@ -15,14 +19,14 @@ import useAuthStore from '@/store/authStore';
 // indépendamment de ce composant.
 // ---------------------------------------------------------------------------
 
-export default function AdminRoute() {
+export default function AdminRoute({ roles = ['admin'] }: AdminRouteProps) {
   const { isAuthenticated, user } = useAuthStore();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  if (user?.role !== 'admin') {
+  if (!roles.includes(user?.role ?? '')) {
     return <Navigate to="/" replace />;
   }
 

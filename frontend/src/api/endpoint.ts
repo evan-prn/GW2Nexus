@@ -53,7 +53,26 @@ export const ENDPOINTS = {
     schedule: `${API_VERSION}/events/schedule`, // GET — Heure serveur UTC + métadonnées
   },
 
-  // ─── Back-office admin ───────────────────────────────────────────────────
+  // Forum
+  forum: {
+    categories: {
+      index: `${API_VERSION}/forum/categories`,
+      show: (slug: string) => `${API_VERSION}/forum/categories/${slug}`,
+      threads: (slug: string) => `${API_VERSION}/forum/categories/${slug}/threads`,
+    },
+    threads: {
+      show: (slug: string) => `${API_VERSION}/forum/threads/${slug}`,
+      posts: (slug: string) => `${API_VERSION}/forum/threads/${slug}/posts`,
+      store: (categorySlug: string) => `${API_VERSION}/forum/categories/${categorySlug}/threads`,
+    },
+    posts: {
+      store: (threadSlug: string) => `${API_VERSION}/forum/threads/${threadSlug}/posts`,
+      update: (id: number) => `${API_VERSION}/forum/posts/${id}`,
+      destroy: (id: number) => `${API_VERSION}/forum/posts/${id}`,
+      reports: (id: number) => `${API_VERSION}/forum/posts/${id}/reports`,
+    },
+  },
+  // Back-office admin
   admin: {
     stats: `${API_VERSION}/admin/stats`,        // GET — Statistiques globales de la plateforme
 
@@ -62,6 +81,12 @@ export const ENDPOINTS = {
       show:   (id: number) => `${API_VERSION}/admin/users/${id}`,     // GET    — Détail + historique bans
       ban:    (id: number) => `${API_VERSION}/admin/users/${id}/ban`, // POST   — Appliquer un ban
       unban:  (id: number) => `${API_VERSION}/admin/users/${id}/ban`, // DELETE — Lever le ban actif
+    },
+    forum: {
+      reports: `${API_VERSION}/admin/forum/reports`,
+      report: (id: number) => `${API_VERSION}/admin/forum/reports/${id}`,
+      lockThread: (id: number) => `${API_VERSION}/admin/forum/threads/${id}/lock`,
+      pinThread: (id: number) => `${API_VERSION}/admin/forum/threads/${id}/pin`,
     },
   },
 
