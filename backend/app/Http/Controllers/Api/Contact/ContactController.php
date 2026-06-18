@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Contact\ContactRequest;
 use App\Mail\ContactMail;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
@@ -33,13 +34,24 @@ class ContactController extends Controller
         RateLimiter::hit($key, decaySeconds: 600); // fenêtre de 10 minutes
 
         // ─── Envoi de l'email ────────────────────────────────────────────────
-        Mail::to(config('mail.contact_address', config('mail.from.address')))
-            ->send(new ContactMail(
-                senderName:     $request->validated('name'),
-                senderEmail:    $request->validated('email'),
-                contactSubject: $request->validated('subject', 'other'),
-                messageContent: $request->validated('message'),
-            ));
+        try {
+            Mail::to(config('mail.contact_address', config('mail.from.address')))
+                ->send(new ContactMail(
+                    senderName:     $request->validated('name'),
+                    senderEmail:    $request->validated('email'),
+                    contactSubject: $request->validated('subject', 'other'),
+                    messageContent: $request->validated('message'),
+                ));
+        } catch (\Throwable $e) {
+            Log::error('ContactController : échec envoi mail', [
+                'exception' => $e->getMessage(),
+                'from'      => $request->validated('email'),
+            ]);
+
+            return response()->json([
+                'message' => 'Une erreur est survenue lors de l\'envoi. Veuillez réessayer plus tard.',
+            ], 503);
+        }
 
         return response()->json([
             'message' => 'Votre message a bien été envoyé. Nous vous répondrons dans les 48h ouvrées.',

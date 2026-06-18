@@ -545,3 +545,20 @@ Ce fichier trace uniquement les modifications reellement appliquees apres valida
 - Resultat des tests : 23/23 passes, 73 assertions.
 - Problemes restants :
   - `pdo_sqlite` absent sur la machine hote ; les tests Feature doivent etre lances dans Docker.
+
+## 2026-06-18 - Etape F - ContactController : try-catch autour de Mail::send()
+
+- Fichiers modifies :
+  - `backend/app/Http/Controllers/Api/Contact/ContactController.php`
+- Resume des changements :
+  - Ajout de `use Illuminate\Support\Facades\Log`.
+  - Encapsulation de `Mail::to()->send()` dans un bloc `try-catch (\Throwable $e)`.
+  - En cas d'echec SMTP : log de l'erreur (niveau `error`) + reponse JSON 503 explicite.
+  - En cas de succes : comportement identique a avant (reponse 201).
+- Raison de la modification : une exception SMTP non capturee retournait une reponse HTTP 500
+  brute au lieu d'un message d'erreur API coherent pour le client.
+- Commandes executees :
+  - `docker compose exec laravel php artisan route:list --path=api` (route contact confirmee)
+  - `docker compose exec laravel php artisan test` (23/23 passes, 73 assertions)
+- Resultat des tests : 23/23 passes, 73 assertions.
+- Problemes restants : aucun sur ce perimetre.
