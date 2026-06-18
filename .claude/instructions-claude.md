@@ -46,7 +46,7 @@ Toutes les decisions doivent ameliorer l'etat reel du projet sans sur-implemente
 ### Backend
 
 - Laravel 12
-- PHP 8.2+
+- PHP 8.4+ (composer.lock genere sur PHP 8.4 — version minimum imposee par platform_check.php)
 - Laravel Sanctum
 - Eloquent ORM
 - Form Requests
