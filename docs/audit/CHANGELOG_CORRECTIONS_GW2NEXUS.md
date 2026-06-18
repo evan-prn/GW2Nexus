@@ -528,3 +528,20 @@ Ce fichier trace uniquement les modifications reellement appliquees apres valida
   - `pdo_sqlite` absent sur l'hote ; les tests Feature doivent etre lances dans Docker.
 - Problemes restants :
   - `phpunit.xml` : APP_KEY `base64:...fQ=/` a un `/` superflu qui invalide la cle (pre-existant).
+  - Corrige a l'etape E.1.
+
+## 2026-06-18 - Etape E.1 - phpunit.xml : suppression du slash parasite dans APP_KEY
+
+- Fichiers modifies :
+  - `backend/phpunit.xml`
+- Resume des changements : suppression du `/` final apres le `=` de padding dans les deux
+  entrees APP_KEY (`env` et `server`) de `phpunit.xml`.
+  - Avant : `base64:I856Ytd3PzMZ7mltYMUUC9QRumCv8w45r9Hs/Byw+fQ=/`
+  - Apres  : `base64:I856Ytd3PzMZ7mltYMUUC9QRumCv8w45r9Hs/Byw+fQ=`
+- Raison de la modification : le `/` rendait la cle AES-256 invalide ;
+  `Feature\ExampleTest` echouait avec "Unsupported cipher or incorrect key length".
+- Commandes executees :
+  - `docker compose exec laravel php artisan test`
+- Resultat des tests : 23/23 passes, 73 assertions.
+- Problemes restants :
+  - `pdo_sqlite` absent sur la machine hote ; les tests Feature doivent etre lances dans Docker.

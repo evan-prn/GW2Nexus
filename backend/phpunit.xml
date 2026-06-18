@@ -29,7 +29,7 @@
         | APP_KEY : obligatoire pour le cast 'encrypted' sur la colonne api_key.
         | Sans cette cle, toute instanciation de User plante en 500.
         -->
-        <env name="APP_KEY"          value="base64:I856Ytd3PzMZ7mltYMUUC9QRumCv8w45r9Hs/Byw+fQ=/" force="true"/>
+        <env name="APP_KEY"          value="base64:I856Ytd3PzMZ7mltYMUUC9QRumCv8w45r9Hs/Byw+fQ=" force="true"/>
 
         <!--
         | Base de test en memoire.
@@ -55,7 +55,7 @@
         -->
         <server name="APP_ENV"          value="testing"/>
         <server name="APP_DEBUG"        value="true"/>
-        <server name="APP_KEY"          value="base64:I856Ytd3PzMZ7mltYMUUC9QRumCv8w45r9Hs/Byw+fQ=/"/>
+        <server name="APP_KEY"          value="base64:I856Ytd3PzMZ7mltYMUUC9QRumCv8w45r9Hs/Byw+fQ="/>
         <server name="DB_CONNECTION"    value="sqlite"/>
         <server name="DB_DATABASE"      value=":memory:"/>
         <server name="CACHE_STORE"      value="array"/>
