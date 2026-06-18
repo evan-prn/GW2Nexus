@@ -562,3 +562,29 @@ Ce fichier trace uniquement les modifications reellement appliquees apres valida
   - `docker compose exec laravel php artisan test` (23/23 passes, 73 assertions)
 - Resultat des tests : 23/23 passes, 73 assertions.
 - Problemes restants : aucun sur ce perimetre.
+
+## 2026-06-18 - Etape G - useWorldBossStatus : appels GW2 proxifies via backend
+
+- Fichiers modifies :
+  - `backend/app/Services/Gw2ApiService.php`
+  - `backend/app/Http/Controllers/Api/Profile/UserProfileController.php`
+  - `backend/routes/api.php`
+  - `frontend/src/api/endpoint.ts`
+  - `frontend/src/api/events.api.ts`
+- Resume des changements :
+  - `Gw2ApiService` : ajout de `getWorldBossStatus(string $cle): ?array` (endpoint `/account/worldbosses`,
+    cache 5 min) ; invalidation de la nouvelle cle dans `invaliderCache()`.
+  - `UserProfileController` : ajout de `worldBossStatus(Request $request): JsonResponse`
+    (retourne 404 si pas de cle GW2, 503 si API indisponible, JSON brut sinon).
+  - `routes/api.php` : ajout de `GET /api/v1/profile/world-boss-status` dans le groupe profil.
+  - `endpoint.ts` : ajout de `profile.worldBossStatus`, suppression de la section `gw2`
+    (qui contenait des URL externes directes jamais utilisees en dehors de ce contexte).
+  - `events.api.ts` : `fetchWorldBossStatus()` utilise desormais `ENDPOINTS.profile.worldBossStatus`
+    au lieu de `ENDPOINTS.gw2.accountWorldBosses` ; la cle API GW2 ne transite plus par le frontend.
+- Raison de la modification : le frontend appelait directement `api.guildwars2.com` avec un token
+  Sanctum (invalide pour l'API GW2). La cle API GW2 doit rester chiffree cote serveur.
+- Commandes executees :
+  - `docker compose exec laravel php artisan route:list --path=api` (route world-boss-status confirmee)
+  - `docker compose exec laravel php artisan test` (23/23 passes, 73 assertions)
+- Resultat des tests : 23/23 passes, 73 assertions.
+- Problemes restants : aucun sur ce perimetre.

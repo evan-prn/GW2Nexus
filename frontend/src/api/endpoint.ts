@@ -30,11 +30,12 @@ export const ENDPOINTS = {
 
   // ─── Profil utilisateur ──────────────────────────────────────────────────
   profile: {
-    show:    `${API_VERSION}/profile`,          // GET    — Données complètes du profil
-    update:  `${API_VERSION}/profile`,          // PUT    — Mise à jour nom / pseudo_gw2
-    avatar:  `${API_VERSION}/profile/avatar`,   // POST   — Upload de l'avatar
-    apiKey:  `${API_VERSION}/profile/api-key`,  // POST / DELETE — Gestion clé API GW2
-    gw2Data: `${API_VERSION}/profile/gw2-data`, // GET    — Données GW2 fraîches (cache Redis)
+    show:            `${API_VERSION}/profile`,                   // GET    — Données complètes du profil
+    update:          `${API_VERSION}/profile`,                   // PUT    — Mise à jour nom / pseudo_gw2
+    avatar:          `${API_VERSION}/profile/avatar`,            // POST   — Upload de l'avatar
+    apiKey:          `${API_VERSION}/profile/api-key`,           // POST / DELETE — Gestion clé API GW2
+    gw2Data:         `${API_VERSION}/profile/gw2-data`,          // GET    — Données GW2 fraîches (cache Redis)
+    worldBossStatus: `${API_VERSION}/profile/world-boss-status`, // GET    — World bosses tués aujourd'hui
   },
 
   // ─── Contact ─────────────────────────────────────────────────────────────
@@ -43,10 +44,6 @@ export const ENDPOINTS = {
   },
 
   // ─── Événements GW2 ──────────────────────────────────────────────────────
-  //
-  // Sprint 2 : /schedule retourne l'heure serveur UTC + note de version.
-  // Sprint 4 : sera enrichi avec les horaires dynamiques issus du cache Redis
-  //            (synchronisés via Gw2ApiService + Artisan scheduler).
   //
   // La page Events est publique — pas d'authentification requise.
   events: {
@@ -88,19 +85,6 @@ export const ENDPOINTS = {
       lockThread: (id: number) => `${API_VERSION}/admin/forum/threads/${id}/lock`,
       pinThread: (id: number) => `${API_VERSION}/admin/forum/threads/${id}/pin`,
     },
-  },
-
-  // ─── API officielle Guild Wars 2 (externe) ───────────────────────────────
-  //
-  // Appels directs à l'API ArenaNet — pas de proxy backend.
-  // Authentification via Bearer Token (clé API utilisateur).
-  //
-  // /v2/worldbosses          : liste des IDs de world bosses Core Tyria
-  // /v2/account/worldbosses  : world bosses tués depuis le dernier reset
-  //                            quotidien — nécessite scope "progression"
-  gw2: {
-    worldBosses:        'https://api.guildwars2.com/v2/worldbosses',         // GET — public
-    accountWorldBosses: 'https://api.guildwars2.com/v2/account/worldbosses', // GET — authentifié
   },
 
 } as const;

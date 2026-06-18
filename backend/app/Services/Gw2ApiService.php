@@ -56,11 +56,20 @@ class Gw2ApiService
         });
     }
 
+    public function getWorldBossStatus(string $cle): ?array
+    {
+        $cacheKey = 'gw2.worldbosses.' . hash('sha256', $cle);
+        return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($cle) {
+            return $this->requeteAuthentifiee('/account/worldbosses', $cle);
+        });
+    }
+
     public function invaliderCache(string $cle): void
     {
-        Cache::forget('gw2.tokeninfo.'  . hash('sha256', $cle));
-        Cache::forget('gw2.account.'    . hash('sha256', $cle));
-        Cache::forget('gw2.characters.' . hash('sha256', $cle));
+        Cache::forget('gw2.tokeninfo.'   . hash('sha256', $cle));
+        Cache::forget('gw2.account.'     . hash('sha256', $cle));
+        Cache::forget('gw2.characters.'  . hash('sha256', $cle));
+        Cache::forget('gw2.worldbosses.' . hash('sha256', $cle));
     }
 
     private function requeteAuthentifiee(string $endpoint, string $cle): ?array

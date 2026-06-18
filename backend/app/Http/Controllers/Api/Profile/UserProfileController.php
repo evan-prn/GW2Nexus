@@ -163,6 +163,36 @@ class UserProfileController extends Controller
         ]);
     }
 
+    // ─── GET /api/v1/profile/world-boss-status ───────────────────
+
+    /**
+     * Retourne les world bosses Core Tyria déjà tués aujourd'hui
+     * en proxifiant l'appel vers /v2/account/worldbosses avec la clé
+     * API GW2 stockée côté serveur (chiffrée AES-256 en base).
+     *
+     * Nécessite le scope "progression" sur la clé GW2 de l'utilisateur.
+     */
+    public function worldBossStatus(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $user->api_key) {
+            return response()->json([
+                'message' => 'Aucune clé API GW2 enregistrée.',
+            ], 404);
+        }
+
+        $ids = $this->gw2->getWorldBossStatus($user->api_key);
+
+        if ($ids === null) {
+            return response()->json([
+                'message' => 'Impossible de récupérer le statut des world bosses. Clé invalide ou API indisponible.',
+            ], 503);
+        }
+
+        return response()->json($ids);
+    }
+
     // ─── Helper ───────────────────────────────────────────────────
 
     private function formatUser($user): array

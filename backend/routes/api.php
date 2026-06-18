@@ -210,6 +210,11 @@ Route::prefix('v1')->group(function (): void {
             // Retourne les données depuis le cache Laravel ou appelle l'API GW2
             Route::get('gw2-data', [UserProfileController::class, 'gw2Data'])
                 ->name('gw2-data');
+
+            // GET /api/v1/profile/world-boss-status — World bosses tués aujourd'hui
+            // Proxy backend vers /v2/account/worldbosses via la clé API GW2 stockée côté serveur
+            Route::get('world-boss-status', [UserProfileController::class, 'worldBossStatus'])
+                ->name('world-boss-status');
         });
 
         /*
