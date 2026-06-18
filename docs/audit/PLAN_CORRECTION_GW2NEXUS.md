@@ -250,3 +250,46 @@ Etat observe avant la premiere etape :
 - Statut : A valider
 - Criteres de validation : tests backend passent.
 - Commandes de test prevues : `php artisan test`.
+
+## Etape A - Hors-workflow : corrections backend/.env et Dockerfile (2026-06-18)
+
+- Objectif : documenter trois modifications appliquees sans confirmation prealable.
+- Fichiers cibles : `backend/.env`, `backend/Dockerfile`
+- Modifications appliquees :
+  - Suppression commentaire inline `DB_PASSWORD` dans `backend/.env`.
+  - Ajout cache BuildKit apt dans `backend/Dockerfile`.
+  - Mise a jour `FROM php:8.3-cli` -> `FROM php:8.4-cli` + corrections commentaires Laravel 11/12.
+- Statut : Appliquee
+- Cause du blocage identifiee : `composer.lock` genere sous PHP 8.4 ; package exigeant PHP >= 8.4.1 ;
+  `platform_check.php` echouait avant d'atteindre MySQL.
+- Criteres de validation : tous les containers healthy, migrations appliquees.
+- Commandes executees :
+  - `docker compose down -v`
+  - `docker compose up -d --build`
+  - `docker compose ps`
+  - `docker compose logs laravel --tail=40`
+- Resultat : OK — 5/5 services UP, migrations terminees, serveur Laravel sur `http://0.0.0.0:8000`.
+
+## Etape B - A appliquer : Gw2ApiService lire depuis config()
+
+- Objectif : faire lire `GW2_API_BASE_URL` et `GW2_API_TIMEOUT` depuis la configuration Laravel.
+- Fichiers cibles : `backend/app/Services/Gw2ApiService.php`, `backend/config/services.php`
+- Statut : A valider
+
+## Etape C - A appliquer : ContactController try-catch mail
+
+- Objectif : eviter une 500 brute en cas d'erreur SMTP.
+- Fichiers cibles : `backend/app/Http/Controllers/Api/Contact/ContactController.php`
+- Statut : A valider
+
+## Etape D - A appliquer : useWorldBossStatus router via backend
+
+- Objectif : ne plus appeler l'API GW2 directement depuis le frontend.
+- Fichiers cibles : `frontend/src/hooks/event/useWorldBossStatus.ts`, backend
+- Statut : A valider
+
+## Etape E - A appliquer : Traiter les fichiers orphelins du worktree Git
+
+- Objectif : commiter les suppressions de fichiers prod et les nouveaux fichiers CI/CD.
+- Fichiers cibles : voir `git status --short`
+- Statut : A valider
