@@ -504,3 +504,27 @@ Ce fichier trace uniquement les modifications reellement appliquees apres valida
   - `docker compose ps` : 5/5 services UP.
 - Problemes restants :
   - `instructions-claude.md` mentionne "PHP 8.2+" ; a mettre a jour pour reflechir PHP 8.4 minimum reel.
+  - `pdo_sqlite` absent de la machine hote ; `php artisan test` doit etre lance dans le container Docker.
+
+## 2026-06-18 - Etape E - Gw2ApiService : lecture depuis config() au lieu de constantes
+
+- Fichiers modifies :
+  - `backend/app/Services/Gw2ApiService.php`
+  - `backend/config/services.php`
+- Resume des changements :
+  - `config/services.php` : ajout de l'entree `gw2` avec `base_url` et `timeout` lus depuis `.env`.
+  - `Gw2ApiService.php` : suppression des constantes `BASE_URL` et `TIMEOUT` ; remplacement par
+    des proprietes `$baseUrl` et `$timeout` initialisees dans le constructeur via `config()`.
+  - `CACHE_TTL` et `TOKEN_TTL` restent des constantes (non configurables depuis `.env`).
+- Raison de la modification : les variables `GW2_API_BASE_URL` et `GW2_API_TIMEOUT` etaient
+  documentees dans `.env` mais ignorees par le service qui utilisait des constantes hardcodees.
+- Commandes executees :
+  - `php artisan config:clear`
+  - `php artisan route:list --path=api` (35 routes confirmees)
+  - `docker compose exec laravel php artisan test` (22/23 tests passes)
+- Resultat des tests :
+  - 22 tests passes, 72 assertions dans Docker.
+  - 1 echec pre-existant : `Feature\ExampleTest` (APP_KEY avec `/` parasite dans `phpunit.xml`).
+  - `pdo_sqlite` absent sur l'hote ; les tests Feature doivent etre lances dans Docker.
+- Problemes restants :
+  - `phpunit.xml` : APP_KEY `base64:...fQ=/` a un `/` superflu qui invalide la cle (pre-existant).
