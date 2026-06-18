@@ -36,6 +36,24 @@ export interface EventSlot {
 }
 
 /**
+ * Récompense possible d'un world boss.
+ */
+export interface WBReward {
+  name: string;
+  icon: string;
+}
+
+/**
+ * Étape du guide pour compléter un world boss.
+ */
+export interface WBGuideStep {
+  step: number;
+  title: string;
+  description: string;
+  tip?: string;
+}
+
+/**
  * Définition statique d'un événement GW2.
  * Les horaires GW2 sont fixes et documentés sur le wiki officiel.
  */
@@ -67,6 +85,10 @@ export interface GW2Event {
    * Si false : horaires fixes uniques dans la journée de 24h.
    */
   isTwoHourCycle: boolean;
+  /** Récompenses possibles (world bosses uniquement) */
+  rewards?: WBReward[];
+  /** Guide étape par étape pour compléter l'événement */
+  guide?: WBGuideStep[];
 }
 
 /**

@@ -1,0 +1,434 @@
+/* =============================================================
+   WorldBossPage.module.css — Timer World Boss GW2
+   ============================================================= */
+
+/* ── Page ──────────────────────────────────────────────────── */
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: calc(var(--navbar-height) + 32px) 24px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ── Portrait boss ─────────────────────────────────────────── */
+.bossPortrait {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  margin-right: 10px;
+  vertical-align: middle;
+  flex-shrink: 0;
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.bossPortraitPlaceholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 1.1rem;
+  margin-right: 10px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* ── Header ────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.15);
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.60);
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  transition: color 0.2s ease;
+  width: fit-content;
+}
+
+.backBtn:hover {
+  color: var(--gold-primary, #c9a84c);
+}
+
+.title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0.04em;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.titleIcon {
+  font-size: 1.5rem;
+}
+
+.subtitle {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.62);
+  font-style: italic;
+  margin: 0;
+}
+
+/* ── Clocks ────────────────────────────────────────────────── */
+.clocks {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  border-radius: 10px;
+}
+
+.clockBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.clockLabel {
+  font-family: 'Cinzel', serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.clockTime {
+  font-family: 'Cinzel', serif;
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 600;
+}
+
+.clockActive {
+  color: #6abf69;
+}
+
+.clockUpcoming {
+  color: #7dbff5;
+}
+
+.clockDivider {
+  width: 1px;
+  height: 30px;
+  background: rgba(201, 168, 76, 0.2);
+  flex-shrink: 0;
+}
+
+/* ── Table wrapper ─────────────────────────────────────────── */
+.tableWrapper {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+/* ── Header row ────────────────────────────────────────────── */
+.thead {
+  background: rgba(201, 168, 76, 0.05);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.15);
+}
+
+.thead th {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+  padding: 10px 16px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.thBoss    { width: 35%; }
+.thZone    { width: 22%; }
+.thTimer   { width: 22%; }
+.thRewards { width: 16%; }
+.thCaret   { width: 5%;  }
+
+/* ── Body rows ─────────────────────────────────────────────── */
+.row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row:hover {
+  background: rgba(201, 168, 76, 0.04);
+}
+
+.row:hover .bossName {
+  color: var(--gold-light, #e8d5a3);
+}
+
+/* Actif */
+.rowActive {
+  background: rgba(201, 168, 76, 0.06);
+  border-left: 3px solid rgba(201, 168, 76, 0.6);
+}
+
+.rowActive:hover {
+  background: rgba(201, 168, 76, 0.1);
+}
+
+/* Bientôt */
+.rowUpcoming {
+  background: rgba(74, 144, 217, 0.05);
+  border-left: 3px solid rgba(74, 144, 217, 0.5);
+}
+
+.rowUpcoming:hover {
+  background: rgba(74, 144, 217, 0.09);
+}
+
+/* ── Cellules ──────────────────────────────────────────────── */
+.tdBoss,
+.tdZone,
+.tdTimer,
+.tdRewards,
+.tdCaret {
+  padding: 14px 16px;
+  vertical-align: middle;
+}
+
+/* Boss */
+.tdBoss {
+  display: table-cell;
+}
+
+.bossIcon {
+  font-size: 1.2rem;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.bossName {
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.85);
+  transition: color 0.15s ease;
+  vertical-align: middle;
+}
+
+.tagActive {
+  display: inline-block;
+  margin-left: 10px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border-radius: 3px;
+  color: #d4b060;
+  border: 1px solid rgba(201, 168, 76, 0.5);
+  background: rgba(201, 168, 76, 0.12);
+  animation: pulse 2.5s ease-in-out infinite;
+  vertical-align: middle;
+}
+
+.tagUpcoming {
+  display: inline-block;
+  margin-left: 10px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border-radius: 3px;
+  color: #7dbff5;
+  border: 1px solid rgba(74, 144, 217, 0.45);
+  background: rgba(74, 144, 217, 0.1);
+  vertical-align: middle;
+}
+
+/* Zone */
+.tdZone {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.55);
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.zoneBar {
+  display: inline-block;
+  width: 3px;
+  height: 14px;
+  border-radius: 2px;
+  margin-right: 8px;
+  vertical-align: middle;
+  opacity: 0.8;
+}
+
+/* Timer */
+.tdTimer {}
+
+.timerBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.countdown {
+  font-family: 'Cinzel', serif;
+  font-size: 0.88rem;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.countdownActive {
+  color: #d4b060;
+}
+
+.countdownUpcoming {
+  color: #7dbff5;
+}
+
+.nextTime {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.60);
+}
+
+/* Récompenses */
+.tdRewards {
+  white-space: nowrap;
+}
+
+.reward {
+  font-size: 1.15rem;
+  margin-right: 4px;
+  cursor: default;
+  opacity: 0.85;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  display: inline-block;
+}
+
+.reward:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.rewardImg {
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 3px;
+  transition: transform 0.15s ease;
+}
+
+.rewardImg:hover {
+  transform: scale(1.25);
+}
+
+.rewardNone {
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 0.8rem;
+}
+
+/* Caret */
+.tdCaret {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.2);
+  text-align: right;
+  transition: color 0.15s ease, transform 0.15s ease;
+  padding-right: 12px;
+}
+
+.row:hover .tdCaret {
+  color: var(--gold-primary, #c9a84c);
+  transform: translateX(3px);
+}
+
+/* ── Disclaimer ─────────────────────────────────────────────── */
+.disclaimer {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.50);
+  font-style: italic;
+  text-align: center;
+  margin: 0;
+}
+
+/* ── Animations ─────────────────────────────────────────────── */
+@keyframes pulse {
+  0%, 100% { opacity: 1;   }
+  50%       { opacity: 0.5; }
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .page {
+    padding: 20px 16px 60px;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
+
+  .header {
+    flex-direction: column;
+  }
+
+  .clocks {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .thRewards,
+  .tdRewards {
+    display: none;
+  }
+}

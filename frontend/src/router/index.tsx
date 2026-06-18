@@ -44,8 +44,11 @@ const RootLayout = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <ScrollToTop />
+      <a href="#main-content" className="skip-link">
+        Passer au contenu principal
+      </a>
       <Navbar user={user} onLogout={logout} />
-      <main style={{ flexGrow: 1 }}>
+      <main id="main-content" style={{ flexGrow: 1 }}>
         <Outlet />
       </main>
       <Footer />
@@ -91,6 +94,7 @@ const ProfilePage         = lazy(() => import('@/pages/ProfilePage/ProfilePage')
 // Page publique : pas besoin d'être connecté pour consulter les horaires.
 const EventsPage          = lazy(() => import('@/pages/Events/EventsPage/EventsPage'));
 const EventDetailPage     = lazy(() => import('@/pages/Events/EventDetailPage/EventDetailPage'));
+const WorldBossPage       = lazy(() => import('@/pages/Events/WorldBossPage/WorldBossPage'));
 
 // Admin — rôle 'admin' obligatoire
 const AdminOverviewPage   = lazy(() => import('@/pages/Admin/AdminOverviewPage/AdminOverviewPage'));
@@ -122,8 +126,9 @@ const router = createBrowserRouter([
       { path: '/forum/thread/:threadSlug', element: <S><ForumThreadPage /></S> },
 
       // ── Événements ────────────────────────────────────────────────────────
-      { path: '/events',            element: <S><EventsPage /></S>  },
-      { path: '/events/:eventId',   element: <S><EventDetailPage /></S>  },
+      { path: '/events',                  element: <S><EventsPage /></S>      },
+      { path: '/events/world-boss',       element: <S><WorldBossPage /></S>   },
+      { path: '/events/:eventId',         element: <S><EventDetailPage /></S> },
 
       // ── Routes Guest — visiteur non connecté uniquement ───────────────────
       // Redirige vers /profile si déjà authentifié
