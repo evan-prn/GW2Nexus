@@ -1,235 +1,249 @@
-﻿# GW2Nexus
+<div align="center">
 
-GW2Nexus est une application full-stack pour une communaute Guild Wars 2.
+# ⚔️ GW2 Nexus
 
-Le projet est actuellement organise en deux applications principales :
+**La plateforme communautaire ultime pour les joueurs de Guild Wars 2**
 
-- `frontend/` : application React + TypeScript servie par Vite.
-- `backend/` : API Laravel exposee en HTTP sur le port `8000`.
+*Suivez vos events · Gérez votre compte · Rejoignez la communauté*
 
-Cette documentation decrit l'etat reel observe pendant l'audit technique du 2026-06-02.
+---
 
-## Stack constatee
+![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?style=flat-square&logo=typescript)
+![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=flat-square&logo=laravel)
+![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?style=flat-square&logo=php)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker)
+![Tailwind](https://img.shields.io/badge/Tailwind-4-06B6D4?style=flat-square&logo=tailwindcss)
 
-| Couche | Technologie |
-| --- | --- |
-| Frontend | React 19, TypeScript, Vite 7, React Router, Axios, Zustand, TanStack Query |
-| Backend | Laravel 12, PHP 8.2+, Sanctum |
-| Base de donnees | MySQL 8 |
-| Dev tools | Docker Compose, phpMyAdmin, Mailpit |
+</div>
 
-## Ports locaux
+---
 
-| Service | URL / port hote | Remarque |
-| --- | --- | --- |
-| Frontend Vite | http://localhost:5174 | Port frontend de reference du projet |
-| Backend Laravel | http://localhost:8000 | API Laravel directe |
-| Health API | http://localhost:8000/api/health | Route health non versionnee |
-| phpMyAdmin | http://localhost:8081 | Interface MySQL |
-| Mailpit UI | http://localhost:8025 | Emails de dev |
-| Mailpit SMTP | localhost:1025 | SMTP local |
-| MySQL depuis l'hote | localhost:3307 | Mapping Docker hote |
-| MySQL dans Docker | mysql:3306 | Nom de service Docker |
+## 📋 Table des matières
 
-Important : le frontend utilise `5174`. Ne pas revenir a `5173` sans realigner Vite, Docker, CORS/Sanctum et les fichiers `.env`.
+- [✨ Présentation](#-présentation)
+- [🎯 Fonctionnalités](#-fonctionnalités)
+- [📸 Aperçu](#-aperçu)
+- [🚀 Démarrage rapide](#-démarrage-rapide)
+- [🏗️ Architecture](#️-architecture)
+- [🛠️ Stack technique](#️-stack-technique)
+- [🗺️ Roadmap](#️-roadmap)
+- [🤝 Contribution](#-contribution)
+- [🔗 Liens utiles](#-liens-utiles)
 
-## Fichiers d'environnement
+---
 
-Le projet utilise trois fichiers d'environnement distincts :
+## ✨ Présentation
 
-| Fichier exemple | Fichier local attendu | Utilisation |
-| --- | --- | --- |
-| `.env.example` | `.env` | Variables Docker Compose racine |
-| `backend/.env.example` | `backend/.env` | Variables Laravel |
-| `frontend/.env.example` | `frontend/.env` | Variables Vite exposees au frontend |
+GW2 Nexus est une plateforme web communautaire dédiée aux joueurs de **Guild Wars 2**. Elle regroupe en un seul endroit ce que les joueurs cherchent au quotidien : les timers d'events en direct, la gestion de compte via l'API officielle ArenaNet, et un espace d'échange communautaire.
 
-Commandes de copie :
+> **Fini de jongler entre le wiki, les tableurs et Discord.** GW2 Nexus centralise tout.
+
+---
+
+## 🎯 Fonctionnalités
+
+### 🗓️ Timers d'événements en direct
+
+Consultez en temps réel le calendrier des **World Bosses GW2** avec des comptes à rebours synchronisés sur l'heure UTC officielle. Si votre compte est lié, visualisez instantanément quels boss vous avez déjà vaincus aujourd'hui.
+
+### ⚔️ Profil et compte GW2
+
+Connectez votre **clé API Guild Wars 2** pour synchroniser automatiquement :
+- Nom de compte et serveur
+- Liste complète de vos personnages (race, profession, niveau)
+- Statut journalier des World Bosses
+
+Votre clé API est **chiffrée en AES-256** et ne quitte jamais le serveur.
+
+### 💬 Forum communautaire
+
+Échangez avec d'autres joueurs dans un forum organisé par catégories :
+- Création de sujets et réponses
+- Signalement de contenus inappropriés
+- Modération avec verrouillage et épinglage de sujets
+
+### 🛡️ Administration complète
+
+Interface back-office pour les administrateurs :
+- Gestion des utilisateurs et des rôles
+- Système de sanctions temporaires ou permanentes
+- Traitement des signalements du forum
+- Statistiques globales de la plateforme
+
+---
+
+## 📸 Aperçu
+
+| Page | Description |
+|---|---|
+| 🏠 Accueil | Présentation de la plateforme |
+| ⏱️ World Boss | Timers en direct + statut personnalisé |
+| 👤 Profil | Données GW2 synchronisées |
+| 💬 Forum | Discussions communautaires |
+| 🛡️ Admin | Back-office modération |
+
+---
+
+## 🚀 Démarrage rapide
+
+### Prérequis
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) 24.0+
+- [Git](https://git-scm.com/) 2.40+
+
+### Installation
 
 ```bash
+# 1. Cloner le repository
+git clone <URL_DU_REPO>
+cd GW2Nexus
+
+# 2. Configurer les environnements
 cp .env.example .env
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
-```
 
-Sous PowerShell :
-
-```powershell
-Copy-Item .env.example .env
-Copy-Item backend/.env.example backend/.env
-Copy-Item frontend/.env.example frontend/.env
-```
-
-Ne jamais placer de secrets dans `frontend/.env`, car les variables `VITE_*` sont exposees au navigateur.
-
-## Demarrage avec Docker
-
-Premier demarrage ou rebuild :
-
-```bash
+# 3. Démarrer tous les services
 docker compose up -d --build
 ```
 
-Demarrage standard :
+### Accès aux services
 
-```bash
-docker compose up -d
+| Service | URL | Description |
+|---|---|---|
+| 🌐 Application | http://localhost:5174 | Interface React |
+| 🔌 API Backend | http://localhost:8000 | Laravel REST API |
+| 🗄️ phpMyAdmin | http://localhost:8081 | Gestion base de données |
+| 📧 Mailpit | http://localhost:8025 | Emails de développement |
+
+> Guide complet → [docs/devops/setup-local.md](docs/devops/setup-local.md)
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│                 🌐 Navigateur                        │
+└──────────────────────┬──────────────────────────────┘
+                       │ HTTPS
+                       ▼
+┌─────────────────────────────────────────────────────┐
+│           ⚡ Frontend — React 19 SPA                 │
+│         Vite · TypeScript · Tailwind CSS             │
+│      Zustand (state) · TanStack Query (cache)        │
+└──────────────────────┬──────────────────────────────┘
+                       │ HTTP/JSON — Bearer Token
+                       ▼
+┌─────────────────────────────────────────────────────┐
+│           🔧 Backend — Laravel 12 API                │
+│        Sanctum · Eloquent · Form Requests            │
+│          Rate Limiting · Cache · Queue               │
+└────────────┬────────────────────────┬───────────────┘
+             │ PDO                    │ HTTP
+             ▼                        ▼
+    ┌─────────────────┐    ┌─────────────────────────┐
+    │ 🗄️ MySQL 8.0    │    │ 🎮 API ArenaNet GW2     │
+    │  10 tables      │    │  Cache 5 min · Fallback  │
+    └─────────────────┘    └─────────────────────────┘
 ```
 
-Voir l'etat des services :
+L'API ArenaNet n'est **jamais appelée depuis le navigateur**. Toutes les requêtes transitent par le backend avec un cache de 5 minutes.
 
-```bash
-docker compose ps
-```
+---
 
-Voir les logs :
+## 🛠️ Stack technique
 
-```bash
-docker compose logs -f
-```
+### Frontend
+| Technologie | Version | Rôle |
+|---|---|---|
+| React | 19.2 | UI library |
+| TypeScript | 5.8 | Typage statique |
+| Vite | 7.x | Build tool + Dev server |
+| Tailwind CSS | 4.x | Styles utilitaires |
+| React Router | 7.x | Routing SPA |
+| Zustand | 5.x | State management |
+| TanStack Query | 5.x | Cache & fetching |
+| Axios | 1.x | Client HTTP |
 
-Arreter les services :
+### Backend
+| Technologie | Version | Rôle |
+|---|---|---|
+| Laravel | 12.x | Framework PHP |
+| PHP | 8.4+ | Langage |
+| Laravel Sanctum | 4.3 | Auth Bearer Token |
+| MySQL | 8.0 | Base de données |
+| PHPUnit | 11.x | Tests |
 
-```bash
-docker compose down
-```
+### Infrastructure
+| Service | Image | Port |
+|---|---|---|
+| Laravel API | php:8.4-cli | :8000 |
+| React SPA | node:20-alpine | :5174 |
+| MySQL | mysql:8.0 | :3307 |
+| phpMyAdmin | phpmyadmin:5.2 | :8081 |
+| Mailpit | axllent/mailpit | :8025 |
 
-Reset complet des volumes Docker, y compris la base MySQL :
+---
 
-```bash
-docker compose down -v
-```
+## 🗺️ Roadmap
 
-Attention : `docker compose down -v` supprime les donnees stockees dans les volumes Docker.
+### ✅ Disponible
 
-## Services Docker
+- 🔐 Authentification complète (inscription, connexion, reset password)
+- 👤 Profil utilisateur avec synchronisation API GW2
+- ⏱️ Timers World Boss en temps réel
+- 💬 Forum communautaire (catégories, threads, posts, signalements)
+- 🛡️ Interface d'administration (gestion users, bans, modération)
+- 🔒 Système de rôles (user / modérateur / admin)
 
-Le fichier `docker-compose.yml` definit les services suivants :
+### 🔜 Prochainement
 
-| Service Compose | Role |
-| --- | --- |
-| `mysql` | Base de donnees MySQL 8 |
-| `phpmyadmin` | Interface de gestion MySQL |
-| `mailpit` | Capture des emails en developpement |
-| `laravel` | Backend Laravel sur `8000` |
-| `react` | Frontend Vite sur `5174` |
+- ✉️ Pipeline CI/CD (GitHub Actions)
+- 🧪 Tests frontend (Vitest + Testing Library)
+- 📊 Dashboard analytique amélioré
 
-Exemples de commandes utiles :
+### 🔭 Vision future
 
-```bash
-docker compose exec laravel php artisan route:list --path=api
-docker compose exec laravel php artisan config:clear
-docker compose exec react npm run lint
-```
+- 🏰 Gestion de guilde (roster, rangs, recrutement)
+- 🏆 Suivi des achievements
+- ⚗️ Calculateur de crafting
+- 📱 Application mobile (PWA)
 
-## Backend Laravel
+---
 
-Depuis le dossier `backend/`, les commandes principales sont :
+## 🤝 Contribution
 
-```bash
-composer install
-php artisan key:generate
-php artisan migrate
-php artisan route:list --path=api
-php artisan test
-```
+Les contributions sont les bienvenues ! Avant de commencer :
 
-Dans Docker, prefixer avec le service `laravel` :
+1. 📖 Lire la [documentation technique complète](docs/README.md)
+2. 🏗️ Consulter les [décisions d'architecture](docs/architecture/decisions-techniques.md)
+3. 🔒 Respecter les [règles de sécurité](docs/security/overview.md)
+4. 📝 Toute modification de code doit s'accompagner d'une mise à jour documentaire
 
-```bash
-docker compose exec laravel composer install
-docker compose exec laravel php artisan key:generate
-docker compose exec laravel php artisan migrate
-docker compose exec laravel php artisan route:list --path=api
-```
+---
 
-La route de verification API confirmee est :
+## 🔗 Liens utiles
 
-```text
-GET /api/health
-```
+| Ressource | Lien |
+|---|---|
+| 📚 Documentation complète | [docs/README.md](docs/README.md) |
+| 🏗️ Architecture globale | [docs/architecture/architecture-globale.md](docs/architecture/architecture-globale.md) |
+| 🔌 API REST | [docs/api/overview.md](docs/api/overview.md) |
+| 🛠️ Setup local | [docs/devops/setup-local.md](docs/devops/setup-local.md) |
+| 🎮 Intégration GW2 | [docs/game/gw2-api.md](docs/game/gw2-api.md) |
+| 🔐 Sécurité | [docs/security/overview.md](docs/security/overview.md) |
+| 📊 Base de données | [docs/database/schema.md](docs/database/schema.md) |
+| 🎮 API ArenaNet | https://wiki.guildwars2.com/wiki/API:Main |
 
-## Frontend React/Vite
+---
 
-Depuis le dossier `frontend/` :
+<div align="center">
 
-```bash
-npm install
-npm run dev
-npm run lint
-npm run build
-```
+*Fait avec ❤️ par la communauté GW2 Nexus*
 
-Verifications utilisees pendant l'audit :
+**⚔️ Que Tyrie soit avec vous ⚔️**
 
-```bash
-npm.cmd exec tsc -- --noEmit --pretty false
-npm.cmd run lint
-```
-
-Le serveur Vite doit etre disponible sur :
-
-```text
-http://localhost:5174
-```
-
-## Communication frontend/backend
-
-Le frontend utilise `VITE_API_URL=http://localhost:5174` afin de passer par le proxy Vite.
-
-Les appels relatifs `/api/*` et `/sanctum/*` doivent etre proxies vers Laravel. Cela limite les problemes CORS et garde le frontend sur le meme domaine local `localhost:5174`.
-
-Cote Laravel, les variables importantes sont :
-
-```env
-FRONTEND_URL=http://localhost:5174
-SANCTUM_STATEFUL_DOMAINS=localhost:5174,127.0.0.1:5174
-```
-
-## Base de donnees
-
-Dans Docker :
-
-```env
-DB_HOST=mysql
-DB_PORT=3306
-```
-
-Depuis la machine hote, utiliser le port publie :
-
-```env
-DB_HOST=127.0.0.1
-DB_PORT=3307
-```
-
-Le mapping Docker actuel est :
-
-```text
-3307:3306
-```
-
-## Verifications rapides
-
-```bash
-docker compose config
-npm.cmd exec tsc -- --noEmit --pretty false
-npm.cmd run lint
-```
-
-Pendant l'audit, TypeScript et ESLint frontend passent apres corrections progressives.
-
-## Documentation d'audit
-
-Les documents de suivi sont dans :
-
-```text
-docs/audit/
-```
-
-Fichiers principaux :
-
-- `docs/audit/AUDIT_GW2NEXUS.md`
-- `docs/audit/PLAN_CORRECTION_GW2NEXUS.md`
-- `docs/audit/CHANGELOG_CORRECTIONS_GW2NEXUS.md`
-- `docs/audit/DECISIONS_TECHNIQUES_GW2NEXUS.md`
-
-
+</div>

@@ -1,4 +1,4 @@
-﻿# Instructions Claude/Codex - Projet GW2Nexus
+# Instructions Claude — Projet GW2Nexus
 
 ## Vision du projet
 
@@ -23,7 +23,6 @@ Toutes les decisions doivent ameliorer l'etat reel du projet sans sur-implemente
 - Ne jamais exposer de secrets dans le depot, les logs, les exemples ou la documentation.
 - Ne pas modifier les fichiers `.env` reels sauf validation explicite et uniquement pour des valeurs non sensibles.
 - Garder le frontend sur le port `5174`, sauf demande explicite contraire.
-- Documenter chaque correction dans `docs/audit/`.
 - Executer les tests/verifications prevus apres chaque etape appliquee.
 - Ne jamais faire de refactor massif non demande.
 - Ne jamais supprimer de fichier sans confirmation explicite.
@@ -35,26 +34,28 @@ Toutes les decisions doivent ameliorer l'etat reel du projet sans sur-implemente
 ### Frontend
 
 - React 19
-- TypeScript
+- TypeScript 5.8
 - Vite 7
-- React Router
+- React Router v7
 - Axios
-- Zustand
-- TanStack Query
+- Zustand 5
+- TanStack Query v5
+- Tailwind CSS 4
 - CSS modules
 
 ### Backend
 
 - Laravel 12
 - PHP 8.4+ (composer.lock genere sur PHP 8.4 — version minimum imposee par platform_check.php)
-- Laravel Sanctum
+- Laravel Sanctum 4.3 (Bearer Token)
 - Eloquent ORM
 - Form Requests
+- API Resources
 - API REST versionnee sous `/api/v1/*`, avec route health non versionnee `/api/health`
 
 ### Infrastructure locale
 
-- Docker Compose
+- Docker Compose (5 services)
 - MySQL 8
 - phpMyAdmin
 - Mailpit
@@ -76,31 +77,118 @@ Toutes les decisions doivent ameliorer l'etat reel du projet sans sur-implemente
 | MySQL depuis l'hote | `localhost:3307` |
 | MySQL dans Docker | `mysql:3306` |
 
-Le port frontend de reference est `5174`. Ne pas revenir a `5173` sans realigner Vite, Docker, CORS/Sanctum, `.env.example`, README et documentation d'audit.
+Le port frontend de reference est `5174`. Ne pas revenir a `5173` sans realigner Vite, Docker, CORS/Sanctum, `.env.example`, README et documentation.
 
 ---
 
 ## Structure du projet
 
 ```text
-backend/                  # API Laravel
-frontend/                 # SPA React/Vite
+backend/                  # API Laravel 12
+frontend/                 # SPA React 19 / Vite 7
 docker/                   # Fichiers Docker annexes
-docs/audit/               # Audit, plan, changelog et decisions techniques
+docs/                     # Documentation structuree du projet
+  architecture/           # Vue globale, diagrammes, ADR, matrice priorite
+  api/                    # Documentation endpoints REST
+  backend/                # Documentation technique backend
+  frontend/               # Documentation technique frontend
+  database/               # Schema base de donnees
+  security/               # Securite et bonnes pratiques
+  devops/                 # Setup local, Docker, variables d'env
+  game/                   # Integration API GW2 / metier Guild Wars 2
+  testing/                # Strategie et guides de tests
+  operations/             # Runbook, monitoring
+  product/                # Vision produit
+  audit/                  # Historique audit et corrections (2026-06-02)
+  forum/                  # Documentation specifique module Forum
 .claude/                  # Instructions de collaboration IA
-README.md                 # Documentation locale courte et fiable
+README.md                 # Vitrine produit du projet
+backend/README.md         # Documentation technique backend
+frontend/README.md        # Documentation technique frontend
 docker-compose.yml        # Stack locale dev
-docker-compose.prod.yml   # Stack production
 ```
 
-Fichiers d'audit obligatoires :
+---
 
-```text
-docs/audit/AUDIT_GW2NEXUS.md
-docs/audit/PLAN_CORRECTION_GW2NEXUS.md
-docs/audit/CHANGELOG_CORRECTIONS_GW2NEXUS.md
-docs/audit/DECISIONS_TECHNIQUES_GW2NEXUS.md
-```
+## Gouvernance documentaire
+
+### Principe fondamental
+
+**La documentation est un composant de premiere classe du projet, maintenue avec le meme niveau d'exigence que le code source.**
+
+Toute modification du projet doit entrainer une verification de la documentation concernee.
+
+### Declencheurs de mise a jour obligatoire
+
+Une mise a jour documentaire est requise lors de :
+
+- ajout, modification ou suppression de fonctionnalite
+- refactorisation impactant l'architecture ou les interfaces
+- evolution de l'architecture globale ou d'un module
+- modification d'un endpoint API (route, payload, reponse, auth)
+- ajout ou modification d'une migration ou du schema de base de donnees
+- ajout, modification ou suppression d'une variable d'environnement
+- modification d'une procedure d'installation ou de demarrage
+- changement de configuration Docker ou des services
+- ajout ou suppression d'une dependance significative
+- evolution des mecanismes d'authentification ou de securite
+- modification des regles metier GW2 ou de l'integration ArenaNet
+- prise d'une decision d'architecture (doit generer un ADR)
+
+### Documents par zone de code
+
+| Zone modifiee | Documents a verifier |
+| --- | --- |
+| `routes/api.php`, controllers | `docs/api/` + endpoint concerne |
+| `database/migrations/` | `docs/database/schema.md` |
+| `backend/.env.example` | `docs/devops/variables-env.md` |
+| `frontend/.env.example` | `docs/devops/variables-env.md` |
+| `docker-compose.yml`, `Dockerfile` | `docs/devops/docker.md` |
+| `app/Services/Gw2ApiService.php` | `docs/game/gw2-api.md`, `docs/backend/services.md` |
+| `router/index.tsx`, `*Route.tsx` | `docs/frontend/overview.md` |
+| `authStore.ts`, `profileStore.ts` | `docs/frontend/state-management.md` |
+| `app/Http/Middleware/` | `docs/backend/overview.md`, `docs/security/overview.md` |
+| Architecture globale | `docs/architecture/architecture-globale.md` |
+| Nouvelle decision technique | `docs/architecture/decisions-techniques.md` (ADR) |
+
+### Obligations a chaque intervention
+
+1. Identifier les documents impactes avant de modifier le code.
+2. Mettre a jour les documents concernes apres la modification.
+3. Verifier la coherence entre le code et la documentation.
+4. Ne jamais laisser une fonctionnalite sans documentation associee.
+5. Ne jamais conserver une documentation decrivant un comportement obsolete.
+6. Supprimer ou corriger les informations devenues fausses.
+
+### Documentation as Code
+
+La documentation est versionnee, maintenue, relue et coherente au meme titre que le code. Chaque modification du code s'accompagne d'une reflexion sur son impact documentaire.
+
+Regles :
+
+- Single Source of Truth : une information n'existe qu'a un seul endroit dans la documentation.
+- Pas de duplication intentionnelle entre fichiers de documentation.
+- Les README (racine, backend, frontend) sont des documents vivants mis a jour en continu.
+- Les ADR (Architecture Decision Records) documentent le POURQUOI, pas seulement le QUOI.
+
+---
+
+## Checklist de fin de tache
+
+Avant de considerer une tache comme terminee, verifier :
+
+- [ ] Fonctionnalite implementee et fonctionnelle
+- [ ] Refactorisation terminee
+- [ ] Tests crees ou mis a jour si applicable
+- [ ] Documentation mise a jour (docs/ concernes)
+- [ ] README concernes verifies (racine, backend, frontend selon impact)
+- [ ] Architecture documentee si evolution significative
+- [ ] ADR cree si decision d'architecture prise
+- [ ] Variables d'environnement documentees si nouvelles
+- [ ] Schema DB mis a jour si migration ajoutee
+- [ ] Coherence globale validee
+
+Une tache n'est terminee que lorsque tous les elements applicables sont valides.
 
 ---
 
@@ -114,7 +202,7 @@ Avant chaque modification, presenter une etape avec :
 - modifications prevues ;
 - risques ;
 - tests/verifications prevus ;
-- documentation Markdown a mettre a jour ;
+- documentation a mettre a jour ;
 - question finale : `Confirme-tu que je peux appliquer cette etape ?`
 
 Apres confirmation seulement :
@@ -122,7 +210,8 @@ Apres confirmation seulement :
 - verifier `git status --short` ;
 - appliquer uniquement l'etape validee ;
 - executer les tests prevus ;
-- documenter dans `docs/audit/` ;
+- mettre a jour la documentation concernee ;
+- documenter dans `docs/audit/changelog-corrections.md` si correction applicative ;
 - fournir un compte-rendu clair ;
 - proposer la prochaine etape sans l'appliquer.
 
@@ -156,7 +245,7 @@ docker compose ps
 Notes :
 
 - `php artisan test` est configure pour utiliser SQLite en memoire via `backend/phpunit.xml`.
-- `docker compose config` peut afficher un warning d'acces a `C:\Users\oui\.docker\config.json`; le documenter s'il apparait, mais ne pas le confondre avec un echec applicatif.
+- `docker compose config` peut afficher un warning d'acces a `C:\Users\oui\.docker\config.json` ; le documenter s'il apparait, mais ne pas le confondre avec un echec applicatif.
 - Ne pas recopier de secrets ou valeurs sensibles affichees par `docker compose config` dans les reponses ou les fichiers Markdown.
 
 ---
@@ -196,15 +285,13 @@ Notes :
 
 ---
 
-## Documentation
+## Documentation — Historique
 
-Mettre a jour `docs/audit/CHANGELOG_CORRECTIONS_GW2NEXUS.md` apres chaque changement applique.
+Les documents `docs/audit/` (AUDIT, PLAN, CHANGELOG, DECISIONS) datant du 2026-06-02 sont des archives historiques de la phase de stabilisation initiale. Ils ne doivent pas etre supprimes.
 
-Mettre a jour `docs/audit/DECISIONS_TECHNIQUES_GW2NEXUS.md` quand une decision d'architecture, de securite, de test ou d'environnement est prise.
+Les nouvelles decisions techniques sont a ajouter dans `docs/architecture/decisions-techniques.md` (ADR).
 
-Mettre a jour `docs/audit/PLAN_CORRECTION_GW2NEXUS.md` avec le statut des etapes.
-
-Mettre a jour `docs/audit/AUDIT_GW2NEXUS.md` quand un probleme est corrige ou requalifie.
+Les nouvelles corrections applicatives sont a journaliser dans `docs/audit/changelog-corrections.md`.
 
 ---
 
@@ -233,11 +320,12 @@ Mettre a jour `docs/audit/AUDIT_GW2NEXUS.md` quand un probleme est corrige ou re
 Toujours faire :
 
 - lire le code existant avant modification ;
+- identifier les documents impactes avant de toucher au code ;
 - proposer une etape avant d'appliquer ;
 - attendre confirmation explicite ;
 - appliquer une correction minimale ;
 - tester ;
-- documenter ;
+- documenter (code et docs simultanement) ;
 - rendre compte clairement.
 
 Ne jamais faire :
@@ -248,11 +336,11 @@ Ne jamais faire :
 - faire un refactor massif opportuniste ;
 - changer un port sans validation ;
 - modifier `.env` reel sans demande explicite ;
-- supprimer des fichiers sans confirmation.
+- supprimer des fichiers sans confirmation ;
+- laisser une modification de code sans verifier son impact documentaire.
 
 ---
 
 ## Mise a jour de ce fichier
 
 Ce fichier doit evoluer avec GW2Nexus. Toute nouvelle convention durable, decision de workflow ou regle d'architecture adoptee pendant les corrections doit etre ajoutee ici apres validation.
-
