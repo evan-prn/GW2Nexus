@@ -91,7 +91,7 @@ const EventRow: React.FC<EventRowProps> = ({ eventState, timelineSlots, zoneColo
           };
         })
         .filter(Boolean) as (BarPosition & { key: string; tooltipLabel: string })[],
-    [event.slots, event.id, timelineSlots],
+    [event.slots, event.id, event.name, timelineSlots],
   );
 
   return (

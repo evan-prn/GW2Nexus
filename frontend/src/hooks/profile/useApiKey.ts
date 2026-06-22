@@ -1,10 +1,15 @@
 import { useCallback, useState } from 'react';
+import axios from 'axios';
 import profileApi       from '../../api/profile.api';
 import useProfileStore  from '../../store/profileStore';
 import type { Gw2DataResponse } from '../../types/profile.types';
 
 // ─── Types locaux ────────────────────────────────────────────────
 type SubmitStatus = 'idle' | 'loading' | 'success' | 'error';
+
+interface ApiErrorResponse {
+  message?: string;
+}
 
 // ─── Hook clé API GW2 ────────────────────────────────────────────
 // Expose deux interfaces :
@@ -39,8 +44,10 @@ const useApiKey = () => {
       setStatus('success');
       setMessage('Clé API validée et enregistrée avec succès.');
       setApiKey('');
-    } catch (err: any) {
-      const msg = err.response?.data?.message ?? 'Clé API invalide ou expirée.';
+    } catch (err: unknown) {
+      const msg = axios.isAxiosError<ApiErrorResponse>(err)
+        ? err.response?.data?.message ?? 'Cl� API invalide ou expir�e.'
+        : 'Cl� API invalide ou expir�e.';
       setStatus('error');
       setMessage(msg);
       setError(msg);
@@ -76,8 +83,10 @@ const useApiKey = () => {
       const response = await profileApi.gw2Data();
       setGw2Data(response.data);
       return response.data;
-    } catch (err: any) {
-      const msg = err.response?.data?.message ?? 'Impossible de récupérer les données GW2.';
+    } catch (err: unknown) {
+      const msg = axios.isAxiosError<ApiErrorResponse>(err)
+        ? err.response?.data?.message ?? 'Impossible de r�cup�rer les donn�es GW2.'
+        : 'Impossible de r�cup�rer les donn�es GW2.';
       setError(msg);
       return null;
     } finally {

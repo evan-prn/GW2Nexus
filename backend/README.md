@@ -1,59 +1,224 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# GW2 Nexus — Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API REST Laravel 12 alimentant la plateforme GW2 Nexus.
 
-## About Laravel
+## Architecture
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+```
+backend/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/Api/    # Contrôleurs par domaine (Auth, Forum, Profile, Admin, Events, Contact)
+│   │   ├── Middleware/         # AdminMiddleware, BanCheck
+│   │   ├── Requests/           # Form Requests (validation)
+│   │   └── Resources/          # API Resources (sérialisation JSON)
+│   ├── Models/                 # User, ProfilGw2, UserBan, Forum*
+│   ├── Services/               # Gw2ApiService, AdminUserService
+│   └── Mail/                   # ContactMail
+├── database/
+│   ├── migrations/             # 10 migrations
+│   └── factories/
+├── routes/
+│   ├── api.php                 # Routes /api/v1/* et /api/health
+│   └── web.php
+└── tests/
+    ├── Feature/                # Tests Auth, Forum
+    └── Unit/
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Technologies
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Composant | Version |
+|---|---|
+| PHP | 8.4+ |
+| Laravel | 12.x |
+| Laravel Sanctum | 4.3 |
+| MySQL | 8.0 |
+| PHPUnit | 11.x |
 
-## Learning Laravel
+## Installation locale
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Avec Docker (recommandé)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Le backend démarre automatiquement via Docker Compose depuis la racine du projet :
 
-## Laravel Sponsors
+```bash
+docker compose up -d --build
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+L'API est disponible sur `http://localhost:8000`.
 
-### Premium Partners
+### Sans Docker
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+cd backend
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan serve
+```
 
-## Contributing
+Prérequis : PHP 8.4+, Composer, MySQL 8 accessible sur le port configuré dans `.env`.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Configuration
 
-## Code of Conduct
+Copier et adapter `.env.example` :
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## Security Vulnerabilities
+Variables clés à configurer :
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Variable | Description |
+|---|---|
+| `APP_KEY` | Clé de chiffrement AES (générée automatiquement) |
+| `DB_HOST` / `DB_PORT` | Hôte MySQL (`mysql:3306` en Docker, `127.0.0.1:3307` depuis l'hôte) |
+| `DB_DATABASE` / `DB_USERNAME` / `DB_PASSWORD` | Identifiants MySQL |
+| `FRONTEND_URL` | URL du frontend React (CORS) |
+| `SANCTUM_STATEFUL_DOMAINS` | Domaines autorisés pour l'auth |
+| `GW2_API_BASE_URL` | URL API ArenaNet |
+| `MAIL_HOST` / `MAIL_PORT` | SMTP (`mailpit:1025` en dev) |
 
-## License
+Documentation complète → [docs/devops/variables-env.md](../docs/devops/variables-env.md)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Scripts disponibles
+
+```bash
+# Migrations
+php artisan migrate
+php artisan migrate:status
+php artisan migrate:fresh --seed     # Reset complet ⚠️
+
+# Tests
+php artisan test
+php artisan test --filter AuthTest
+php artisan test --verbose
+
+# Routes API
+php artisan route:list --path=api
+
+# Cache
+php artisan cache:clear
+php artisan config:clear
+
+# REPL interactif
+php artisan tinker
+```
+
+### Depuis Docker Compose
+
+```bash
+docker compose exec laravel php artisan migrate
+docker compose exec laravel php artisan test
+docker compose exec laravel php artisan route:list --path=api
+docker compose exec laravel php artisan tinker
+```
+
+## API REST
+
+Base URL : `/api/v1`
+
+| Domaine | Endpoints | Auth requise |
+|---|---|---|
+| Authentification | `/auth/register`, `/auth/login`, `/auth/logout`, `/auth/me` | Non (login/register) |
+| Profil GW2 | `/profile`, `/profile/api-key`, `/profile/gw2-data`, `/profile/world-boss-status` | Oui |
+| Forum | `/forum/categories`, `/forum/threads`, `/forum/posts` | Lecture : Non / Écriture : Oui |
+| Admin | `/admin/users`, `/admin/stats`, `/admin/forum/reports` | Admin/Modérateur |
+| Events | `/events/schedule` | Non |
+| Contact | `/contact` | Non |
+
+Documentation complète → [docs/api/overview.md](../docs/api/overview.md)
+
+### Authentification
+
+**Sanctum Bearer Token** (stateless). Chaque requête protégée doit inclure :
+
+```http
+Authorization: Bearer {token}
+```
+
+Le token est obtenu via `POST /api/v1/auth/login` ou `POST /api/v1/auth/register`.
+
+## Base de données
+
+10 tables principales : `users`, `profils_gw2`, `user_bans`, `personal_access_tokens`, `forum_categories`, `forum_threads`, `forum_posts`, `forum_post_reports`, `cache`, `jobs`.
+
+Schéma complet → [docs/database/schema.md](../docs/database/schema.md)
+
+## Tests
+
+```bash
+# Depuis la racine Docker
+docker compose exec laravel php artisan test
+
+# Hors Docker
+cd backend && php artisan test
+```
+
+Configuration : SQLite in-memory (`backend/phpunit.xml`). Isolation totale entre les tests via `RefreshDatabase`.
+
+Tests existants :
+- `tests/Feature/Auth/AuthTest.php` — Inscription, connexion, déconnexion, rate limiting
+- `tests/Feature/Forum/ForumModerationTest.php` — Threads, posts, signalements, modération
+
+Guide complet → [docs/testing/overview.md](../docs/testing/overview.md)
+
+## Qualité de code
+
+```bash
+# Formatage PHP (Laravel Pint)
+docker compose exec laravel ./vendor/bin/pint
+
+# Vérification sans modification
+docker compose exec laravel ./vendor/bin/pint --test
+```
+
+## Sécurité
+
+| Aspect | Implémentation |
+|---|---|
+| Passwords | bcrypt, 12 rounds (cast `hashed`) |
+| Clés API GW2 | Chiffrement AES-256-CBC (cast `encrypted`) |
+| Tokens | Hash SHA-256 en base (Sanctum) |
+| Rate limiting | Login : 5/min, forgot-pwd : 3/min |
+| Ban system | Temporaire ou permanent, révocation tokens |
+
+Documentation sécurité → [docs/security/overview.md](../docs/security/overview.md)
+
+## Intégration GW2 API
+
+Le service `Gw2ApiService` encapsule tous les appels vers `api.guildwars2.com/v2` :
+- Validation de clé API (`/v2/tokeninfo`)
+- Données de compte (`/v2/account`)
+- Personnages (`/v2/characters`)
+- World bosses (`/v2/account/worldbosses`)
+
+Cache de 5 minutes. Fallback gracieux sur erreur réseau (retourne `null`).
+
+Documentation → [docs/game/gw2-api.md](../docs/game/gw2-api.md)
+
+## Troubleshooting
+
+**Migrations échouent**
+```bash
+# Vérifier la connexion MySQL
+docker compose exec laravel php artisan migrate:status
+```
+
+**APP_KEY manquante**
+```bash
+docker compose exec laravel php artisan key:generate
+```
+
+**Erreur 500 en production**
+- Vérifier `APP_DEBUG=false` et `APP_ENV=production`
+- Consulter `storage/logs/laravel.log`
+
+**API GW2 indisponible**
+- Normal : le service retourne `null`, le frontend affiche "Données indisponibles"
+- Vérifier https://status.guildwars2.com/
+
+Runbook complet → [docs/operations/runbook.md](../docs/operations/runbook.md)

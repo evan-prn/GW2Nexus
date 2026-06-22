@@ -18,6 +18,7 @@ interface NavLink {
   label: string;
   href: string;
   icon: string;
+  children?: Array<{ label: string; href: string; icon: string; description: string }>;
 }
 
 interface DropdownItem {
@@ -32,16 +33,42 @@ const NAV_LINKS: NavLink[] = [
   { label: 'Builds',     href: '/builds',     icon: '🛡' },
   { label: 'Guildes',    href: '/guildes',    icon: '🏰' },
   { label: 'Objets',     href: '/objets',     icon: '💎' },
-  { label: 'Événements', href: '/events',     icon: '🗺' },
+  {
+    label: 'Événements',
+    href: '/events',
+    icon: '🗺',
+    children: [
+      {
+        label: 'Timer World Boss',
+        href: '/events/world-boss',
+        icon: '🐉',
+        description: 'Tous les world bosses avec timer en direct',
+      },
+      {
+        label: 'Méta-Événements',
+        href: '/events',
+        icon: '🗺',
+        description: 'Timeline complète HoT, PoF, EoD...',
+      },
+    ],
+  },
 ];
 
 // ─── Composant ──────────────────────────────────────────────────────
 export default function Navbar({ user = null, onLogout }: NavbarProps) {
-  const [scrolled,  setScrolled]  = useState(false);
-  const [menuOpen,  setMenuOpen]  = useState(false);
-  const [userOpen,  setUserOpen]  = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const location    = useLocation();
+  const [scrolled,    setScrolled]    = useState(false);
+  const [menuOpen,    setMenuOpen]    = useState(false);
+  const [userOpen,    setUserOpen]    = useState(false);
+  const [eventsOpen,  setEventsOpen]  = useState(false);
+  const dropdownRef  = useRef<HTMLDivElement>(null);
+  const eventsRef    = useRef<HTMLLIElement>(null);
+  const location     = useLocation();
+
+  const closeMenus = () => {
+    setMenuOpen(false);
+    setUserOpen(false);
+    setEventsOpen(false);
+  };
 
   /* Effet de fond au scroll */
   useEffect(() => {
@@ -50,17 +77,14 @@ export default function Navbar({ user = null, onLogout }: NavbarProps) {
     return () => window.removeEventListener('scroll', handler);
   }, []);
 
-  /* Fermeture des menus au changement de route */
-  useEffect(() => {
-    setMenuOpen(false);
-    setUserOpen(false);
-  }, [location.pathname]);
-
-  /* Fermeture dropdown au clic extérieur */
+  /* Fermeture dropdowns au clic extérieur */
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setUserOpen(false);
+      }
+      if (eventsRef.current && !eventsRef.current.contains(e.target as Node)) {
+        setEventsOpen(false);
       }
     };
     document.addEventListener('mousedown', handler);
@@ -96,8 +120,53 @@ export default function Navbar({ user = null, onLogout }: NavbarProps) {
 
           {/* ── Liens desktop ── */}
           <ul className={styles.navLinks}>
-            {NAV_LINKS.map(({ label, href, icon }) => {
+            {NAV_LINKS.map(({ label, href, icon, children }) => {
               const isActive = location.pathname.startsWith(href);
+
+              /* Lien avec sous-menu */
+              if (children) {
+                return (
+                  <li key={href} ref={eventsRef} className={styles.navDropdownItem}>
+                    <button
+                      onClick={() => setEventsOpen((v) => !v)}
+                      aria-expanded={eventsOpen}
+                      aria-haspopup="true"
+                      className={isActive ? styles.navLinkActive : styles.navLink}
+                    >
+                      <span className={styles.navLinkIcon}>{icon}</span>
+                      {label}
+                      <svg
+                        className={eventsOpen ? styles.chevronOpen : styles.chevron}
+                        viewBox="0 0 20 20"
+                        aria-hidden="true"
+                      >
+                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+
+                    {eventsOpen && (
+                      <div className={styles.navDropdown}>
+                        {children.map((child) => (
+                          <Link
+                            key={child.href}
+                            to={child.href}
+                            onClick={closeMenus}
+                            className={styles.navDropdownLink}
+                          >
+                            <span className={styles.navDropdownIcon}>{child.icon}</span>
+                            <span className={styles.navDropdownText}>
+                              <span className={styles.navDropdownLabel}>{child.label}</span>
+                              <span className={styles.navDropdownDesc}>{child.description}</span>
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </li>
+                );
+              }
+
+              /* Lien simple */
               return (
                 <li key={href}>
                   <Link
@@ -156,6 +225,7 @@ export default function Navbar({ user = null, onLogout }: NavbarProps) {
                       <Link
                         key={item.href}
                         to={item.href}
+                        onClick={closeMenus}
                         className={styles.dropdownLink}
                       >
                         <span aria-hidden="true">{item.icon}</span>
@@ -164,7 +234,10 @@ export default function Navbar({ user = null, onLogout }: NavbarProps) {
                     ))}
 
                     <button
-                      onClick={onLogout}
+                      onClick={() => {
+                        closeMenus();
+                        onLogout?.();
+                      }}
                       className={styles.dropdownLogout}
                     >
                       <span aria-hidden="true">🚪</span>
@@ -207,12 +280,35 @@ export default function Navbar({ user = null, onLogout }: NavbarProps) {
       {menuOpen && (
         <div className={styles.mobileMenu}>
           <ul className={styles.mobileLinks}>
-            {NAV_LINKS.map(({ label, href, icon }) => {
+            {NAV_LINKS.map(({ label, href, icon, children }) => {
               const isActive = location.pathname.startsWith(href);
+
+              if (children) {
+                return (
+                  <li key={href}>
+                    <div className={styles.mobileLinkIcon}>{icon}</div>
+                    <span className={styles.mobileSectionLabel}>{label}</span>
+                    {children.map((child) => (
+                      <Link
+                        key={child.href}
+                        to={child.href}
+                        onClick={closeMenus}
+                        className={location.pathname === child.href ? styles.mobileLinkActive : styles.mobileLink}
+                        style={{ paddingLeft: '2rem' }}
+                      >
+                        <span className={styles.mobileLinkIcon}>{child.icon}</span>
+                        {child.label}
+                      </Link>
+                    ))}
+                  </li>
+                );
+              }
+
               return (
                 <li key={href}>
                   <Link
                     to={href}
+                    onClick={closeMenus}
                     className={isActive ? styles.mobileLinkActive : styles.mobileLink}
                   >
                     <span className={styles.mobileLinkIcon}>{icon}</span>
@@ -224,7 +320,7 @@ export default function Navbar({ user = null, onLogout }: NavbarProps) {
 
             {!user && (
               <li className={styles.mobileLoginItem}>
-                <Link to="/login" className={styles.mobileLoginLink}>
+                <Link to="/login" onClick={closeMenus} className={styles.mobileLoginLink}>
                   Connexion
                 </Link>
               </li>

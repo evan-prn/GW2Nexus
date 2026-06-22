@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\BanCheck;
+use App\Http\Middleware\ModeratorMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -32,8 +33,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Alias middleware — utilisés par leur nom dans les routes
         $middleware->alias([
-            'admin'     => AdminMiddleware::class, // Vérifie role === 'admin'
-            'ban.check' => BanCheck::class,        // Bloque les utilisateurs bannis
+            'admin'     => AdminMiddleware::class,     // Verifie role === 'admin'
+            'moderator' => ModeratorMiddleware::class, // Verifie role moderateur ou admin
+            'ban.check' => BanCheck::class,            // Bloque les utilisateurs bannis
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -1,13 +1,13 @@
 # ═══════════════════════════════════════════════════════════════════
-# GW2Nexus — Dockerfile Backend (Laravel 11)
-# PHP 8.3 CLI — Extensions complètes pour Laravel + GW2 API
+# GW2Nexus — Dockerfile Backend (Laravel 12)
+# PHP 8.4 CLI — Extensions complètes pour Laravel + GW2 API
 # ═══════════════════════════════════════════════════════════════════
 
-FROM php:8.3-cli
+FROM php:8.4-cli
 
 # ─── Métadonnées ────────────────────────────────────────────────────
 LABEL maintainer="GW2Nexus Team"
-LABEL description="Backend Laravel 11 — API REST + Sanctum"
+LABEL description="Backend Laravel 12 — API REST + Sanctum"
 
 # ─── Dépendances système ─────────────────────────────────────────────
 # git            : requis par Composer pour les packages installés depuis GitHub
@@ -24,29 +24,14 @@ LABEL description="Backend Laravel 11 — API REST + Sanctum"
 # Toutes les bibliothèques sont installées en une seule commande RUN
 # pour minimiser le nombre de couches Docker et la taille de l'image finale.
 # apt-get clean + rm -rf supprime les listes apt après installation.
-RUN apt-get update && apt-get install -y \
-    git \
-    zip \
-    unzip \
-    curl \
-    libzip-dev \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libicu-dev \
-    libcurl4-openssl-dev \
-    && docker-php-ext-install \
-        pdo \
-        pdo_mysql \
-        mbstring \
-        zip \
-        exif \
-        bcmath \
-        gd \
-        curl \
-        intl \
-    && apt-get clean \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update && apt-get install -y \
+    git zip unzip curl \
+    libzip-dev libpng-dev libonig-dev libxml2-dev libicu-dev libcurl4-openssl-dev \
+    && docker-php-ext-install pdo pdo_mysql mbstring zip exif bcmath gd curl intl \
     && rm -rf /var/lib/apt/lists/*
+
 
 # ─── Composer ───────────────────────────────────────────────────────
 # Copié depuis l'image officielle Composer 2 via multi-stage build.

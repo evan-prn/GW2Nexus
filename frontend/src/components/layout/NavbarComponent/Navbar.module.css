@@ -84,7 +84,10 @@
   letter-spacing: 0.03em;
   text-decoration: none;
   color: #9CA3AF;
+  background: transparent;
+  border: none;
   border-bottom: 2px solid transparent;
+  cursor: pointer;
   transition: var(--transition-base);
 }
 
@@ -104,9 +107,12 @@
   font-weight: var(--weight-medium);
   letter-spacing: 0.03em;
   text-decoration: none;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--gold-primary);
+  cursor: pointer;
   transition: var(--transition-base);
   color: var(--gold-primary);
-  border-bottom: 2px solid var(--gold-primary);
 }
 
 .navLinkIcon {
@@ -326,6 +332,80 @@
 
 .dropdownLogout:hover {
   color: #EF4444;
+}
+
+/* ─── Dropdown nav (Événements) ─────────────────────────────────────────── */
+.navDropdownItem {
+  position: relative;
+}
+
+.navDropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 250px;
+  background: #161b26;
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  animation: fadeIn 0.15s ease both;
+  z-index: var(--z-modal);
+  padding: 6px;
+}
+
+.navDropdownLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.navDropdownLink:hover {
+  background: rgba(201, 168, 76, 0.07);
+}
+
+.navDropdownIcon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  width: 28px;
+  text-align: center;
+}
+
+.navDropdownText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.navDropdownLabel {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--gold-light);
+  letter-spacing: 0.02em;
+}
+
+.navDropdownDesc {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* Label section mobile */
+.mobileSectionLabel {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  padding: var(--space-1) var(--space-3);
+  margin-top: var(--space-1);
 }
 
 /* ─── Burger mobile ─────────────────────────────────────────────── */

@@ -6,47 +6,21 @@
 // - compose les trois blocs (Hero, Form, Channels)
 // ═══════════════════════════════════════════════════════════════════
 
-import { useRef, useState, useEffect } from 'react';
-
 import ContactHero        from '@/components/contact/ContactHeroComponent/ContactHero';
 import ContactForm        from '@/components/contact/ContactFormComponent/ContactForm';
 import ContactChannels    from '@/components/contact/ContactChannelsComponent/ContactChannels';
 import { useContactForm } from '@/hooks/contact/useContactForm';
+import { useIntersectionObserver } from '@/hooks/ui/useIntersectionObserver';
 import usePageTitle       from '@/hooks/usePageTitle';
+import type { CSSProperties } from 'react';
 
 import styles from './ContactPage.module.css';
 
-// ─── Hook local : animation reveal au scroll ─────────────────────────
-// Déclaré ici car spécifique à cette page pour l'instant.
-// À déplacer dans src/hooks/ui/useReveal.ts si d'autres pages en ont besoin.
-function useReveal(delay = 0) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.08 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
-  return {
-    ref,
-    style: {
-      opacity: visible ? 1 : 0,
-      transform: visible ? 'translateY(0)' : 'translateY(20px)',
-      transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`,
-    },
-  };
-}
-
+const getRevealStyle = (visible: boolean, delay = 0): CSSProperties => ({
+  opacity: visible ? 1 : 0,
+  transform: visible ? 'translateY(0)' : 'translateY(20px)',
+  transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`,
+});
 // ─── Page ────────────────────────────────────────────────────────────
 export default function ContactPage() {
   // Logique formulaire déléguée au hook dédié
@@ -54,9 +28,9 @@ export default function ContactPage() {
     useContactForm();
 
   // Animations reveal indépendantes pour chaque bloc
-  const heroReveal  = useReveal(0);
-  const formReveal  = useReveal(0);
-  const chansReveal = useReveal(120);
+  const { ref: heroRef,  visible: heroVisible }  = useIntersectionObserver(0.08);
+  const { ref: formRef,  visible: formVisible }  = useIntersectionObserver(0.08);
+  const { ref: chansRef, visible: chansVisible } = useIntersectionObserver(0.08);
 
   usePageTitle('Contact');
 
@@ -68,7 +42,7 @@ export default function ContactPage() {
       <div className={styles.bgOverlay} aria-hidden="true" />
 
       {/* ── Hero ── */}
-      <div ref={heroReveal.ref} style={heroReveal.style}>
+      <div ref={heroRef} style={getRevealStyle(heroVisible)}>
         <ContactHero />
       </div>
 
@@ -76,7 +50,7 @@ export default function ContactPage() {
       <div className={styles.main}>
 
         {/* Formulaire */}
-        <div ref={formReveal.ref} style={formReveal.style}>
+        <div ref={formRef} style={getRevealStyle(formVisible)}>
           <h2 className={styles.blockTitle}>Formulaire de Contact</h2>
           <ContactForm
             form={form}
@@ -89,7 +63,7 @@ export default function ContactPage() {
         </div>
 
         {/* Canaux externes */}
-        <div ref={chansReveal.ref} style={chansReveal.style}>
+        <div ref={chansRef} style={getRevealStyle(chansVisible, 120)}>
           <h2 className={styles.blockTitle}>Réseaux Externes</h2>
           <ContactChannels />
         </div>

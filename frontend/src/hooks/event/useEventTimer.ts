@@ -8,7 +8,7 @@
 //   - Exposer les utilitaires de formatage (heure locale, countdown)
 // =============================================================
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import type { GW2Event, EventState, EventStatus, TimelineSlot } from '@/types/events.types';
 
 // ─────────────────────────────────────────────────────────────
@@ -172,21 +172,16 @@ export const useEventTimer = (events: GW2Event[]): EventState[] => {
     [events],
   );
 
-  // Initialisation synchrone pour éviter un flash vide au premier rendu
-  const [states, setStates] = useState<EventState[]>(() => compute(new Date()));
+  // Initialisation synchrone pour eviter un flash vide au premier rendu.
+  const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
-    // Recalcul immédiat si la liste d'events change
-    setStates(compute(new Date()));
-
-    const interval = setInterval(() => {
-      setStates(compute(new Date()));
-    }, 1_000);
+    const interval = setInterval(() => setNow(new Date()), 1_000);
 
     return () => clearInterval(interval);
-  }, [compute]);
+  }, []);
 
-  return states;
+  return useMemo(() => compute(now), [compute, now]);
 };
 
 // ─────────────────────────────────────────────────────────────

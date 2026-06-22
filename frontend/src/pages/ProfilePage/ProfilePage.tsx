@@ -18,6 +18,7 @@ import ProfileEditModal  from '@/components/profile/ProfileEditModalComponent/Pr
 import usePageTitle      from '@/hooks/usePageTitle';
 
 import type { Gw2Account, Gw2Character } from '@/data/profile.data';
+import type { Gw2CharacterRaw } from '@/types/profile.types';
 
 import styles from './ProfilePage.module.css';
 
@@ -46,7 +47,7 @@ export default function ProfilePage() {
 
   // /v2/characters?ids=all retourne des objets complets
   const personnages: Gw2Character[] = Array.isArray(gw2Data?.personnages)
-    ? (gw2Data!.personnages as any[]).map((c) =>
+    ? gw2Data.personnages.map((c: string | Gw2CharacterRaw) =>
         typeof c === 'string'
           ? { name: c, profession: 'Unknown', level: 0, race: '', gender: '' }
           : {

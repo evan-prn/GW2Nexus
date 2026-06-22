@@ -15,7 +15,7 @@ const API_VERSION = '/api/v1';
 export const ENDPOINTS = {
 
   // ─── Santé ──────────────────────────────────────────────────────────────
-  health: `${API_VERSION}/health`,      // GET — Vérifie que le backend est opérationnel
+  health: '/api/health',                // GET — Healthcheck public utilisé aussi par Docker
 
   // ─── Authentification ────────────────────────────────────────────────────
   auth: {
@@ -30,11 +30,12 @@ export const ENDPOINTS = {
 
   // ─── Profil utilisateur ──────────────────────────────────────────────────
   profile: {
-    show:    `${API_VERSION}/profile`,          // GET    — Données complètes du profil
-    update:  `${API_VERSION}/profile`,          // PUT    — Mise à jour nom / pseudo_gw2
-    avatar:  `${API_VERSION}/profile/avatar`,   // POST   — Upload de l'avatar
-    apiKey:  `${API_VERSION}/profile/api-key`,  // POST / DELETE — Gestion clé API GW2
-    gw2Data: `${API_VERSION}/profile/gw2-data`, // GET    — Données GW2 fraîches (cache Redis)
+    show:            `${API_VERSION}/profile`,                   // GET    — Données complètes du profil
+    update:          `${API_VERSION}/profile`,                   // PUT    — Mise à jour nom / pseudo_gw2
+    avatar:          `${API_VERSION}/profile/avatar`,            // POST   — Upload de l'avatar
+    apiKey:          `${API_VERSION}/profile/api-key`,           // POST / DELETE — Gestion clé API GW2
+    gw2Data:         `${API_VERSION}/profile/gw2-data`,          // GET    — Données GW2 fraîches (cache Redis)
+    worldBossStatus: `${API_VERSION}/profile/world-boss-status`, // GET    — World bosses tués aujourd'hui
   },
 
   // ─── Contact ─────────────────────────────────────────────────────────────
@@ -44,16 +45,31 @@ export const ENDPOINTS = {
 
   // ─── Événements GW2 ──────────────────────────────────────────────────────
   //
-  // Sprint 2 : /schedule retourne l'heure serveur UTC + note de version.
-  // Sprint 4 : sera enrichi avec les horaires dynamiques issus du cache Redis
-  //            (synchronisés via Gw2ApiService + Artisan scheduler).
-  //
   // La page Events est publique — pas d'authentification requise.
   events: {
     schedule: `${API_VERSION}/events/schedule`, // GET — Heure serveur UTC + métadonnées
   },
 
-  // ─── Back-office admin ───────────────────────────────────────────────────
+  // Forum
+  forum: {
+    categories: {
+      index: `${API_VERSION}/forum/categories`,
+      show: (slug: string) => `${API_VERSION}/forum/categories/${slug}`,
+      threads: (slug: string) => `${API_VERSION}/forum/categories/${slug}/threads`,
+    },
+    threads: {
+      show: (slug: string) => `${API_VERSION}/forum/threads/${slug}`,
+      posts: (slug: string) => `${API_VERSION}/forum/threads/${slug}/posts`,
+      store: (categorySlug: string) => `${API_VERSION}/forum/categories/${categorySlug}/threads`,
+    },
+    posts: {
+      store: (threadSlug: string) => `${API_VERSION}/forum/threads/${threadSlug}/posts`,
+      update: (id: number) => `${API_VERSION}/forum/posts/${id}`,
+      destroy: (id: number) => `${API_VERSION}/forum/posts/${id}`,
+      reports: (id: number) => `${API_VERSION}/forum/posts/${id}/reports`,
+    },
+  },
+  // Back-office admin
   admin: {
     stats: `${API_VERSION}/admin/stats`,        // GET — Statistiques globales de la plateforme
 
@@ -63,19 +79,12 @@ export const ENDPOINTS = {
       ban:    (id: number) => `${API_VERSION}/admin/users/${id}/ban`, // POST   — Appliquer un ban
       unban:  (id: number) => `${API_VERSION}/admin/users/${id}/ban`, // DELETE — Lever le ban actif
     },
-  },
-
-  // ─── API officielle Guild Wars 2 (externe) ───────────────────────────────
-  //
-  // Appels directs à l'API ArenaNet — pas de proxy backend.
-  // Authentification via Bearer Token (clé API utilisateur).
-  //
-  // /v2/worldbosses          : liste des IDs de world bosses Core Tyria
-  // /v2/account/worldbosses  : world bosses tués depuis le dernier reset
-  //                            quotidien — nécessite scope "progression"
-  gw2: {
-    worldBosses:        'https://api.guildwars2.com/v2/worldbosses',         // GET — public
-    accountWorldBosses: 'https://api.guildwars2.com/v2/account/worldbosses', // GET — authentifié
+    forum: {
+      reports: `${API_VERSION}/admin/forum/reports`,
+      report: (id: number) => `${API_VERSION}/admin/forum/reports/${id}`,
+      lockThread: (id: number) => `${API_VERSION}/admin/forum/threads/${id}/lock`,
+      pinThread: (id: number) => `${API_VERSION}/admin/forum/threads/${id}/pin`,
+    },
   },
 
 } as const;

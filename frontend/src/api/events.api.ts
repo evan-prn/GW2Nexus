@@ -57,10 +57,10 @@ export const fetchSchedule = async (): Promise<ScheduleResponse> => {
 
 /**
  * Récupère les world bosses Core Tyria déjà tués aujourd'hui
- * depuis l'API officielle Guild Wars 2.
+ * via le backend GW2Nexus (proxy vers /v2/account/worldbosses).
  *
- * Endpoint authentifié — nécessite une clé API avec le scope "progression".
- * Le token Bearer est injecté automatiquement par httpClient via localStorage.
+ * La clé API GW2 reste côté serveur (chiffrée AES-256 en base).
+ * Le token Sanctum est injecté automatiquement par httpClient.
  *
  * Utilisé sur la page EventDetailPage pour afficher le statut
  * "déjà tué aujourd'hui" sur les world bosses Core Tyria uniquement.
@@ -68,6 +68,6 @@ export const fetchSchedule = async (): Promise<ScheduleResponse> => {
  * @returns Un tableau d'IDs GW2 (ex: ["tequatl_the_sunless", "shadow_behemoth"])
  */
 export const fetchWorldBossStatus = async (): Promise<string[]> => {
-  const response = await httpClient.get<string[]>(ENDPOINTS.gw2.accountWorldBosses);
+  const response = await httpClient.get<string[]>(ENDPOINTS.profile.worldBossStatus);
   return response.data;
 };

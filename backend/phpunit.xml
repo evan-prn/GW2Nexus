@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
@@ -21,39 +21,46 @@
     </source>
 
     <php>
-        <!-- Environnement de test isolé -->
-        <env name="APP_ENV"          value="testing"/>
-        <env name="APP_DEBUG"        value="true"/>
+        <!-- Environnement de test isole -->
+        <env name="APP_ENV"          value="testing" force="true"/>
+        <env name="APP_DEBUG"        value="true" force="true"/>
 
         <!--
         | APP_KEY : obligatoire pour le cast 'encrypted' sur la colonne api_key.
-        | Sans cette clé, toute instanciation de User plante en 500.
+        | Sans cette cle, toute instanciation de User plante en 500.
         -->
-        <env name="APP_KEY"          value="base64:I856Ytd3PzMZ7mltYMUUC9QRumCv8w45r9Hs/Byw+fQ="/>
+        <env name="APP_KEY"          value="base64:I856Ytd3PzMZ7mltYMUUC9QRumCv8w45r9Hs/Byw+fQ=" force="true"/>
 
         <!--
-        | Base DÉDIÉE aux tests — séparée de la base de développement.
-        | RefreshDatabase recrée les tables à chaque run : ne jamais pointer
-        | sur la base 'app' qui contient les données de développement.
-        |
-        | Création (une seule fois) :
-        |   docker compose exec mysql mysql -u app -ppassword -e \
-        |     "CREATE DATABASE app_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+        | Base de test en memoire.
+        | Cette configuration rend `php artisan test` executable hors Docker
+        | sans dependre du service MySQL ni du nom DNS `mysql`.
         -->
-        <env name="DB_CONNECTION"    value="mysql"/>
-        <env name="DB_HOST"          value="mysql"/>
-        <env name="DB_PORT"          value="3306"/>
-        <env name="DB_DATABASE"      value="app_test"/>
-        <env name="DB_USERNAME"      value="app"/>
-        <env name="DB_PASSWORD"      value="password"/>
+        <env name="DB_CONNECTION"    value="sqlite" force="true"/>
+        <env name="DB_DATABASE"      value=":memory:" force="true"/>
 
         <!--
-        | Drivers en mémoire — isolation complète des services externes.
-        | Aucun appel Redis, SMTP ou queue réel pendant les tests.
+        | Drivers en memoire - isolation complete des services externes.
+        | Aucun appel Redis, SMTP ou queue reel pendant les tests.
         -->
-        <env name="CACHE_STORE"      value="array"/>
-        <env name="SESSION_DRIVER"   value="array"/>
-        <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="MAIL_MAILER"      value="array"/>
+        <env name="CACHE_STORE"      value="array" force="true"/>
+        <env name="SESSION_DRIVER"   value="array" force="true"/>
+        <env name="QUEUE_CONNECTION" value="sync" force="true"/>
+        <env name="MAIL_MAILER"      value="array" force="true"/>
+
+        <!--
+        | Docker expose aussi ses variables dans $_SERVER.
+        | Laravel consulte cette source avant getenv(), donc les valeurs de test
+        | doivent etre imposees dans les deux emplacements.
+        -->
+        <server name="APP_ENV"          value="testing"/>
+        <server name="APP_DEBUG"        value="true"/>
+        <server name="APP_KEY"          value="base64:I856Ytd3PzMZ7mltYMUUC9QRumCv8w45r9Hs/Byw+fQ="/>
+        <server name="DB_CONNECTION"    value="sqlite"/>
+        <server name="DB_DATABASE"      value=":memory:"/>
+        <server name="CACHE_STORE"      value="array"/>
+        <server name="SESSION_DRIVER"   value="array"/>
+        <server name="QUEUE_CONNECTION" value="sync"/>
+        <server name="MAIL_MAILER"      value="array"/>
     </php>
 </phpunit>

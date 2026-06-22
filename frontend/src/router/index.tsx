@@ -1,7 +1,7 @@
 // frontend/src/router/index.tsx
 
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
-import { lazy, ReactNode, Suspense } from 'react';
+import { createBrowserRouter, RouterProvider, Outlet, Navigate, useLocation } from 'react-router-dom';
+import { lazy, ReactNode, Suspense, useEffect } from 'react';
 
 import ProtectedRoute from './ProtectedRoute';
 import GuestRoute from './GuestRoute';
@@ -28,18 +28,42 @@ const S = ({ children }: { children: ReactNode }) => (
 // Le layout admin est volontairement séparé (AdminLayout) pour ne pas
 // afficher la Navbar/Footer publique dans le back-office.
 //
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }, [pathname]);
+
+  return null;
+};
+
 const RootLayout = () => {
   const { user, logout } = useAuthStore();
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <ScrollToTop />
+      <a href="#main-content" className="skip-link">
+        Passer au contenu principal
+      </a>
       <Navbar user={user} onLogout={logout} />
-      <main style={{ flexGrow: 1 }}>
+      <main id="main-content" style={{ flexGrow: 1 }}>
         <Outlet />
       </main>
       <Footer />
     </div>
   );
+};
+
+const AdminHomeRedirect = () => {
+  const { user } = useAuthStore();
+
+  if (user?.role === 'moderateur') {
+    return <Navigate to="/admin/forum" replace />;
+  }
+
+  return <AdminOverviewPage />;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -52,6 +76,10 @@ const HomePage            = lazy(() => import('@/pages/HomePage/HomePage'));
 const AboutPage           = lazy(() => import('@/pages/AboutPage/AboutPage'));
 const ContactPage         = lazy(() => import('@/pages/ContactPage/ContactPage'));
 const RulesPage           = lazy(() => import('@/pages/RulesPage/RulesPage'));
+const ForumHomePage       = lazy(() => import('@/pages/Forum/ForumHomePage/ForumHomePage'));
+const ForumCategoryPage   = lazy(() => import('@/pages/Forum/ForumCategoryPage/ForumCategoryPage'));
+const ForumThreadPage     = lazy(() => import('@/pages/Forum/ForumThreadPage/ForumThreadPage'));
+const ForumNewThreadPage  = lazy(() => import('@/pages/Forum/ForumNewThreadPage/ForumNewThreadPage'));
 
 // Auth (visiteur non connecté uniquement)
 const LoginPage           = lazy(() => import('@/pages/Auth/LoginPage/LoginPage'));
@@ -66,10 +94,12 @@ const ProfilePage         = lazy(() => import('@/pages/ProfilePage/ProfilePage')
 // Page publique : pas besoin d'être connecté pour consulter les horaires.
 const EventsPage          = lazy(() => import('@/pages/Events/EventsPage/EventsPage'));
 const EventDetailPage     = lazy(() => import('@/pages/Events/EventDetailPage/EventDetailPage'));
+const WorldBossPage       = lazy(() => import('@/pages/Events/WorldBossPage/WorldBossPage'));
 
 // Admin — rôle 'admin' obligatoire
 const AdminOverviewPage   = lazy(() => import('@/pages/Admin/AdminOverviewPage/AdminOverviewPage'));
 const AdminUserPage       = lazy(() => import('@/pages/Admin/AdminUserPage/AdminUserPage'));
+const AdminForumPage      = lazy(() => import('@/pages/Admin/AdminForumPage/AdminForumPage'));
 
 // Erreur
 const NotFoundPage        = lazy(() => import('@/pages/NotFoundPage/NotFoundPage'));
@@ -91,10 +121,14 @@ const router = createBrowserRouter([
       { path: '/',        element: <S><HomePage /></S>    },
       { path: '/about',   element: <S><AboutPage /></S>   },
       { path: '/rules',   element: <S><RulesPage /></S>   },
+      { path: '/forum',                  element: <S><ForumHomePage /></S>     },
+      { path: '/forum/:categorySlug',    element: <S><ForumCategoryPage /></S> },
+      { path: '/forum/thread/:threadSlug', element: <S><ForumThreadPage /></S> },
 
       // ── Événements ────────────────────────────────────────────────────────
-      { path: '/events',            element: <S><EventsPage /></S>  },
-      { path: '/events/:eventId',   element: <S><EventDetailPage /></S>  },
+      { path: '/events',                  element: <S><EventsPage /></S>      },
+      { path: '/events/world-boss',       element: <S><WorldBossPage /></S>   },
+      { path: '/events/:eventId',         element: <S><EventDetailPage /></S> },
 
       // ── Routes Guest — visiteur non connecté uniquement ───────────────────
       // Redirige vers /profile si déjà authentifié
@@ -115,6 +149,7 @@ const router = createBrowserRouter([
 
           { path: '/contact', element: <S><ContactPage /></S> },
           { path: '/profile', element: <S><ProfilePage /></S> },
+          { path: '/forum/new/:categorySlug', element: <S><ForumNewThreadPage /></S> },
 
           // Sprint 3 — Forum
           // { path: '/forum',                            element: <S><ForumPage /></S>         },
@@ -147,22 +182,24 @@ const router = createBrowserRouter([
   // AdminLayout fournit la sidebar de navigation admin.
   // ===========================================================================
   {
-    element: <AdminRoute />,
+    element: <AdminRoute roles={['admin', 'moderateur']} />,
     children: [
       {
         path: '/admin',
         element: <AdminLayout />,
         children: [
 
-          // GET /admin — Vue d'ensemble + statistiques
-          { index: true, element: <S><AdminOverviewPage /></S> },
+          { index: true, element: <S><AdminHomeRedirect /></S> },
 
-          // GET /admin/users — Liste, recherche et modération des utilisateurs
-          { path: 'users', element: <S><AdminUserPage /></S> },
+          // GET /admin/forum — Signalements forum
+          { path: 'forum', element: <S><AdminForumPage /></S> },
 
-          // Sprint 6 — futures features admin (décommenter au fur et à mesure)
-          // { path: 'categories', element: <S><AdminCategoriesPage /></S> },
-          // { path: 'logs',       element: <S><AdminLogsPage /></S>       },
+          {
+            element: <AdminRoute roles={['admin']} />,
+            children: [
+              { path: 'users', element: <S><AdminUserPage /></S> },
+            ],
+          },
         ],
       },
     ],

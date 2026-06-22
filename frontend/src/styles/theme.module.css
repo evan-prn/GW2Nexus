@@ -212,6 +212,70 @@ body {
   color: var(--gold-light);
 }
 
+/* ─── ACCESSIBILITÉ RGAA — Focus & Navigation ───────────────────────
+   Conforme RGAA 4.1 (équivalent WCAG 2.1 AA)
+   ────────────────────────────────────────────────────────────────── */
+
+/* Focus visible — anneau doré pour tous les éléments interactifs */
+:focus-visible {
+  outline: 2px solid var(--gold-primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* Pas d'outline pour les clics souris (uniquement clavier) */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Skip link — lien de contournement (RGAA 12.7) */
+:global(.skip-link) {
+  position: absolute;
+  top: -52px;
+  left: 0;
+  z-index: 10000;
+  padding: 10px 22px;
+  background: var(--gold-primary);
+  color: var(--bg-deep);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  border-radius: 0 0 var(--radius-md) 0;
+  transition: top 0.2s ease;
+  white-space: nowrap;
+}
+
+:global(.skip-link:focus) {
+  top: 0;
+}
+
+/* Classe utilitaire — texte visible uniquement pour les lecteurs d'écran */
+:global(.sr-only) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Réduction des animations — RGAA 13.8 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* ─── LAYOUT UTILITAIRES ────────────────────────────────────────────
    Classes réutilisables pour la mise en page
    ────────────────────────────────────────────────────────────────── */

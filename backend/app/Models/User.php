@@ -19,7 +19,7 @@ use Database\Factories\UserFactory;
  *   - Stockage sécurisé de la clé API GW2 (chiffrement AES-256)
  *   - Gestion des rôles : user | moderateur | admin
  *   - Soft delete pour conserver les discussions/commentaires après suppression
- *   - Relations vers toutes les entités liées (profil, bans, discussions, etc.)
+ *   - Relations vers les entités actuellement implémentées (profil GW2, bans)
  *
  * @property int                 $id
  * @property string              $nom
@@ -57,7 +57,6 @@ class User extends Authenticatable
         'password',
         'pseudo_gw2',
         'avatar',
-        'role',
         'api_key',
     ];
 
@@ -183,6 +182,38 @@ class User extends Authenticatable
     }
 
     /**
+     * Sujets de forum crees par l'utilisateur.
+     */
+    public function forumThreads(): HasMany
+    {
+        return $this->hasMany(ForumThread::class, 'user_id');
+    }
+
+    /**
+     * Messages de forum crees par l'utilisateur.
+     */
+    public function forumPosts(): HasMany
+    {
+        return $this->hasMany(ForumPost::class, 'user_id');
+    }
+
+    /**
+     * Signalements de messages forum crees par l'utilisateur.
+     */
+    public function forumPostReports(): HasMany
+    {
+        return $this->hasMany(ForumPostReport::class, 'reporter_id');
+    }
+
+    /**
+     * Signalements de messages forum traites par l'utilisateur.
+     */
+    public function reviewedForumPostReports(): HasMany
+    {
+        return $this->hasMany(ForumPostReport::class, 'reviewed_by');
+    }
+
+    /**
      * Ban actuellement actif (relation 1-1 dérivée de bans).
      *
      * Retourne null si l'utilisateur n'est pas banni.
@@ -200,52 +231,4 @@ class User extends Authenticatable
             ->latestOfMany('id'); // MAX(id) — compatible only_full_group_by
     }
 
-    /**
-     * Discussions rédigées par l'utilisateur (1-N).
-     *
-     * user_id peut être null sur discussions si le compte est supprimé (SET NULL).
-     */
-    public function discussions(): HasMany
-    {
-        return $this->hasMany(Discussion::class, 'user_id');
-    }
-
-    /**
-     * Commentaires de forum écrits par l'utilisateur (1-N).
-     *
-     * user_id peut être null sur commentaires si le compte est supprimé (SET NULL).
-     */
-    public function commentaires(): HasMany
-    {
-        return $this->hasMany(Commentaire::class, 'user_id');
-    }
-
-    /**
-     * Builds créés par l'utilisateur (1-N).
-     *
-     * user_id peut être null sur builds si le compte est supprimé (SET NULL).
-     */
-    public function builds(): HasMany
-    {
-        return $this->hasMany(Build::class, 'user_id');
-    }
-
-    /**
-     * Commentaires sur les builds écrits par l'utilisateur (1-N).
-     */
-    public function commentairesBuild(): HasMany
-    {
-        return $this->hasMany(CommentaireBuild::class, 'user_id');
-    }
-
-    /**
-     * Adhésions aux guildes de l'utilisateur (table pivot étendue membres_guilde).
-     *
-     * Passe par MembreGuilde plutôt qu'un belongsToMany standard car la table
-     * pivot contient des colonnes additionnelles (role, inviteur_id, rejoint_le).
-     */
-    public function membresGuilde(): HasMany
-    {
-        return $this->hasMany(MembreGuilde::class, 'user_id');
-    }
 }

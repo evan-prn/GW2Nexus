@@ -1,6 +1,6 @@
-# ═══════════════════════════════════════════════════════════════════
+﻿# -------------------------------------------------------------------
 # GW2Nexus — Docker Compose
-# Dev stack : Laravel 11 + React/Vite + MySQL 8 + phpMyAdmin + Mailpit
+# Dev stack : Laravel 12 + React/Vite + MySQL 8 + phpMyAdmin + Mailpit
 #
 # Prérequis :
 #   - Copier .env.example → .env (racine)
@@ -13,13 +13,13 @@
 #   Logs en direct    : docker compose logs -f
 #   Arrêt propre      : docker compose down
 #   Reset complet     : docker compose down -v (supprime les volumes)
-# ═══════════════════════════════════════════════════════════════════
+# -------------------------------------------------------------------
 
 services:
 
   # ─── MySQL 8 ──────────────────────────────────────────────────────
   # Base de données principale de GW2Nexus
-  # Accessible depuis l'hôte : localhost:3306
+  # Accessible depuis l'hôte : localhost:3307
   # Accessible depuis les containers : mysql:3306
   mysql:
     image: mysql:8.0
@@ -49,24 +49,21 @@ services:
 
   # ─── phpMyAdmin ───────────────────────────────────────────────────
   # Interface web de gestion MySQL — dev uniquement
-  # Accessible : http://localhost:8080
+  # Accessible : http://localhost:8081
   # Connexion automatique en root (configurée via PMA_USER/PMA_PASSWORD)
   phpmyadmin:
-    image: phpmyadmin:latest   # Version fixe — évite les ruptures sur latest
+    image: phpmyadmin:5.2-apache
     container_name: gw2nexus_phpmyadmin
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "8081:80"
     environment:
-      PMA_HOST: mysql             # Nom du service MySQL dans le réseau Docker
+      PMA_HOST: mysql
       PMA_PORT: 3306
-      PMA_ARBITRARY: 1            # Permet de se connecter à n'importe quel host MySQL
-      #PMA_USER: root
-      #PMA_PASSWORD: ${DB_ROOT_PASSWORD}
-      UPLOAD_LIMIT: 64M           # Taille max pour l'import de fichiers SQL
+      UPLOAD_LIMIT: 64M
     depends_on:
       mysql:
-        condition: service_healthy  # Attend que MySQL soit prêt
+        condition: service_healthy
     networks:
       - gw2nexus_network
 
@@ -85,10 +82,10 @@ services:
     networks:
       - gw2nexus_network
 
-  # ─── Laravel 11 — API REST ────────────────────────────────────────
+  # ─── Laravel 12 — API REST ────────────────────────────────────────
   # Backend principal : API REST versionnée (/api/v1/*)
   # Accessible directement : http://localhost:8000
-  # Accessible via proxy   : http://localhost:5173/api/* (recommandé pour le SPA)
+  # Accessible via proxy   : http://localhost:5174/api/* (recommandé pour le SPA)
   laravel:
     build:
       context: ./backend
@@ -143,10 +140,10 @@ services:
 
   # ─── React + Vite — Frontend SPA ──────────────────────────────────
   # SPA React/TypeScript servi par le dev server Vite
-  # Accessible : http://localhost:5173
+  # Accessible : http://localhost:5174
   # HMR actif  : les modifications React sont reflétées instantanément
   # Proxy Vite : /api/* et /sanctum/* → http://laravel:8000
-  #   → même domaine (localhost:5173) → pas de CSRF cross-origin
+  #   → même domaine (localhost:5174) → pas de CSRF cross-origin
   react:
     build:
       context: ./frontend
@@ -154,7 +151,7 @@ services:
     container_name: gw2nexus_react
     restart: unless-stopped
     ports:
-      - "5173:5173"     # Dev server Vite
+      - "5174:5174"     # Dev server Vite
     volumes:
       # Mount du code source — Vite détecte les changements via polling
       - ./frontend:/app
@@ -193,3 +190,6 @@ volumes:
 networks:
   gw2nexus_network:
     driver: bridge
+
+
+

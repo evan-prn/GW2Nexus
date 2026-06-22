@@ -82,7 +82,7 @@
   font-family: var(--font-body);
   font-size: var(--text-xs);
   line-height: var(--leading-loose);
-  color: #3D4452;
+  color: rgba(240, 232, 216, 0.82);
   max-width: 210px;
   margin-bottom: var(--space-5);
 }
@@ -101,7 +101,7 @@
   height: 34px;
   border-radius: var(--radius-md);
   border: 1px solid rgba(201, 168, 76, 0.15);
-  color: #3D4452;
+  color: rgba(240, 232, 216, 0.72);
   text-decoration: none;
   transition: var(--transition-base);
 }
@@ -138,7 +138,7 @@
 .link {
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  color: #3D4452;
+  color: rgba(240, 232, 216, 0.82);
   text-decoration: none;
   transition: color 0.15s ease;
 }
@@ -168,7 +168,7 @@
 .disclaimerText {
   font-family: var(--font-body);
   font-size: var(--text-xs);
-  color: #2D333F;
+  color: rgba(240, 232, 216, 0.76);
   line-height: var(--leading-loose);
   margin: 0;
 }
@@ -198,14 +198,14 @@
 .copyright {
   font-family: var(--font-body);
   font-size: var(--text-xs);
-  color: #2D333F;
+  color: rgba(240, 232, 216, 0.72);
   margin: 0;
 }
 
 .madeWith {
   font-family: var(--font-body);
   font-size: var(--text-xs);
-  color: #2D333F;
+  color: rgba(240, 232, 216, 0.72);
   margin: 0;
 }
 

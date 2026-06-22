@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'gw2' => [
+        'base_url' => env('GW2_API_BASE_URL', 'https://api.guildwars2.com/v2'),
+        'timeout'  => env('GW2_API_TIMEOUT', 10),
+    ],
+
 ];

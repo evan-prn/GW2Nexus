@@ -21,6 +21,15 @@ export interface Personnage {
   level:      number;
 }
 
+/** Personnage GW2 brut retourne par /v2/characters?ids=all */
+export interface Gw2CharacterRaw {
+  name?:       string;
+  race?:       string;
+  profession?: string;
+  level?:      number;
+  gender?:     string;
+}
+
 /** Données complètes du profil (réponse GET /api/v1/profile) */
 export interface ProfileResponse {
   user:       ProfileUser;
@@ -57,7 +66,7 @@ export interface UpdateApiKeyPayload {
  */
 export interface Gw2DataResponse {
   compte:      Gw2CompteRaw;
-  personnages: string[];  // liste de noms — les détails sont dans /v2/characters/:name
+  personnages: Array<string | Gw2CharacterRaw>;
 }
 
 /** Données brutes du compte GW2 (API ArenaNet /v2/account) */

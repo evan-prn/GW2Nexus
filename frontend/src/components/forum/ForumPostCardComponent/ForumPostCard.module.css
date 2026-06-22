@@ -1,0 +1,197 @@
+.card {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: var(--space-5);
+  padding: var(--space-5);
+  border: 1px solid rgba(201, 168, 76, 0.14);
+  border-radius: var(--radius-lg);
+  background: rgba(22, 22, 28, 0.86);
+}
+
+.author {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: rgba(201, 168, 76, 0.12);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  color: var(--gold-light);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+}
+
+.author strong {
+  color: var(--text-primary);
+  font-family: var(--font-display);
+}
+
+.author span,
+.role {
+  color: var(--text-dim);
+}
+
+.body {
+  min-width: 0;
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  align-items: center;
+  margin-bottom: var(--space-3);
+}
+
+.date {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.actionButton,
+.dangerButton,
+.saveButton {
+  flex-shrink: 0;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid rgba(201, 168, 76, 0.24);
+  border-radius: var(--radius-sm);
+  color: rgba(240, 232, 216, 0.74);
+  background: rgba(201, 168, 76, 0.08);
+  font-size: var(--text-xs);
+  cursor: pointer;
+}
+
+.dangerButton {
+  border-color: rgba(240, 96, 96, 0.28);
+  color: rgba(255, 190, 190, 0.9);
+  background: rgba(240, 96, 96, 0.08);
+}
+
+.saveButton {
+  color: var(--text-inverse);
+  background: var(--gold-primary);
+}
+
+.actionButton:disabled,
+.dangerButton:disabled,
+.saveButton:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.content {
+  margin: 0;
+  color: rgba(240, 232, 216, 0.84);
+  line-height: var(--leading-loose);
+  white-space: pre-wrap;
+}
+
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.reportForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid rgba(240, 180, 96, 0.26);
+  border-radius: var(--radius-md);
+  background: rgba(240, 180, 96, 0.06);
+}
+
+.reportLabel {
+  color: var(--gold-light);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+}
+
+.reportSelect,
+.reportTextarea,
+.editTextarea {
+  padding: var(--space-4);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  background: rgba(6, 8, 13, 0.88);
+  font: inherit;
+  line-height: var(--leading-relaxed);
+}
+
+.reportTextarea,
+.editTextarea {
+  min-height: 180px;
+  resize: vertical;
+}
+
+.reportTextarea {
+  min-height: 110px;
+}
+
+.reportSelect:focus,
+.reportTextarea:focus,
+.editTextarea:focus {
+  outline: none;
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.16);
+}
+
+.editActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.actionError {
+  margin: 0;
+  color: var(--color-error);
+  font-size: var(--text-sm);
+}
+
+.actionSuccess {
+  margin: 0 0 var(--space-3);
+  color: var(--color-success);
+  font-size: var(--text-sm);
+}
+
+@media (max-width: 720px) {
+  .card {
+    grid-template-columns: 1fr;
+  }
+
+  .author {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .metaRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .actions,
+  .editActions {
+    justify-content: flex-start;
+  }
+}
