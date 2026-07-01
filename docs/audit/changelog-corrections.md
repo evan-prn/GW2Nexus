@@ -563,6 +563,72 @@ Ce fichier trace uniquement les modifications reellement appliquees apres valida
 - Resultat des tests : 23/23 passes, 73 assertions.
 - Problemes restants : aucun sur ce perimetre.
 
+## 2026-07-01 - Etape 20 - Resolution des conflits Git commites par le merge develop -> main
+
+- Fichiers modifies :
+  - `frontend/src/hooks/event/useWorldBossStatus.ts`
+  - `frontend/tsconfig.node.json`
+  - `backend/config/cors.php`
+- Resume des changements :
+  - `useWorldBossStatus.ts` : suppression des marqueurs de conflit `<<<<<<< HEAD / ======= / >>>>>>> develop`
+    commites dans le merge `9ff1ff6`, conservation de la version courte non typee explicitement
+    (le store est deja type via `create<AuthState>()`), suppression de l'import `AuthState` devenu inutile.
+  - `tsconfig.node.json` : ajout de la fin de ligne finale manquante (le contenu du conflit avait deja
+    ete resolu localement avant cette etape, hors commit).
+  - `cors.php` : correction du port de repli `env('FRONTEND_URL', 'http://localhost:5173')` -> `5174`,
+    pour rester coherent avec le port de reference documente (le `.env` reel etait deja correct).
+- Raison de la modification : le merge de `develop` dans `main` avait laisse des marqueurs de conflit
+  Git non resolus dans un fichier source, cassant la compilation TypeScript ; un second fichier avait
+  le meme probleme mais deja corrige localement sans etre commite.
+- Commandes executees :
+  - `git status --short`, `git log -1 -- frontend/src/hooks/event/useWorldBossStatus.ts`
+  - `docker compose ps`
+  - `docker compose exec react npx tsc -b --noEmit --pretty false`
+  - `docker compose exec react npx eslint .`
+  - `composer install` (backend/vendor absent avant cette etape)
+  - `docker compose exec laravel php artisan test` (via conteneur) / `php artisan test` (hors Docker, vendor installe pendant cette etape)
+  - `php artisan route:list --path=api`
+- Resultat des tests :
+  - `tsc -b --noEmit` : reussi, aucune erreur.
+  - `eslint .` : reussi, aucune erreur.
+  - `php artisan test` : 23/23 passes, 73 assertions.
+  - `php artisan route:list --path=api` : 36 routes API confirmees.
+- Problemes restants :
+  - Environnement local sans Node/npm installe nativement (le frontend depend du conteneur Docker `react`
+    pour les verifications `tsc`/`eslint` hors IDE).
+  - `laravel/pint --test` signale des ecarts de style (alignement des `=`, imports non ordonnes, etc.)
+    sur ~43 fichiers backend ; non corrige car cela reformaterait massivement un style d'alignement
+    volontaire deja en place — a valider explicitement avant tout `pint` en mode ecriture.
+  - Corrige a l'etape 21.
+
+## 2026-07-01 - Etape 21 - Uniformisation du style backend (Pint) et correction tsconfig.app.json
+
+- Fichiers modifies :
+  - 41 fichiers backend (`app/Http/Controllers`, `app/Http/Requests`, `app/Http/Resources`,
+    `app/Models`, `app/Services`, `bootstrap/app.php`, `config/sanctum.php`, `config/services.php`,
+    `database/factories/UserFactory.php`, `database/migrations/*`, `routes/api.php`,
+    `tests/Feature/Auth/AuthTest.php`)
+  - `frontend/tsconfig.app.json`
+- Resume des changements :
+  - `php vendor/bin/pint` execute en mode ecriture sur tout `backend/` : normalisation de
+    l'espacement autour des operateurs, tri des imports, `fully_qualified_strict_types`,
+    fin de ligne finale, alignement PHPDoc, etc. Aucune modification de logique metier.
+  - `tsconfig.app.json` : suppression de `"baseUrl": "."` (option depreciee, avertissement
+    TypeScript 5.9 "will stop functioning in TypeScript 7.0") et passage de l'alias
+    `"@/*": ["src/*"]` a `"@/*": ["./src/*"]`, requis pour une resolution `paths` sans `baseUrl`.
+- Raison de la modification : uniformiser le style backend via l'outil deja present dans le
+  projet (Pint) suite a validation explicite de l'utilisateur ; corriger l'avertissement de
+  depreciation TypeScript signale dans l'IDE sur `tsconfig.app.json`.
+- Commandes executees :
+  - `php vendor/bin/pint --test` (avant, 43 fichiers signales) puis `php vendor/bin/pint` (ecriture)
+  - `php artisan test` (23/23 passes, 73 assertions, apres Pint)
+  - `docker compose exec react npx tsc -b --noEmit --pretty false` (apres correction tsconfig.app.json)
+  - `git status --short`, `git diff --stat`
+- Resultat des tests :
+  - `php artisan test` : 23/23 passes, 73 assertions — comportement inchange apres Pint.
+  - `tsc -b --noEmit` : reussi, plus d'avertissement de depreciation sur `baseUrl`.
+- Problemes restants : aucun connu sur ce perimetre.
+
 ## 2026-06-18 - Etape G - useWorldBossStatus : appels GW2 proxifies via backend
 
 - Fichiers modifies :
