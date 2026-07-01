@@ -8,7 +8,8 @@
 # ───────────────────────────────────────────────────────────────────
 .env
 .env.*
-!.env.example       # Template sans secrets — commité
+# Template sans secrets — commité
+!.env.example
 
 # ───────────────────────────────────────────────────────────────────
 # DÉPENDANCES
@@ -18,14 +19,18 @@ node_modules/
 # ───────────────────────────────────────────────────────────────────
 # BUILD & COMPILATION
 # ───────────────────────────────────────────────────────────────────
-dist/               # Build Vite de production (généré par npm run build)
-dist-ssr/           # Build SSR si activé un jour
-.vite/              # Cache interne Vite
+# Build Vite de production (généré par npm run build)
+dist/
+# Build SSR si activé un jour
+dist-ssr/
+# Cache interne Vite
+.vite/
 
 # ───────────────────────────────────────────────────────────────────
 # TYPESCRIPT
 # ───────────────────────────────────────────────────────────────────
-*.tsbuildinfo       # Cache de compilation TypeScript incrémentale
+# Cache de compilation TypeScript incrémentale
+*.tsbuildinfo
 
 # ───────────────────────────────────────────────────────────────────
 # LOGS
@@ -41,7 +46,8 @@ pnpm-debug.log*
 # IDE & ÉDITEURS
 # ───────────────────────────────────────────────────────────────────
 .vscode/*
-!.vscode/extensions.json    # Exception : recommandations d'extensions partagées
+# Exception : recommandations d'extensions partagées
+!.vscode/extensions.json
 .idea/
 *.suo
 *.ntvs*
