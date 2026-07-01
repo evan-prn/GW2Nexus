@@ -654,3 +654,33 @@ Ce fichier trace uniquement les modifications reellement appliquees apres valida
   - `docker compose exec laravel php artisan test` (23/23 passes, 73 assertions)
 - Resultat des tests : 23/23 passes, 73 assertions.
 - Problemes restants : aucun sur ce perimetre.
+
+## 2026-07-01 - Etape 22 - Mise en place de la pipeline CI GitHub Actions
+
+- Fichiers modifies :
+  - `.github/workflows/ci.yml` (etait vide, 0 octet)
+  - `docs/devops/ci-cd.md` (nouveau)
+- Resume des changements :
+  - `ci.yml` : deux jobs declenches sur push (`main`, `develop`, `feature/**`) et pull_request
+    (`main`, `develop`) :
+    - `backend` : PHP 8.4, `composer install`, `php vendor/bin/pint --test`, `php artisan test`
+      (SQLite en memoire, config deja presente dans `backend/phpunit.xml`).
+    - `frontend` : Node 22, `npm ci`, `npx tsc -b --noEmit --pretty false`, `npm run lint`,
+      `npm run build`.
+  - `docs/devops/ci-cd.md` : documentation de la pipeline CI et des prerequis restants pour la CD.
+- Raison de la modification : mise en place explicite demandee par l'utilisateur, perimetre limite
+  a la CI locale (tests/lint/build) — la CD (deploiement VPS) est explicitement exclue de cette
+  etape, faute de secrets GitHub configures et de fichiers prod manquants
+  (`backend/docker-entrypoint.prod.sh`, `frontend/Dockerfile.prod`, `.env.prod.example`).
+- Commandes executees (verification locale des etapes reproduites par la CI) :
+  - `docker compose exec react npm run build`
+  - `php vendor/bin/pint --test` (backend)
+  - `git status --short`, `git fetch origin`
+- Resultat des tests :
+  - `npm run build` : reussi (build Vite complet, `dist/` genere).
+  - `php vendor/bin/pint --test` : `passed`.
+- Problemes restants :
+  - `.github/workflows/cd.yml` reste vide ; deploiement VPS a traiter dans une etape dediee
+    (secrets GitHub + fichiers prod manquants).
+  - La pipeline CI elle-meme ne peut etre validee en conditions reelles que par une execution
+    GitHub Actions (non observable depuis cet environnement local).
