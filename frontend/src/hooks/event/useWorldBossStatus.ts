@@ -10,7 +10,7 @@
 
 import { useState, useEffect } from 'react';
 import { fetchWorldBossStatus } from '@/api/events.api';
-import useAuthStore, { AuthState } from '@/store/authStore';
+import useAuthStore from '@/store/authStore';
 
 interface WorldBossStatusResult {
   data:      Set<string> | null;
@@ -19,15 +19,9 @@ interface WorldBossStatusResult {
 }
 
 export const useWorldBossStatus = (): WorldBossStatusResult => {
-<<<<<<< HEAD
-  // Sélecteur explicitement typé sur AuthState pour satisfaire TypeScript strict.
-  // user peut être null — on utilise l'opérateur ?. pour gérer ce cas.
-  const hasApiKey = useAuthStore((state: AuthState) => state.user?.has_api_key ?? false);
-=======
   // has_api_key indique si l'utilisateur a une clé API GW2 enregistrée
   // On ne récupère jamais la clé en clair depuis le store frontend
   const hasApiKey = useAuthStore((s) => s.user?.has_api_key ?? false);
->>>>>>> develop
 
   const [data,      setData]    = useState<Set<string> | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
