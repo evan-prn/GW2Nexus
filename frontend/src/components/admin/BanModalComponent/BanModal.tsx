@@ -1,7 +1,8 @@
 // src/components/admin/BanModalComponent/BanModal.tsx
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { AdminUser, BanPayload } from '@/types/admin.types';
+import { useFocusTrap } from '@/hooks/ui/useFocusTrap';
 import styles from './BanModal.module.css';
 
 // ---------------------------------------------------------------------------
@@ -55,9 +56,20 @@ export default function BanModal({ user, onConfirm, onClose, loading, error }: B
     });
   };
 
+  // Fermer avec Echap
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [onClose]);
+
+  const modalRef = useFocusTrap<HTMLDivElement>(true);
+
   return (
-    <div className={styles.overlay} onClick={onClose} role="dialog" aria-modal="true">
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+    <div className={styles.overlay} onClick={onClose} role="dialog" aria-modal="true" aria-label="Appliquer une sanction">
+      <div ref={modalRef} className={styles.modal} onClick={(e) => e.stopPropagation()}>
 
         {/* ── En-tête ── */}
         <div className={styles.header}>

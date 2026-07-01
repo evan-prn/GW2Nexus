@@ -6,6 +6,7 @@
 
 import { useEffect }        from 'react';
 import { useProfileEdit }   from '@/hooks/profile/useProfileEdit';
+import { useFocusTrap }     from '@/hooks/ui/useFocusTrap';
 import styles from './ProfileEditModal.module.css';
 
 // ─── Props ───────────────────────────────────────────────────────────
@@ -34,6 +35,8 @@ export default function ProfileEditModal({ isOpen, onClose }: ProfileEditModalPr
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
+  const modalRef = useFocusTrap<HTMLDivElement>(isOpen);
+
   if (!isOpen) return null;
 
   return (
@@ -45,7 +48,7 @@ export default function ProfileEditModal({ isOpen, onClose }: ProfileEditModalPr
       aria-modal="true"
       aria-label="Modifier le profil"
     >
-      <div className={styles.modal}>
+      <div ref={modalRef} className={styles.modal}>
 
         {/* ── Header ── */}
         <div className={styles.header}>
