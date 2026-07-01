@@ -56,10 +56,11 @@ const NAV_LINKS: NavLink[] = [
 
 // ─── Composant ──────────────────────────────────────────────────────
 export default function Navbar({ user = null, onLogout }: NavbarProps) {
-  const [scrolled,    setScrolled]    = useState(false);
-  const [menuOpen,    setMenuOpen]    = useState(false);
-  const [userOpen,    setUserOpen]    = useState(false);
-  const [eventsOpen,  setEventsOpen]  = useState(false);
+  const [scrolled,          setScrolled]          = useState(false);
+  const [menuOpen,          setMenuOpen]          = useState(false);
+  const [userOpen,          setUserOpen]          = useState(false);
+  const [eventsOpen,        setEventsOpen]        = useState(false);
+  const [mobileEventsOpen,  setMobileEventsOpen]  = useState(false);
   const dropdownRef  = useRef<HTMLDivElement>(null);
   const eventsRef    = useRef<HTMLLIElement>(null);
   const location     = useLocation();
@@ -69,6 +70,11 @@ export default function Navbar({ user = null, onLogout }: NavbarProps) {
     setUserOpen(false);
     setEventsOpen(false);
   };
+
+  /* Le sous-menu mobile "Événements" repart fermé à chaque fermeture du burger */
+  useEffect(() => {
+    if (!menuOpen) setMobileEventsOpen(false);
+  }, [menuOpen]);
 
   /* Effet de fond au scroll */
   useEffect(() => {
@@ -284,22 +290,41 @@ export default function Navbar({ user = null, onLogout }: NavbarProps) {
               const isActive = location.pathname.startsWith(href);
 
               if (children) {
+                const isChildActive = children.some((child) => location.pathname === child.href);
                 return (
-                  <li key={href}>
-                    <div className={styles.mobileLinkIcon}>{icon}</div>
-                    <span className={styles.mobileSectionLabel}>{label}</span>
-                    {children.map((child) => (
-                      <Link
-                        key={child.href}
-                        to={child.href}
-                        onClick={closeMenus}
-                        className={location.pathname === child.href ? styles.mobileLinkActive : styles.mobileLink}
-                        style={{ paddingLeft: '2rem' }}
+                  <li key={href} className={styles.mobileAccordionItem}>
+                    <button
+                      type="button"
+                      onClick={() => setMobileEventsOpen((v) => !v)}
+                      aria-expanded={mobileEventsOpen}
+                      className={isChildActive ? styles.mobileAccordionTriggerActive : styles.mobileAccordionTrigger}
+                    >
+                      <span className={styles.mobileLinkIcon}>{icon}</span>
+                      <span className={styles.mobileSectionLabel}>{label}</span>
+                      <svg
+                        className={mobileEventsOpen ? styles.chevronOpen : styles.chevron}
+                        viewBox="0 0 20 20"
+                        aria-hidden="true"
                       >
-                        <span className={styles.mobileLinkIcon}>{child.icon}</span>
-                        {child.label}
-                      </Link>
-                    ))}
+                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+
+                    <div className={mobileEventsOpen ? styles.mobileAccordionPanelOpen : styles.mobileAccordionPanel}>
+                      <div className={styles.mobileAccordionInner}>
+                        {children.map((child) => (
+                          <Link
+                            key={child.href}
+                            to={child.href}
+                            onClick={closeMenus}
+                            className={location.pathname === child.href ? styles.mobileSubLinkActive : styles.mobileSubLink}
+                          >
+                            <span className={styles.mobileLinkIcon}>{child.icon}</span>
+                            {child.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
                   </li>
                 );
               }
@@ -322,6 +347,9 @@ export default function Navbar({ user = null, onLogout }: NavbarProps) {
               <li className={styles.mobileLoginItem}>
                 <Link to="/login" onClick={closeMenus} className={styles.mobileLoginLink}>
                   Connexion
+                </Link>
+                <Link to="/register" onClick={closeMenus} className={styles.mobileRegisterLink}>
+                  Rejoindre
                 </Link>
               </li>
             )}

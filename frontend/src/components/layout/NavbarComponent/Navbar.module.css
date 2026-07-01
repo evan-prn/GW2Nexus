@@ -396,16 +396,114 @@
   color: rgba(255, 255, 255, 0.62);
 }
 
-/* Label section mobile */
+/* ─── Accordéon mobile (Événements) ─────────────────────────────── */
+.mobileAccordionItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobileAccordionTrigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  background: transparent;
+  border: none;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: #9CA3AF;
+  cursor: pointer;
+  text-align: left;
+  transition: var(--transition-base);
+}
+
+.mobileAccordionTrigger:hover {
+  color: var(--gold-light);
+  background: rgba(201, 168, 76, 0.05);
+}
+
+/* Trigger actif — reprend toutes les propriétés + overrides */
+.mobileAccordionTriggerActive {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  background: rgba(201, 168, 76, 0.08);
+  border: none;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--gold-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: var(--transition-base);
+}
+
+/* Label section mobile — occupe l'espace restant du trigger */
 .mobileSectionLabel {
-  display: block;
-  font-family: var(--font-display);
-  font-size: var(--text-xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
-  padding: var(--space-1) var(--space-3);
-  margin-top: var(--space-1);
+  flex: 1;
+}
+
+/* Panneau repliable — animation de hauteur via grid-template-rows */
+.mobileAccordionPanel {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows 0.25s ease;
+}
+
+.mobileAccordionPanelOpen {
+  display: grid;
+  grid-template-rows: 1fr;
+  overflow: hidden;
+  transition: grid-template-rows 0.25s ease;
+}
+
+.mobileAccordionInner {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 2px;
+}
+
+/* Sous-liens du sous-menu Événements */
+.mobileSubLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3) var(--space-2) calc(var(--space-3) + 22px);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: #8B93A3;
+  transition: var(--transition-base);
+}
+
+.mobileSubLink:hover {
+  color: var(--gold-light);
+  background: rgba(201, 168, 76, 0.05);
+}
+
+/* Sous-lien actif — reprend toutes les propriétés + overrides */
+.mobileSubLinkActive {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3) var(--space-2) calc(var(--space-3) + 22px);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  transition: var(--transition-base);
+  color: var(--gold-primary);
+  background: rgba(201, 168, 76, 0.08);
 }
 
 /* ─── Burger mobile ─────────────────────────────────────────────── */
@@ -477,6 +575,9 @@
 }
 
 .mobileLoginItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
   margin-top: var(--space-2);
   padding-top: var(--space-2);
   border-top: 1px solid rgba(201, 168, 76, 0.1);
@@ -484,16 +585,40 @@
 
 .mobileLoginLink {
   display: block;
+  text-align: center;
   padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(201, 168, 76, 0.3);
   font-family: var(--font-body);
   font-size: var(--text-sm);
   color: var(--gold-primary);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: var(--transition-base);
 }
 
 .mobileLoginLink:hover {
   color: var(--gold-light);
+  border-color: rgba(201, 168, 76, 0.6);
+}
+
+.mobileRegisterLink {
+  display: block;
+  text-align: center;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--gold-primary);
+  color: #0f1117;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  transition: var(--transition-smooth);
+}
+
+.mobileRegisterLink:hover {
+  background: var(--gold-light);
+  box-shadow: 0 0 16px rgba(201, 168, 76, 0.45);
 }
 
 /* ─── Responsive ────────────────────────────────────────────────── */
@@ -503,6 +628,11 @@
   }
   .burger {
     display: flex;
+  }
+  /* Connexion/Rejoindre passent dans le menu burger — évite le débordement horizontal */
+  .loginLink,
+  .registerLink {
+    display: none;
   }
 }
 

@@ -389,7 +389,7 @@
 /* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 600px) {
   .page {
-    padding: 20px 16px 48px;
+    padding: calc(var(--navbar-height) + 20px) 16px 48px;
   }
 
   .title {
