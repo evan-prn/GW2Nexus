@@ -23,9 +23,8 @@
     "erasableSyntaxOnly": true,
 
     /* Alias @ → src */
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"]
