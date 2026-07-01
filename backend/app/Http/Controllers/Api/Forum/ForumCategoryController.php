@@ -7,6 +7,7 @@ use App\Http\Resources\ForumCategoryResource;
 use App\Http\Resources\ForumThreadResource;
 use App\Models\ForumCategory;
 use App\Models\ForumPost;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -68,7 +69,7 @@ class ForumCategoryController extends Controller
         ]);
     }
 
-    private function postsCountQuery(): \Illuminate\Database\Eloquent\Builder
+    private function postsCountQuery(): Builder
     {
         return ForumPost::query()
             ->selectRaw('COUNT(*)')

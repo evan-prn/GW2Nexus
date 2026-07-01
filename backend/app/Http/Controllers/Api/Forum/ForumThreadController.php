@@ -67,8 +67,8 @@ class ForumThreadController extends Controller
     private function incrementViewsOnce(Request $request, ForumThread $thread): void
     {
         $viewerKey = $request->user()?->id !== null
-            ? 'user:' . $request->user()->id
-            : 'ip:' . sha1((string) $request->ip());
+            ? 'user:'.$request->user()->id
+            : 'ip:'.sha1((string) $request->ip());
 
         $cacheKey = sprintf('forum:thread:%d:viewed:%s', $thread->id, $viewerKey);
 
@@ -89,7 +89,7 @@ class ForumThreadController extends Controller
         $suffix = 2;
 
         while (ForumThread::query()->where('slug', $slug)->exists()) {
-            $slug = $baseSlug . '-' . $suffix;
+            $slug = $baseSlug.'-'.$suffix;
             $suffix++;
         }
 

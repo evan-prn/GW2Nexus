@@ -37,7 +37,7 @@ class ForumCategory extends Model
     }
 
     /**
-     * @param Builder<ForumCategory> $query
+     * @param  Builder<ForumCategory>  $query
      * @return Builder<ForumCategory>
      */
     public function scopeActive(Builder $query): Builder
@@ -46,7 +46,7 @@ class ForumCategory extends Model
     }
 
     /**
-     * @param Builder<ForumCategory> $query
+     * @param  Builder<ForumCategory>  $query
      * @return Builder<ForumCategory>
      */
     public function scopeOrdered(Builder $query): Builder

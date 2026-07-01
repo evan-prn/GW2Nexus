@@ -4,9 +4,9 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Mail\Mailables\Address;
 use Illuminate\Queue\SerializesModels;
 
 class ContactMail extends Mailable
@@ -29,9 +29,9 @@ class ContactMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from:     new Address(config('mail.from.address'), config('mail.from.name') - ' Contact'),
+            from: new Address(config('mail.from.address'), config('mail.from.name') - ' Contact'),
             replyTo: [new Address($this->senderEmail, $this->senderName)],
-            subject:  '[GW2Nexus] ' . $this->getSubjectLabel(),
+            subject: '[GW2Nexus] '.$this->getSubjectLabel(),
         );
     }
 
@@ -44,8 +44,8 @@ class ContactMail extends Mailable
         return new Content(
             view: 'emails.contact',
             with: [
-                'senderName'     => $this->senderName,
-                'senderEmail'    => $this->senderEmail,
+                'senderName' => $this->senderName,
+                'senderEmail' => $this->senderEmail,
                 'contactSubject' => $this->getSubjectLabel(),
                 'messageContent' => $this->messageContent,
             ],
@@ -58,12 +58,12 @@ class ContactMail extends Mailable
     public function getSubjectLabel(): string
     {
         return match ($this->contactSubject) {
-            'bug'         => 'Signalement de bug',
-            'feature'     => 'Suggestion de fonctionnalité',
-            'account'     => 'Problème de compte',
-            'api'         => 'Problème avec la clé API GW2',
+            'bug' => 'Signalement de bug',
+            'feature' => 'Suggestion de fonctionnalité',
+            'account' => 'Problème de compte',
+            'api' => 'Problème avec la clé API GW2',
             'partnership' => 'Partenariat / Presse',
-            default       => 'Autre demande',
+            default => 'Autre demande',
         };
     }
 }

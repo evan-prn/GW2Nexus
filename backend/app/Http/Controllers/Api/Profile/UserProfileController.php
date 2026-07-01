@@ -12,9 +12,7 @@ use Illuminate\Http\Request;
 
 class UserProfileController extends Controller
 {
-    public function __construct(private readonly Gw2ApiService $gw2)
-    {
-    }
+    public function __construct(private readonly Gw2ApiService $gw2) {}
 
     // ─── GET /api/v1/profile ──────────────────────────────────────
 
@@ -26,7 +24,7 @@ class UserProfileController extends Controller
         $user = $request->user()->load('profilGw2');
 
         return response()->json([
-            'user'       => $this->formatUser($user),
+            'user' => $this->formatUser($user),
             'profil_gw2' => $user->profilGw2,
         ]);
     }
@@ -43,7 +41,7 @@ class UserProfileController extends Controller
 
         return response()->json([
             'message' => 'Profil mis à jour.',
-            'user'    => $this->formatUser($user->fresh()),
+            'user' => $this->formatUser($user->fresh()),
         ]);
     }
 
@@ -59,7 +57,7 @@ class UserProfileController extends Controller
     public function updateApiKey(UpdateApiKeyRequest $request): JsonResponse
     {
         $user = $request->user();
-        $cle  = $request->input('api_key');
+        $cle = $request->input('api_key');
 
         // Invalide le cache de l'ancienne clé si elle existe
         if ($user->api_key) {
@@ -82,21 +80,21 @@ class UserProfileController extends Controller
         $profil = ProfilGw2::updateOrCreate(
             ['user_id' => $user->id],
             [
-                'valide'           => true,
+                'valide' => true,
                 'derniere_synchro' => now(),
-                'nom_compte'       => $compte['name']  ?? null,
-                'monde'            => $compte['world'] ?? null,
+                'nom_compte' => $compte['name'] ?? null,
+                'monde' => $compte['world'] ?? null,
             ]
         );
 
         // Sauvegarde la clé chiffrée + synchronise pseudo_gw2
         $user->update([
-            'api_key'    => $cle,
+            'api_key' => $cle,
             'pseudo_gw2' => $compte['name'] ?? null,
         ]);
 
         return response()->json([
-            'message'    => 'Clé API GW2 validée et enregistrée.',
+            'message' => 'Clé API GW2 validée et enregistrée.',
             'profil_gw2' => $profil,
         ]);
     }
@@ -117,15 +115,15 @@ class UserProfileController extends Controller
 
         // Supprime la clé et efface le pseudo GW2
         $user->update([
-            'api_key'    => null,
+            'api_key' => null,
             'pseudo_gw2' => null,
         ]);
 
         // Marque le profil comme invalide et efface les données compte
         $user->profilGw2?->update([
-            'valide'     => false,
+            'valide' => false,
             'nom_compte' => null,
-            'monde'      => null,
+            'monde' => null,
         ]);
 
         return response()->json([
@@ -148,7 +146,7 @@ class UserProfileController extends Controller
             ], 404);
         }
 
-        $compte      = $this->gw2->getCompte($user->api_key);
+        $compte = $this->gw2->getCompte($user->api_key);
         $personnages = $this->gw2->getPersonnages($user->api_key);
 
         if (! $compte) {
@@ -158,7 +156,7 @@ class UserProfileController extends Controller
         }
 
         return response()->json([
-            'compte'      => $compte,
+            'compte' => $compte,
             'personnages' => $personnages ?? [],
         ]);
     }
@@ -198,12 +196,12 @@ class UserProfileController extends Controller
     private function formatUser($user): array
     {
         return [
-            'id'          => $user->id,
-            'nom'         => $user->nom,
-            'email'       => $user->email,
-            'pseudo_gw2'  => $user->pseudo_gw2,
-            'avatar'      => $user->avatar,
-            'role'        => $user->role,
+            'id' => $user->id,
+            'nom' => $user->nom,
+            'email' => $user->email,
+            'pseudo_gw2' => $user->pseudo_gw2,
+            'avatar' => $user->avatar,
+            'role' => $user->role,
             'has_api_key' => ! is_null($user->api_key),
         ];
     }

@@ -76,8 +76,8 @@ class AdminUserController extends Controller
         try {
             $ban = $this->userService->ban(
                 target: $user,
-                admin:  $request->user(),
-                data:   $request->validated(),
+                admin: $request->user(),
+                data: $request->validated(),
             );
         } catch (\InvalidArgumentException $e) {
             return response()->json(['message' => $e->getMessage()], 422);
@@ -85,10 +85,10 @@ class AdminUserController extends Controller
 
         return response()->json([
             'message' => 'Utilisateur banni avec succès.',
-            'ban'     => [
-                'id'         => $ban->id,
-                'type'       => $ban->type,
-                'reason'     => $ban->reason,
+            'ban' => [
+                'id' => $ban->id,
+                'type' => $ban->type,
+                'reason' => $ban->reason,
                 'expires_at' => $ban->expires_at?->toIso8601String(),
             ],
         ], 201);

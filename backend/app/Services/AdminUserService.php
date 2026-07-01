@@ -28,7 +28,7 @@ class AdminUserService
 
         // Filtre de recherche — nom, email ou pseudo GW2
         if (! empty($filters['search'])) {
-            $search = '%' . $filters['search'] . '%';
+            $search = '%'.$filters['search'].'%';
             $query->where(function ($q) use ($search): void {
                 $q->where('nom', 'like', $search)
                     ->orWhere('email', 'like', $search)
@@ -44,11 +44,11 @@ class AdminUserService
         // Filtre par statut
         if (! empty($filters['status'])) {
             match ($filters['status']) {
-                'banned'  => $query->whereHas('bans', fn ($q) => $q->active()),
+                'banned' => $query->whereHas('bans', fn ($q) => $q->active()),
                 'deleted' => $query->whereNotNull('deleted_at'),
-                'active'  => $query->whereNull('deleted_at')
+                'active' => $query->whereNull('deleted_at')
                     ->whereDoesntHave('bans', fn ($q) => $q->active()),
-                default   => null,
+                default => null,
             };
         }
 
@@ -87,10 +87,10 @@ class AdminUserService
             $target->tokens()->delete();
 
             return UserBan::create([
-                'user_id'    => $target->id,
-                'banned_by'  => $admin->id,
-                'type'       => $data['type'],
-                'reason'     => $data['reason'],
+                'user_id' => $target->id,
+                'banned_by' => $admin->id,
+                'type' => $data['type'],
+                'reason' => $data['reason'],
                 'expires_at' => $data['type'] === 'permanent' ? null : ($data['expires_at'] ?? null),
             ]);
         });
@@ -125,14 +125,14 @@ class AdminUserService
     public function stats(): array
     {
         return [
-            'total_users'   => User::count(),
-            'active_users'  => User::whereNull('deleted_at')
+            'total_users' => User::count(),
+            'active_users' => User::whereNull('deleted_at')
                 ->whereDoesntHave('bans', fn ($q) => $q->active())
                 ->count(),
-            'banned_users'  => UserBan::active()->distinct('user_id')->count('user_id'),
+            'banned_users' => UserBan::active()->distinct('user_id')->count('user_id'),
             'deleted_users' => User::onlyTrashed()->count(),
-            'admins'        => User::where('role', 'admin')->count(),
-            'moderateurs'   => User::where('role', 'moderateur')->count(),
+            'admins' => User::where('role', 'admin')->count(),
+            'moderateurs' => User::where('role', 'moderateur')->count(),
         ];
     }
 }

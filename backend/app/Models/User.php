@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -9,7 +11,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Database\Factories\UserFactory;
 
 /**
  * Modèle principal représentant un utilisateur de GW2Nexus.
@@ -21,18 +22,18 @@ use Database\Factories\UserFactory;
  *   - Soft delete pour conserver les discussions/commentaires après suppression
  *   - Relations vers les entités actuellement implémentées (profil GW2, bans)
  *
- * @property int                 $id
- * @property string              $nom
- * @property string              $email
- * @property string              $password             Hash bcrypt géré par le cast 'hashed'
- * @property string|null         $pseudo_gw2
- * @property string|null         $avatar
- * @property string              $role                 'user' | 'moderateur' | 'admin'
- * @property string|null         $api_key              Clé API GW2 — chiffrée AES-256 en base, déchiffrée à la lecture
- * @property \Carbon\Carbon|null $email_verified_at
- * @property \Carbon\Carbon      $created_at
- * @property \Carbon\Carbon      $updated_at
- * @property \Carbon\Carbon|null $deleted_at           Null = compte actif (soft delete)
+ * @property int $id
+ * @property string $nom
+ * @property string $email
+ * @property string $password Hash bcrypt géré par le cast 'hashed'
+ * @property string|null $pseudo_gw2
+ * @property string|null $avatar
+ * @property string $role 'user' | 'moderateur' | 'admin'
+ * @property string|null $api_key Clé API GW2 — chiffrée AES-256 en base, déchiffrée à la lecture
+ * @property Carbon|null $email_verified_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon|null $deleted_at Null = compte actif (soft delete)
  */
 class User extends Authenticatable
 {
@@ -134,7 +135,7 @@ class User extends Authenticatable
      */
     public function hasApiKey(): bool
     {
-        return !empty($this->api_key);
+        return ! empty($this->api_key);
     }
 
     // -------------------------------------------------------------------------
@@ -230,5 +231,4 @@ class User extends Authenticatable
             })
             ->latestOfMany('id'); // MAX(id) — compatible only_full_group_by
     }
-
 }

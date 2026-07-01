@@ -20,8 +20,8 @@ class ContactRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'    => ['required', 'string', 'min:2', 'max:100'],
-            'email'   => ['required', 'email:rfc,dns', 'max:255'],
+            'name' => ['required', 'string', 'min:2', 'max:100'],
+            'email' => ['required', 'email:rfc,dns', 'max:255'],
             'subject' => ['nullable', 'string', 'in:bug,feature,account,api,partnership,other'],
             'message' => ['required', 'string', 'min:10', 'max:2000'],
         ];
@@ -33,16 +33,16 @@ class ContactRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'    => 'Votre nom ou pseudo est requis.',
-            'name.min'         => 'Le nom doit contenir au moins 2 caractères.',
-            'name.max'         => 'Le nom ne peut pas dépasser 100 caractères.',
-            'email.required'   => 'Votre adresse email est requise.',
-            'email.email'      => 'L\'adresse email n\'est pas valide.',
-            'email.max'        => 'L\'adresse email ne peut pas dépasser 255 caractères.',
-            'subject.in'       => 'Le sujet sélectionné n\'est pas valide.',
+            'name.required' => 'Votre nom ou pseudo est requis.',
+            'name.min' => 'Le nom doit contenir au moins 2 caractères.',
+            'name.max' => 'Le nom ne peut pas dépasser 100 caractères.',
+            'email.required' => 'Votre adresse email est requise.',
+            'email.email' => 'L\'adresse email n\'est pas valide.',
+            'email.max' => 'L\'adresse email ne peut pas dépasser 255 caractères.',
+            'subject.in' => 'Le sujet sélectionné n\'est pas valide.',
             'message.required' => 'Le message est requis.',
-            'message.min'      => 'Le message doit contenir au moins 10 caractères.',
-            'message.max'      => 'Le message ne peut pas dépasser 2000 caractères.',
+            'message.min' => 'Le message doit contenir au moins 10 caractères.',
+            'message.max' => 'Le message ne peut pas dépasser 2000 caractères.',
         ];
     }
 
@@ -52,8 +52,8 @@ class ContactRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name'    => 'nom',
-            'email'   => 'adresse email',
+            'name' => 'nom',
+            'email' => 'adresse email',
             'subject' => 'sujet',
             'message' => 'message',
         ];

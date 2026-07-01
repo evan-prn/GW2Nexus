@@ -9,11 +9,11 @@ use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web:       __DIR__.'/../routes/web.php',
-        api:       __DIR__.'/../routes/api.php',
+        web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
         apiPrefix: 'api',
-        commands:  __DIR__.'/../routes/console.php',
-        health:    '/up',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
 
@@ -33,7 +33,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Alias middleware — utilisés par leur nom dans les routes
         $middleware->alias([
-            'admin'     => AdminMiddleware::class,     // Verifie role === 'admin'
+            'admin' => AdminMiddleware::class,     // Verifie role === 'admin'
             'moderator' => ModeratorMiddleware::class, // Verifie role moderateur ou admin
             'ban.check' => BanCheck::class,            // Bloque les utilisateurs bannis
         ]);

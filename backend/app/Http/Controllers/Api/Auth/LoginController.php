@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -48,7 +49,7 @@ class LoginController extends Controller
             ], 401);
         }
 
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         // Étape 4 — Vérification du ban actif
@@ -63,9 +64,9 @@ class LoginController extends Controller
 
             return response()->json([
                 'message' => 'Votre compte a été suspendu.',
-                'ban'     => [
-                    'type'       => $activeBan->type,
-                    'reason'     => $activeBan->reason,
+                'ban' => [
+                    'type' => $activeBan->type,
+                    'reason' => $activeBan->reason,
                     'expires_at' => $activeBan->expires_at?->toIso8601String(),
                 ],
             ], 403);
@@ -78,8 +79,8 @@ class LoginController extends Controller
 
         return response()->json([
             'message' => 'Connexion réussie.',
-            'user'    => new UserResource($user),
-            'token'   => $token,
+            'user' => new UserResource($user),
+            'token' => $token,
         ]);
     }
 }

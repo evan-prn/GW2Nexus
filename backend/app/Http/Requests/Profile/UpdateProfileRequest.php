@@ -14,9 +14,9 @@ class UpdateProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nom'       => ['sometimes', 'string', 'min:2', 'max:100'],
-            'pseudo_gw2'=> ['sometimes', 'nullable', 'string', 'max:100'],
-            'avatar'    => ['sometimes', 'nullable', 'url', 'max:500'],
+            'nom' => ['sometimes', 'string', 'min:2', 'max:100'],
+            'pseudo_gw2' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'avatar' => ['sometimes', 'nullable', 'url', 'max:500'],
         ];
     }
 }

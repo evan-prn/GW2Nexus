@@ -2,22 +2,24 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Modèle représentant une sanction (ban) appliquée à un utilisateur.
  *
- * @property int              $id
- * @property int              $user_id
- * @property int              $banned_by
- * @property string           $type         'temporary' | 'permanent'
- * @property string           $reason
- * @property \Carbon\Carbon|null $expires_at
- * @property \Carbon\Carbon|null $lifted_at
- * @property int|null         $lifted_by
- * @property \Carbon\Carbon   $created_at
- * @property \Carbon\Carbon   $updated_at
+ * @property int $id
+ * @property int $user_id
+ * @property int $banned_by
+ * @property string $type 'temporary' | 'permanent'
+ * @property string $reason
+ * @property Carbon|null $expires_at
+ * @property Carbon|null $lifted_at
+ * @property int|null $lifted_by
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  */
 class UserBan extends Model
 {
@@ -31,7 +33,7 @@ class UserBan extends Model
 
     protected $casts = [
         'expires_at' => 'datetime',
-        'lifted_at'  => 'datetime',
+        'lifted_at' => 'datetime',
     ];
 
     // ─────────────────────────────────────────────
@@ -63,7 +65,7 @@ class UserBan extends Model
     /**
      * Scope — bans actuellement actifs (non levés, non expirés).
      */
-    public function scopeActive(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
+    public function scopeActive(Builder $query): Builder
     {
         return $query
             ->whereNull('lifted_at')

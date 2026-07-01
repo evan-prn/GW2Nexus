@@ -30,8 +30,8 @@ class RegisterController extends Controller
     {
         $user = DB::transaction(function () use ($request): User {
             return User::create([
-                'nom'      => $request->string('nom')->trim()->value(),
-                'email'    => $request->string('email')->lower()->value(),
+                'nom' => $request->string('nom')->trim()->value(),
+                'email' => $request->string('email')->lower()->value(),
                 'password' => $request->string('password')->value(),
                 // Le hash bcrypt est appliqué automatiquement via le cast 'hashed' du modèle
             ]);
@@ -47,8 +47,8 @@ class RegisterController extends Controller
 
         return response()->json([
             'message' => 'Compte créé avec succès. Bienvenue sur GW2Nexus !',
-            'user'    => new UserResource($user),
-            'token'   => $token,
+            'user' => new UserResource($user),
+            'token' => $token,
         ], 201);
     }
 }

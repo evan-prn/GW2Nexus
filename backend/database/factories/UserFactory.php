@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -12,7 +13,7 @@ use Illuminate\Support\Str;
  * Utilisée exclusivement dans les tests et les seeders de développement.
  * Les noms des colonnes doivent correspondre exactement à la migration users.
  *
- * @extends Factory<\App\Models\User>
+ * @extends Factory<User>
  */
 class UserFactory extends Factory
 {
@@ -31,19 +32,19 @@ class UserFactory extends Factory
     {
         return [
             // Colonne 'nom' — correspond exactement à la migration (pas 'name')
-            'nom'               => fake()->name(),
+            'nom' => fake()->name(),
 
-            'email'             => fake()->unique()->safeEmail(),
+            'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
 
             // Hash calculé une seule fois et réutilisé pour tous les appels
-            'password'          => static::$password ??= Hash::make('password'),
+            'password' => static::$password ??= Hash::make('password'),
 
-            'pseudo_gw2'        => null,
-            'avatar'            => null,
-            'role'              => 'user',
-            'api_key'           => null,
-            'remember_token'    => Str::random(10),
+            'pseudo_gw2' => null,
+            'avatar' => null,
+            'role' => 'user',
+            'api_key' => null,
+            'remember_token' => Str::random(10),
         ];
     }
 

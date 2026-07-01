@@ -53,7 +53,7 @@ class ForumThread extends Model
     }
 
     /**
-     * @param Builder<ForumThread> $query
+     * @param  Builder<ForumThread>  $query
      * @return Builder<ForumThread>
      */
     public function scopePinned(Builder $query): Builder
@@ -62,7 +62,7 @@ class ForumThread extends Model
     }
 
     /**
-     * @param Builder<ForumThread> $query
+     * @param  Builder<ForumThread>  $query
      * @return Builder<ForumThread>
      */
     public function scopeUnlocked(Builder $query): Builder
@@ -71,7 +71,7 @@ class ForumThread extends Model
     }
 
     /**
-     * @param Builder<ForumThread> $query
+     * @param  Builder<ForumThread>  $query
      * @return Builder<ForumThread>
      */
     public function scopeLatestActivity(Builder $query): Builder

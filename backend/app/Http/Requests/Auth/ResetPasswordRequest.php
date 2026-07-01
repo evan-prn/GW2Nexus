@@ -33,8 +33,8 @@ class ResetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'token'    => ['required', 'string'],
-            'email'    => ['required', 'string', 'email:rfc'],
+            'token' => ['required', 'string'],
+            'email' => ['required', 'string', 'email:rfc'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
     }
@@ -47,12 +47,12 @@ class ResetPasswordRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'token.required'       => 'Le token de réinitialisation est manquant.',
-            'email.required'       => 'L\'adresse email est obligatoire.',
-            'email.email'          => 'L\'adresse email fournie n\'est pas valide.',
-            'password.required'    => 'Le nouveau mot de passe est obligatoire.',
-            'password.min'         => 'Le mot de passe doit contenir au moins :min caractères.',
-            'password.confirmed'   => 'La confirmation du mot de passe ne correspond pas.',
+            'token.required' => 'Le token de réinitialisation est manquant.',
+            'email.required' => 'L\'adresse email est obligatoire.',
+            'email.email' => 'L\'adresse email fournie n\'est pas valide.',
+            'password.required' => 'Le nouveau mot de passe est obligatoire.',
+            'password.min' => 'Le mot de passe doit contenir au moins :min caractères.',
+            'password.confirmed' => 'La confirmation du mot de passe ne correspond pas.',
         ];
     }
 }

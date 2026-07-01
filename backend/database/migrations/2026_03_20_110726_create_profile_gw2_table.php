@@ -13,9 +13,9 @@ return new class extends Migration
 
             // Relation 1-1 avec utilisateurs
             $table->foreignId('user_id')
-                  ->unique()
-                  ->constrained('users')
-                  ->cascadeOnDelete();
+                ->unique()
+                ->constrained('users')
+                ->cascadeOnDelete();
 
             $table->string('nom_compte', 100)->nullable();   // format: Nom.1234
             $table->string('monde', 100)->nullable();        // ex: Piken Square

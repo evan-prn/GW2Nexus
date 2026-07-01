@@ -27,10 +27,10 @@ class BanUserRequest extends FormRequest
     {
         return [
             // Type de ban : temporaire ou permanent
-            'type'       => ['required', 'in:temporary,permanent'],
+            'type' => ['required', 'in:temporary,permanent'],
 
             // Motif obligatoire pour la traçabilité
-            'reason'     => ['required', 'string', 'min:10', 'max:500'],
+            'reason' => ['required', 'string', 'min:10', 'max:500'],
 
             // Date d'expiration — obligatoire pour un ban temporaire
             'expires_at' => [
@@ -48,12 +48,12 @@ class BanUserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'type.required'          => 'Le type de sanction est obligatoire.',
-            'type.in'                => 'Le type doit être "temporary" ou "permanent".',
-            'reason.required'        => 'Un motif de sanction est obligatoire.',
-            'reason.min'             => 'Le motif doit contenir au moins 10 caractères.',
+            'type.required' => 'Le type de sanction est obligatoire.',
+            'type.in' => 'Le type doit être "temporary" ou "permanent".',
+            'reason.required' => 'Un motif de sanction est obligatoire.',
+            'reason.min' => 'Le motif doit contenir au moins 10 caractères.',
             'expires_at.required_if' => 'La date d\'expiration est obligatoire pour un ban temporaire.',
-            'expires_at.after'       => 'La date d\'expiration doit être dans le futur.',
+            'expires_at.after' => 'La date d\'expiration doit être dans le futur.',
         ];
     }
 }

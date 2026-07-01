@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Api\Admin\AdminUserController;
 use App\Http\Controllers\Api\Admin\AdminForumReportController;
 use App\Http\Controllers\Api\Admin\AdminForumThreadController;
+use App\Http\Controllers\Api\Admin\AdminUserController;
 use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\LogoutController;
@@ -10,13 +10,13 @@ use App\Http\Controllers\Api\Auth\MeController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\Contact\ContactController;
-use App\Http\Controllers\Api\Profile\AvatarController;
-use App\Http\Controllers\Api\Profile\UserProfileController;
 use App\Http\Controllers\Api\Events\EventController;
 use App\Http\Controllers\Api\Forum\ForumCategoryController;
 use App\Http\Controllers\Api\Forum\ForumPostController;
 use App\Http\Controllers\Api\Forum\ForumPostReportController;
 use App\Http\Controllers\Api\Forum\ForumThreadController;
+use App\Http\Controllers\Api\Profile\AvatarController;
+use App\Http\Controllers\Api\Profile\UserProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,7 +41,7 @@ use Illuminate\Support\Facades\Route;
 // ---------------------------------------------------------------------------
 // Healthcheck — utilisé par Docker et les outils de monitoring
 // ---------------------------------------------------------------------------
-Route::get('/health', static fn() => response()->json(['status-backend' => 'ok']));
+Route::get('/health', static fn () => response()->json(['status-backend' => 'ok']));
 
 // ---------------------------------------------------------------------------
 // Routes versionnées — préfixe /api/v1

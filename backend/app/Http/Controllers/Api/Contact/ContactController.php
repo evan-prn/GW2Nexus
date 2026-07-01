@@ -22,10 +22,11 @@ class ContactController extends Controller
     public function send(ContactRequest $request): JsonResponse
     {
         // ─── Rate limiting : 3 messages max par IP sur 10 minutes ───────────
-        $key = 'contact:' . Str::slug($request->ip());
+        $key = 'contact:'.Str::slug($request->ip());
 
         if (RateLimiter::tooManyAttempts($key, maxAttempts: 3)) {
             $seconds = RateLimiter::availableIn($key);
+
             return response()->json([
                 'message' => "Trop de messages envoyés. Réessayez dans {$seconds} secondes.",
             ], 429);
@@ -37,15 +38,15 @@ class ContactController extends Controller
         try {
             Mail::to(config('mail.contact_address', config('mail.from.address')))
                 ->send(new ContactMail(
-                    senderName:     $request->validated('name'),
-                    senderEmail:    $request->validated('email'),
+                    senderName: $request->validated('name'),
+                    senderEmail: $request->validated('email'),
                     contactSubject: $request->validated('subject', 'other'),
                     messageContent: $request->validated('message'),
                 ));
         } catch (\Throwable $e) {
             Log::error('ContactController : échec envoi mail', [
                 'exception' => $e->getMessage(),
-                'from'      => $request->validated('email'),
+                'from' => $request->validated('email'),
             ]);
 
             return response()->json([

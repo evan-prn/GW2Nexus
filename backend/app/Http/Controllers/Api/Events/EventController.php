@@ -38,12 +38,12 @@ class EventController extends Controller
         return response()->json([
             'data' => [
                 'message' => 'Endpoint disponible en Sprint 4.',
-                'note'    => 'Le timer frontend utilise les horaires statiques (events.data.ts).',
-                'wiki'    => 'https://wiki.guildwars2.com/wiki/Event_timers',
+                'note' => 'Le timer frontend utilise les horaires statiques (events.data.ts).',
+                'wiki' => 'https://wiki.guildwars2.com/wiki/Event_timers',
             ],
             'meta' => [
                 'server_time_utc' => now()->utc()->toISOString(),
-                'version'         => 'v1',
+                'version' => 'v1',
             ],
         ]);
     }

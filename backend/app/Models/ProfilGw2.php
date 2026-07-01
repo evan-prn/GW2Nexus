@@ -19,9 +19,9 @@ class ProfilGw2 extends Model
     ];
 
     protected $casts = [
-        'personnages'      => 'array',
+        'personnages' => 'array',
         'derniere_synchro' => 'datetime',
-        'valide'           => 'boolean',
+        'valide' => 'boolean',
     ];
 
     // ─── Relations ────────────────────────────────────────────────

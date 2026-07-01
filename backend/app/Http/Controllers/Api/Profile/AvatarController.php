@@ -47,7 +47,7 @@ class AvatarController extends Controller
         $chemin = $request->file('avatar')->store('public/avatars');
 
         // Convertit le chemin de stockage en URL publique accessible par le navigateur
-        $url = '/storage/' . str_replace('public/', '', $chemin);
+        $url = '/storage/'.str_replace('public/', '', $chemin);
 
         // Persiste l'URL sur le modèle User — correction Sprint 2
         // Sans cette ligne, l'avatar serait retourné au frontend mais jamais sauvegardé

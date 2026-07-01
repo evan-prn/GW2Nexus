@@ -31,9 +31,9 @@ class BanCheck
         if ($activeBan !== null) {
             return response()->json([
                 'message' => 'Votre compte a été suspendu.',
-                'ban'     => [
-                    'type'       => $activeBan->type,
-                    'reason'     => $activeBan->reason,
+                'ban' => [
+                    'type' => $activeBan->type,
+                    'reason' => $activeBan->reason,
                     'expires_at' => $activeBan->expires_at?->toIso8601String(),
                 ],
             ], Response::HTTP_FORBIDDEN);

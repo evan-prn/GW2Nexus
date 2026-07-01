@@ -51,7 +51,7 @@ class AuthTest extends TestCase
     private function creerUtilisateur(array $attributs = []): User
     {
         return User::factory()->create(array_merge([
-            'email'    => 'joueur@gw2nexus.test',
+            'email' => 'joueur@gw2nexus.test',
             'password' => Hash::make('MotDePasse123!'),
         ], $attributs));
     }
@@ -62,9 +62,9 @@ class AuthTest extends TestCase
     private function donneesInscriptionValides(): array
     {
         return [
-            'nom'                   => 'Gardien des Brumes',
-            'email'                 => 'nouveau@gw2nexus.test',
-            'password'              => 'MotDePasse123!',
+            'nom' => 'Gardien des Brumes',
+            'email' => 'nouveau@gw2nexus.test',
+            'password' => 'MotDePasse123!',
             'password_confirmation' => 'MotDePasse123!',
         ];
     }
@@ -121,7 +121,7 @@ class AuthTest extends TestCase
     {
         $reponse = $this->postJson('/api/v1/auth/register', [
             ...$this->donneesInscriptionValides(),
-            'password'              => 'court',
+            'password' => 'court',
             'password_confirmation' => 'court',
         ]);
 
@@ -151,14 +151,14 @@ class AuthTest extends TestCase
         $this->creerUtilisateur();
 
         $reponse = $this->postJson('/api/v1/auth/login', [
-            'email'    => 'joueur@gw2nexus.test',
+            'email' => 'joueur@gw2nexus.test',
             'password' => 'MotDePasse123!',
         ]);
 
         $reponse->assertOk()
             ->assertJsonStructure([
                 'message',
-                'user'  => ['id', 'nom', 'email'],
+                'user' => ['id', 'nom', 'email'],
                 'token',
             ]);
     }
@@ -169,7 +169,7 @@ class AuthTest extends TestCase
         $this->creerUtilisateur();
 
         $reponse = $this->postJson('/api/v1/auth/login', [
-            'email'    => 'joueur@gw2nexus.test',
+            'email' => 'joueur@gw2nexus.test',
             'password' => 'MauvaisMotDePasse!',
         ]);
 
@@ -185,14 +185,14 @@ class AuthTest extends TestCase
         // 5 tentatives échouées
         for ($i = 0; $i < 5; $i++) {
             $this->postJson('/api/v1/auth/login', [
-                'email'    => 'joueur@gw2nexus.test',
+                'email' => 'joueur@gw2nexus.test',
                 'password' => 'MauvaisMotDePasse!',
             ]);
         }
 
         // La 6ème doit être bloquée par le rate limiter
         $reponse = $this->postJson('/api/v1/auth/login', [
-            'email'    => 'joueur@gw2nexus.test',
+            'email' => 'joueur@gw2nexus.test',
             'password' => 'MotDePasse123!', // Même le bon mot de passe est bloqué
         ]);
 
@@ -284,9 +284,9 @@ class AuthTest extends TestCase
         $token = Password::createToken($utilisateur);
 
         $reponse = $this->postJson('/api/v1/auth/reset-password', [
-            'token'                 => $token,
-            'email'                 => 'joueur@gw2nexus.test',
-            'password'              => 'NouveauMotDePasse123!',
+            'token' => $token,
+            'email' => 'joueur@gw2nexus.test',
+            'password' => 'NouveauMotDePasse123!',
             'password_confirmation' => 'NouveauMotDePasse123!',
         ]);
 
@@ -305,9 +305,9 @@ class AuthTest extends TestCase
         $this->creerUtilisateur();
 
         $reponse = $this->postJson('/api/v1/auth/reset-password', [
-            'token'                 => 'token-completement-invalide',
-            'email'                 => 'joueur@gw2nexus.test',
-            'password'              => 'NouveauMotDePasse123!',
+            'token' => 'token-completement-invalide',
+            'email' => 'joueur@gw2nexus.test',
+            'password' => 'NouveauMotDePasse123!',
             'password_confirmation' => 'NouveauMotDePasse123!',
         ]);
 

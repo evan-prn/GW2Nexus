@@ -23,7 +23,7 @@ class UpdateApiKeyRequest extends FormRequest
     {
         return [
             'api_key.required' => 'La clé API GW2 est obligatoire.',
-            'api_key.size'     => 'La clé API GW2 doit contenir exactement 72 caractères.',
+            'api_key.size' => 'La clé API GW2 doit contenir exactement 72 caractères.',
         ];
     }
 }

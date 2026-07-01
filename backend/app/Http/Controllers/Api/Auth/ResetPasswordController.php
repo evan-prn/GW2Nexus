@@ -69,7 +69,7 @@ class ResetPasswordController extends Controller
         if ($statut !== Password::PASSWORD_RESET) {
             return response()->json([
                 'message' => 'Le lien de réinitialisation est invalide ou a expiré.',
-                'errors'  => ['token' => [__($statut)]],
+                'errors' => ['token' => [__($statut)]],
             ], 422);
         }
 
