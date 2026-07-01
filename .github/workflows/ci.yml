@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop, "feature/**"]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  backend:
+    name: Backend — Lint & Tests (PHP)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Configuration PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: mbstring, pdo_sqlite, dom, curl, fileinfo
+          coverage: none
+
+      - name: Cache des dépendances Composer
+        uses: actions/cache@v4
+        with:
+          path: backend/vendor
+          key: composer-${{ runner.os }}-${{ hashFiles('backend/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+
+      - name: Installation des dépendances Composer
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Vérification du style (Laravel Pint)
+        run: php vendor/bin/pint --test
+
+      - name: Tests PHPUnit (SQLite en mémoire)
+        run: php artisan test
+
+  frontend:
+    name: Frontend — Lint, Typecheck & Build (Node)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Configuration Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Installation des dépendances npm
+        run: npm ci
+
+      - name: Vérification TypeScript
+        run: npx tsc -b --noEmit --pretty false
+
+      - name: Vérification ESLint
+        run: npm run lint
+
+      - name: Build de production (Vite)
+        run: npm run build
