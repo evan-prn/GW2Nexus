@@ -684,3 +684,61 @@ Ce fichier trace uniquement les modifications reellement appliquees apres valida
     (secrets GitHub + fichiers prod manquants).
   - La pipeline CI elle-meme ne peut etre validee en conditions reelles que par une execution
     GitHub Actions (non observable depuis cet environnement local).
+
+## 2026-07-01 - Etape 23 - RGAA phases 1 a 4 (branche feature/rgaa-accessibilite)
+
+- Contexte : audit RGAA initial (agent Explore) sur `frontend/src` — fondations deja solides
+  (landmarks HTML5, skip-link, `usePageTitle`, `FormInput` avec `aria-describedby`). 4 phases
+  traitees a la suite sur `feature/rgaa-accessibilite`, non fusionnees sur `develop`/`main`.
+- Fichiers modifies :
+  - Phase 1 : `frontend/src/components/contact/ContactFormComponent/ContactForm.tsx`,
+    `frontend/src/components/profile/ProfileEditModalComponent/ProfileEditModal.tsx`,
+    `frontend/src/components/profile/ProfileIdentityComponent/ProfileIdentity.tsx`,
+    `frontend/src/components/events/EventRowComponent/EventRow.tsx`.
+  - Phase 2 : `frontend/src/hooks/ui/useFocusTrap.ts` (nouveau),
+    `frontend/src/components/admin/BanModalComponent/BanModal.tsx`,
+    `frontend/src/components/profile/ProfileEditModalComponent/ProfileEditModal.tsx`.
+  - Phase 3 : aucun fichier modifie (validation uniquement).
+  - Phase 4 : `frontend/eslint.config.js`, `frontend/package.json`, `frontend/package-lock.json`,
+    `frontend/src/pages/Events/EventDetailPage/EventDetailPage.tsx`,
+    `frontend/src/components/admin/BanModalComponent/BanModal.tsx`,
+    `frontend/src/components/profile/ProfileEditModalComponent/ProfileEditModal.tsx`.
+- Resume des changements :
+  - Phase 1 : `ContactForm` et `ProfileEditModal` — labels relies via `htmlFor`/`id`,
+    `aria-invalid`/`aria-describedby` sur chaque champ, erreurs en `role="alert"`.
+    `ProfileIdentity` : `alt=""` sur l'avatar (redondant avec le `<h1>` du nom juste a cote,
+    coherent avec Navbar/AdminLayout). `EventRow` : le nom d'event cliquable (`role="button"`)
+    repond desormais aussi a la touche Espace (pas seulement Entree).
+  - Phase 2 : nouveau hook partage `useFocusTrap` (piege Tab/Shift+Tab, restaure le focus au
+    declencheur a la fermeture). Integre dans `BanModal` et `ProfileEditModal`. `BanModal`
+    n'avait pas de fermeture au clavier (Echap) contrairement a `ProfileEditModal` — corrige.
+  - Phase 3 : calcul des ratios de contraste WCAG (luminance relative) sur les combinaisons
+    texte/fond du design system (`theme.module.css`) : `text-primary`/`bg-deep` 15.8:1,
+    `text-secondary`/`bg-card` 7.4:1, `gold-primary`/`bg-deep` 8.4:1, `text-dim`/`bg-deep` 5.3:1,
+    `color-error`/`color-success`/`color-warning`/`color-info` tous >5:1. Seul le coin extreme
+    du degrade `.btnPrimary` (texte sur `gold-dark`) descend a 3.8:1, mais le texte centre du
+    bouton se trouve au point median du degrade (~5.8:1) — aucun changement de code necessaire.
+  - Phase 4 : installation et configuration de `eslint-plugin-jsx-a11y` (ruleset recommande).
+    Corrections surfacees : retrait d'un `role="list"` redondant (`EventDetailPage`, pas de
+    `list-style:none` donc pas concerne par le contournement Safari/VoiceOver) ; desactivation
+    ciblee et commentee de 3 regles sur les overlays de modale (`BanModal`, `ProfileEditModal`)
+    car ce sont des backdrops non focusables dont la fermeture clavier passe deja par Echap.
+- Raison de la modification : mise en conformite RGAA demandee explicitement par l'utilisateur
+  sur la branche dediee, en 4 phases (critique -> structure -> contraste -> outillage preventif),
+  perimetre etabli a partir d'un audit lecture seule prealable.
+- Commandes executees :
+  - `docker compose exec react npx tsc -b --noEmit --pretty false` (apres chaque phase)
+  - `docker compose exec react npx eslint .` (apres chaque phase)
+  - `docker compose exec react npm install -D eslint-plugin-jsx-a11y`
+  - `curl http://localhost:5174/contact` (verification basique de disponibilite HTTP)
+- Resultat des tests :
+  - `tsc -b --noEmit` : reussi a chaque phase, aucune erreur.
+  - `eslint .` : reussi (0 erreur) apres la phase 4, y compris avec le nouveau ruleset jsx-a11y.
+- Problemes restants :
+  - Pas d'acces a un navigateur pilote (`chromium-cli`/Playwright) depuis cet environnement
+    Windows sans Node local — verification visuelle/interactive manuelle recommandee par
+    l'utilisateur avant fusion vers `develop`/`main` (formulaire contact, modales BanModal et
+    ProfileEditModal, focus trap au clavier).
+  - Phases suivantes possibles (non demandees pour l'instant) : audit page par page restant
+    (Admin, Forum threads, Events detail), test manuel complet de navigation clavier bout en
+    bout, verification lecteur d'ecran (NVDA/VoiceOver).
