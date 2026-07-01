@@ -68,7 +68,12 @@ export default function BanModal({ user, onConfirm, onClose, loading, error }: B
   const modalRef = useFocusTrap<HTMLDivElement>(true);
 
   return (
+    // Overlay non focusable : la fermeture au clavier passe par Echap (géré ci-dessus),
+    // pas par une activation clavier sur ce fond, qui n'est jamais atteint par Tab.
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
     <div className={styles.overlay} onClick={onClose} role="dialog" aria-modal="true" aria-label="Appliquer une sanction">
+      {/* stopPropagation évite de déclencher la fermeture de l'overlay — pas un contrôle interactif */}
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
       <div ref={modalRef} className={styles.modal} onClick={(e) => e.stopPropagation()}>
 
         {/* ── En-tête ── */}

@@ -40,7 +40,9 @@ export default function ProfileEditModal({ isOpen, onClose }: ProfileEditModalPr
   if (!isOpen) return null;
 
   return (
-    /* Overlay — clic en dehors ferme la modal */
+    /* Overlay — clic en dehors ferme la modal.
+       Non focusable : la fermeture au clavier passe par Echap (géré ci-dessus). */
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
     <div
       className={styles.overlay}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}

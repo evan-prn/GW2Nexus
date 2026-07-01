@@ -163,7 +163,7 @@ export default function EventDetailPage() {
         {event.rewards && event.rewards.length > 0 && (
           <section className={styles.section} aria-labelledby="rewards-title">
             <h2 id="rewards-title" className={styles.sectionTitle}>Récompenses possibles</h2>
-            <ul className={styles.rewardList} role="list">
+            <ul className={styles.rewardList}>
               {event.rewards.map((r, i) => {
                 const iconUrl = resolveRewardIcon(r.icon, rewardWikiImages, rewardItemIcons);
                 return (
