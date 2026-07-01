@@ -76,33 +76,39 @@ export default function ProfileEditModal({ isOpen, onClose }: ProfileEditModalPr
 
             {/* Nom d'affichage */}
             <div className={styles.field}>
-              <label className={styles.label}>Nom d'affichage</label>
+              <label className={styles.label} htmlFor="profile-edit-nom">Nom d'affichage</label>
               <input
+                id="profile-edit-nom"
                 name="nom"
                 value={form.nom}
                 onChange={handleChange}
                 className={`${styles.input} ${errors.nom ? styles.inputError : ''}`}
                 placeholder="Votre pseudo GW2Nexus"
                 disabled={status === 'loading'}
+                aria-invalid={!!errors.nom}
+                aria-describedby={errors.nom ? 'profile-edit-nom-error' : undefined}
               />
               {errors.nom && (
-                <span className={styles.fieldError}>{errors.nom}</span>
+                <span id="profile-edit-nom-error" className={styles.fieldError} role="alert">{errors.nom}</span>
               )}
             </div>
 
             {/* URL avatar */}
             <div className={styles.field}>
-              <label className={styles.label}>URL de l'avatar</label>
+              <label className={styles.label} htmlFor="profile-edit-avatar">URL de l'avatar</label>
               <input
+                id="profile-edit-avatar"
                 name="avatar"
                 value={form.avatar}
                 onChange={handleChange}
                 className={`${styles.input} ${errors.avatar ? styles.inputError : ''}`}
                 placeholder="https://exemple.com/mon-avatar.png"
                 disabled={status === 'loading'}
+                aria-invalid={!!errors.avatar}
+                aria-describedby={errors.avatar ? 'profile-edit-avatar-error' : undefined}
               />
               {errors.avatar && (
-                <span className={styles.fieldError}>{errors.avatar}</span>
+                <span id="profile-edit-avatar-error" className={styles.fieldError} role="alert">{errors.avatar}</span>
               )}
               {/* Prévisualisation avatar */}
               {form.avatar && (

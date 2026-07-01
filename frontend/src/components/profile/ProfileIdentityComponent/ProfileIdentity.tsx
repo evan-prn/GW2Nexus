@@ -44,7 +44,7 @@ export default function ProfileIdentity({ gw2Data, onEditProfile }: ProfileIdent
       {/* ── Avatar ── */}
       <div className={styles.avatarWrapper}>
         {user?.avatar ? (
-          <img src={user.avatar} alt="Avatar" className={styles.avatar} />
+          <img src={user.avatar} alt="" className={styles.avatar} />
         ) : (
           <div className={styles.avatarInitial} aria-hidden="true">
             {user?.nom?.charAt(0).toUpperCase() ?? '?'}

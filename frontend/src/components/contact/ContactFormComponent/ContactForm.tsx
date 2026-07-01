@@ -55,38 +55,45 @@ export default function ContactForm({
       <div className={styles.fieldRow}>
         {/* Nom */}
         <div className={styles.field}>
-          <label className={styles.fieldLabel}>Nom de compte</label>
+          <label className={styles.fieldLabel} htmlFor="contact-name">Nom de compte</label>
           <input
+            id="contact-name"
             name="name"
             value={form.name}
             onChange={onChange}
             className={`${styles.input} ${errors.name ? styles.inputError : ''}`}
+            aria-invalid={!!errors.name}
+            aria-describedby={errors.name ? 'contact-name-error' : undefined}
           />
           {errors.name && (
-            <span className={styles.fieldError}>{errors.name}</span>
+            <span id="contact-name-error" className={styles.fieldError} role="alert">{errors.name}</span>
           )}
         </div>
 
         {/* Email */}
         <div className={styles.field}>
-          <label className={styles.fieldLabel}>Adresse E-mail</label>
+          <label className={styles.fieldLabel} htmlFor="contact-email">Adresse E-mail</label>
           <input
             type="email"
+            id="contact-email"
             name="email"
             value={form.email}
             onChange={onChange}
             className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+            aria-invalid={!!errors.email}
+            aria-describedby={errors.email ? 'contact-email-error' : undefined}
           />
           {errors.email && (
-            <span className={styles.fieldError}>{errors.email}</span>
+            <span id="contact-email-error" className={styles.fieldError} role="alert">{errors.email}</span>
           )}
         </div>
       </div>
 
       {/* Sujet */}
       <div className={styles.field}>
-        <label className={styles.fieldLabel}>Sujet de la demande</label>
+        <label className={styles.fieldLabel} htmlFor="contact-subject">Sujet de la demande</label>
         <select
+          id="contact-subject"
           name="subject"
           value={form.subject}
           onChange={onChange}
@@ -103,15 +110,18 @@ export default function ContactForm({
 
       {/* Message */}
       <div className={styles.field}>
-        <label className={styles.fieldLabel}>Votre Message</label>
+        <label className={styles.fieldLabel} htmlFor="contact-message">Votre Message</label>
         <textarea
+          id="contact-message"
           name="message"
           value={form.message}
           onChange={onChange}
           className={`${styles.textarea} ${errors.message ? styles.inputError : ''}`}
+          aria-invalid={!!errors.message}
+          aria-describedby={errors.message ? 'contact-message-error' : undefined}
         />
         {errors.message && (
-          <span className={styles.fieldError}>{errors.message}</span>
+          <span id="contact-message-error" className={styles.fieldError} role="alert">{errors.message}</span>
         )}
       </div>
 

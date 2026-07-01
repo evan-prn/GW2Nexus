@@ -119,7 +119,12 @@ const EventRow: React.FC<EventRowProps> = ({ eventState, timelineSlots, zoneColo
             onClick={() => navigate(`/events/${event.id}`)}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && navigate(`/events/${event.id}`)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                navigate(`/events/${event.id}`);
+              }
+            }}
             aria-label={`Voir le détail de ${event.name}`}
           >
             {event.name}
