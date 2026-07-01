@@ -742,3 +742,54 @@ Ce fichier trace uniquement les modifications reellement appliquees apres valida
   - Phases suivantes possibles (non demandees pour l'instant) : audit page par page restant
     (Admin, Forum threads, Events detail), test manuel complet de navigation clavier bout en
     bout, verification lecteur d'ecran (NVDA/VoiceOver).
+
+## 2026-07-01 - Etape 24 - Audit responsive (WCAG/W3C) et correction AdminLayout
+
+- Contexte : audit responsive initial (agent Explore) sur `frontend/src`. La majorite des
+  constats du rapport se sont averes deja corrects ou non bloquants apres verification directe
+  du code (voir "Problemes restants" ci-dessous) — un seul probleme reel et bloquant confirme.
+- Fichiers modifies :
+  - `frontend/src/components/admin/AdminLayoutComponent/AdminLayout.module.css`
+- Resume des changements :
+  - Ajout d'un breakpoint `@media (max-width: 768px)` absent jusqu'ici : la sidebar admin
+    (240px fixe, layout flex) rendait `.main` inutilisable (quelques dizaines de pixels de large)
+    sous 768px, sur les 3 pages admin (overview, users, forum). Bascule en barre horizontale
+    au-dessus du contenu, coherent avec le breakpoint deja utilise par la Navbar publique.
+- Raison de la modification : seul probleme responsive reellement bloquant confirme par lecture
+  directe du code parmi les points souleves par l'audit initial.
+- Verifications faites sur les points souleves par l'audit qui se sont averes non fondes
+  (documente pour eviter de les re-verifier plus tard) :
+  - `WorldBossPage.module.css` : `.table { min-width: 600px }` dans un `.tableWrapper
+    { overflow-x: auto }` — c'est le pattern conforme WCAG 1.4.10 (les tableaux de donnees sont
+    explicitement exemptes du reflow, le defilement doit juste rester localise au tableau, ce qui
+    est le cas). Pas de correction necessaire.
+  - `TabPrivacy.module.css` : possede deja un `@media (max-width: 600px)` qui repasse `.dataGrid`
+    en 1 colonne — l'audit affirmait a tort l'absence de media query.
+  - Cibles tactiles Navbar (`.navLink`, `.userBtn`, chevron) : calcul reel des dimensions
+    (padding + line-height) — au-dessus ou tres proche du minimum WCAG 2.2 AA (2.5.8, 24x24px).
+    Le seuil 44x44px cite par l'audit est le niveau AAA (recommande, non requis en AA). Le
+    chevron 14x14px n'est pas lui-meme la cible cliquable (bouton parent plus grand). Pas de
+    correction necessaire.
+  - `AdminOverviewPage.module.css` `.statsGrid` : `repeat(auto-fill, minmax(220px, 1fr))` est deja
+    un pattern responsive sans media query necessaire (repasse naturellement en 1 colonne).
+  - `HomePage.module.css` : fichier vide, aucun risque.
+  - La plupart des "38 fichiers sans @media" recenses par l'audit sont soit des composants
+    fluides (flexbox, `max-width` qui ne peut pas causer de debordement), soit deja couverts par
+    le breakpoint d'un parent — l'absence de `@media` par fichier n'implique pas un probleme.
+- Point note mais non corrige (recommandation, pas un manquement WCAG) :
+  - `TimeLineHeaderComponent` masque entierement les labels d'heures sous 900px
+    (`.timelineCol { display: none }`) alors que `EventRowComponent` garde ses barres
+    d'evenements visibles au meme breakpoint (repositionnees en 2e ligne) — les barres perdent
+    leur repere d'heures sur mobile. L'information "quand" reste disponible via le texte du badge
+    (`EventBadge`), donc pas un blocage WCAG, mais une incoherence UX a considerer separement.
+- Commandes executees :
+  - `docker compose exec react npx tsc -b --noEmit --pretty false`
+  - `docker compose exec react npx eslint .`
+  - `docker compose exec react npm run build`
+- Resultat des tests :
+  - `tsc -b --noEmit`, `eslint .`, `npm run build` : tous reussis, aucune erreur.
+- Problemes restants :
+  - Verification visuelle reelle (redimensionnement navigateur / device toolbar) non faite,
+    memes limites d'environnement que l'etape 23 (pas de navigateur pilote disponible).
+  - Incoherence timeline mobile (voir ci-dessus) laissee en l'etat, a valider explicitement
+    avant toute modification (changement visuel, pas un correctif neutre).
