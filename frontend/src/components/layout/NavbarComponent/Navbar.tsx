@@ -69,12 +69,8 @@ export default function Navbar({ user = null, onLogout }: NavbarProps) {
     setMenuOpen(false);
     setUserOpen(false);
     setEventsOpen(false);
+    setMobileEventsOpen(false);
   };
-
-  /* Le sous-menu mobile "Événements" repart fermé à chaque fermeture du burger */
-  useEffect(() => {
-    if (!menuOpen) setMobileEventsOpen(false);
-  }, [menuOpen]);
 
   /* Effet de fond au scroll */
   useEffect(() => {
@@ -266,7 +262,11 @@ export default function Navbar({ user = null, onLogout }: NavbarProps) {
 
             {/* Burger mobile */}
             <button
-              onClick={() => setMenuOpen(v => !v)}
+              onClick={() => {
+                const next = !menuOpen;
+                setMenuOpen(next);
+                if (!next) setMobileEventsOpen(false);
+              }}
               aria-expanded={menuOpen}
               aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
               className={styles.burger}
