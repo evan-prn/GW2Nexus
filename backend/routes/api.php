@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\AdminForumReportController;
 use App\Http\Controllers\Api\Admin\AdminForumThreadController;
+use App\Http\Controllers\Api\Admin\AdminItemCommentReportController;
 use App\Http\Controllers\Api\Admin\AdminUserController;
 use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Auth\LoginController;
@@ -15,8 +16,13 @@ use App\Http\Controllers\Api\Forum\ForumCategoryController;
 use App\Http\Controllers\Api\Forum\ForumPostController;
 use App\Http\Controllers\Api\Forum\ForumPostReportController;
 use App\Http\Controllers\Api\Forum\ForumThreadController;
+use App\Http\Controllers\Api\Items\ItemCommentController;
+use App\Http\Controllers\Api\Items\ItemCommentReportController;
+use App\Http\Controllers\Api\Items\ItemController;
+use App\Http\Controllers\Api\Items\ItemFavoriteController;
 use App\Http\Controllers\Api\Profile\AvatarController;
 use App\Http\Controllers\Api\Profile\UserProfileController;
+use App\Http\Controllers\Api\Profile\UserSearchController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -141,6 +147,45 @@ Route::prefix('v1')->group(function (): void {
             ->name('threads.posts');
     });
 
+    /*
+    |--------------------------------------------------------------------------
+    | Routes publiques — Encyclopédie d'objets GW2
+    |--------------------------------------------------------------------------
+    |
+    | Recherche/filtres/détail/commentaires en lecture sont publics — seules
+    | les actions (favoris, publier/modifier/supprimer un commentaire) exigent
+    | une authentification (voir le groupe auth:sanctum ci-dessous).
+    |
+    */
+    Route::prefix('items')->name('items.')->group(function (): void {
+
+        Route::get('/', [ItemController::class, 'index'])
+            ->name('index');
+
+        Route::get('autocomplete', [ItemController::class, 'autocomplete'])
+            ->name('autocomplete');
+
+        Route::get('resolve-code', [ItemController::class, 'resolveCode'])
+            ->name('resolve-code');
+
+        // Résolution en lot — un seul appel pour tous les codes d'un message forum
+        Route::post('resolve-codes', [ItemController::class, 'resolveCodes'])
+            ->name('resolve-codes');
+
+        // Route à un seul segment comme {item:gw2_id} ci-dessous : DOIT être
+        // déclarée avant le binding générique, sinon "favorites" serait
+        // capturé comme une valeur de gw2_id (404 de binding).
+        Route::get('favorites', [ItemFavoriteController::class, 'index'])
+            ->name('favorites.index')
+            ->middleware(['auth:sanctum', 'ban.check']);
+
+        Route::get('{item:gw2_id}', [ItemController::class, 'show'])
+            ->name('show');
+
+        Route::get('{item:gw2_id}/comments', [ItemCommentController::class, 'index'])
+            ->name('comments.index');
+    });
+
     Route::middleware(['auth:sanctum', 'ban.check'])->group(function (): void {
 
         // POST /api/v1/auth/logout — Révocation du token Bearer courant
@@ -175,6 +220,36 @@ Route::prefix('v1')->group(function (): void {
             Route::post('posts/{post}/reports', [ForumPostReportController::class, 'store'])
                 ->name('posts.reports.store');
         });
+
+        /*
+        |----------------------------------------------------------------------
+        | Encyclopédie d'objets — actions réservées aux connectés
+        |----------------------------------------------------------------------
+        */
+        Route::prefix('items')->name('items.')->group(function (): void {
+
+            Route::post('{item:gw2_id}/favorite', [ItemFavoriteController::class, 'store'])
+                ->name('favorite.store');
+
+            Route::delete('{item:gw2_id}/favorite', [ItemFavoriteController::class, 'destroy'])
+                ->name('favorite.destroy');
+
+            Route::post('{item:gw2_id}/comments', [ItemCommentController::class, 'store'])
+                ->name('comments.store');
+
+            Route::patch('comments/{comment}', [ItemCommentController::class, 'update'])
+                ->name('comments.update');
+
+            Route::delete('comments/{comment}', [ItemCommentController::class, 'destroy'])
+                ->name('comments.destroy');
+
+            Route::post('comments/{comment}/reports', [ItemCommentReportController::class, 'store'])
+                ->name('comments.reports.store');
+        });
+
+        // GET /api/v1/users/search — autocomplétion `@` de l'éditeur forum
+        Route::get('users/search', [UserSearchController::class, 'index'])
+            ->name('users.search');
 
         /*
         |----------------------------------------------------------------------
@@ -252,6 +327,17 @@ Route::prefix('v1')->group(function (): void {
 
                         Route::patch('threads/{thread}/pin', [AdminForumThreadController::class, 'togglePin'])
                             ->name('threads.pin');
+                    });
+
+                Route::prefix('items')
+                    ->middleware('moderator')
+                    ->name('items.')
+                    ->group(function (): void {
+                        Route::get('comment-reports', [AdminItemCommentReportController::class, 'index'])
+                            ->name('comment-reports.index');
+
+                        Route::patch('comment-reports/{report}', [AdminItemCommentReportController::class, 'update'])
+                            ->name('comment-reports.update');
                     });
 
                 Route::middleware('admin')->group(function (): void {
