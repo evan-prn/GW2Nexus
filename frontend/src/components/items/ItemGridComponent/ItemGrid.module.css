@@ -1,0 +1,35 @@
+/* Conteneur scrollable dédié — nécessaire pour la fenêtrage virtualisé
+   (@tanstack/react-virtual a besoin d'un élément de scroll à hauteur
+   bornée, plutôt que de virtualiser le scroll de la fenêtre entière). */
+.viewport {
+  height: 70vh;
+  min-height: 420px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: var(--radius-lg);
+}
+
+.row {
+  display: grid;
+  gap: 10px;
+  box-sizing: border-box;
+  padding-bottom: 10px;
+}
+
+.sentinel {
+  height: 1px;
+}
+
+.loadingMore {
+  text-align: center;
+  padding: var(--space-4);
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+}
+
+@media (max-width: 768px) {
+  .viewport {
+    height: 65vh;
+  }
+}

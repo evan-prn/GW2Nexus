@@ -1,0 +1,47 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0;
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.text {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-line;
+}
+
+.wikiLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--gold-primary);
+  text-decoration: none;
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-4);
+  background-color: rgba(201, 168, 76, 0.06);
+  transition: var(--transition-base);
+  width: fit-content;
+}
+
+.wikiLink:hover {
+  background-color: rgba(201, 168, 76, 0.12);
+  border-color: rgba(201, 168, 76, 0.55);
+}

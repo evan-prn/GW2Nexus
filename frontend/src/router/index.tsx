@@ -96,6 +96,11 @@ const EventsPage          = lazy(() => import('@/pages/Events/EventsPage/EventsP
 const EventDetailPage     = lazy(() => import('@/pages/Events/EventDetailPage/EventDetailPage'));
 const WorldBossPage       = lazy(() => import('@/pages/Events/WorldBossPage/WorldBossPage'));
 
+// ── Encyclopédie d'objets GW2 ─────────────────────────────────────────────────
+// Page publique : consultation libre, favoris/commentaires réservés aux connectés.
+const ItemsPage            = lazy(() => import('@/pages/Items/ItemsPage/ItemsPage'));
+const ItemDetailPage       = lazy(() => import('@/pages/Items/ItemDetailPage/ItemDetailPage'));
+
 // Admin — rôle 'admin' obligatoire
 const AdminOverviewPage   = lazy(() => import('@/pages/Admin/AdminOverviewPage/AdminOverviewPage'));
 const AdminUserPage       = lazy(() => import('@/pages/Admin/AdminUserPage/AdminUserPage'));
@@ -130,6 +135,10 @@ const router = createBrowserRouter([
       { path: '/events/world-boss',       element: <S><WorldBossPage /></S>   },
       { path: '/events/:eventId',         element: <S><EventDetailPage /></S> },
 
+      // ── Encyclopédie d'objets ────────────────────────────────────────────
+      { path: '/objets',            element: <S><ItemsPage /></S>       },
+      { path: '/objets/:gw2Id',     element: <S><ItemDetailPage /></S>  },
+
       // ── Routes Guest — visiteur non connecté uniquement ───────────────────
       // Redirige vers /profile si déjà authentifié
       {
@@ -156,10 +165,6 @@ const router = createBrowserRouter([
           // { path: '/forum/:categorySlug',              element: <S><CategoryPage /></S>      },
           // { path: '/forum/:categorySlug/:slug',        element: <S><DiscussionPage /></S>    },
           // { path: '/forum/nouvelle-discussion',        element: <S><NewDiscussionPage /></S> },
-
-          // Sprint 4 — API GW2 avancée
-          // { path: '/items',     element: <S><ItemsPage /></S>      },
-          // { path: '/items/:id', element: <S><ItemDetailPage /></S> },
 
           // Sprint 5 — Guildes & Builds
           // { path: '/guildes',        element: <S><GuildesPage /></S>      },

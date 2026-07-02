@@ -85,6 +85,38 @@ export const ENDPOINTS = {
       lockThread: (id: number) => `${API_VERSION}/admin/forum/threads/${id}/lock`,
       pinThread: (id: number) => `${API_VERSION}/admin/forum/threads/${id}/pin`,
     },
+    items: {
+      commentReports: `${API_VERSION}/admin/items/comment-reports`,
+      commentReport: (id: number) => `${API_VERSION}/admin/items/comment-reports/${id}`,
+    },
+  },
+
+  // ─── Encyclopédie d'objets GW2 ─────────────────────────────────────────
+  //
+  // Recherche/filtres/détail/commentaires en lecture sont publics.
+  // Favoris et actions sur les commentaires exigent une authentification.
+  items: {
+    index: `${API_VERSION}/items`,
+    autocomplete: `${API_VERSION}/items/autocomplete`,
+    resolveCode: `${API_VERSION}/items/resolve-code`,
+    resolveCodes: `${API_VERSION}/items/resolve-codes`,
+    show: (gw2Id: number) => `${API_VERSION}/items/${gw2Id}`,
+
+    favorites: `${API_VERSION}/items/favorites`,
+    favorite: (gw2Id: number) => `${API_VERSION}/items/${gw2Id}/favorite`,
+
+    comments: {
+      index: (gw2Id: number) => `${API_VERSION}/items/${gw2Id}/comments`,
+      store: (gw2Id: number) => `${API_VERSION}/items/${gw2Id}/comments`,
+      update: (id: number) => `${API_VERSION}/items/comments/${id}`,
+      destroy: (id: number) => `${API_VERSION}/items/comments/${id}`,
+      reports: (id: number) => `${API_VERSION}/items/comments/${id}/reports`,
+    },
+  },
+
+  // ─── Recherche d'utilisateurs — autocomplétion `@` du forum ────────────
+  users: {
+    search: `${API_VERSION}/users/search`,
   },
 
 } as const;
