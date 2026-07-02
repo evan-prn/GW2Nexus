@@ -82,6 +82,32 @@ services:
     networks:
       - gw2nexus_network
 
+  # ─── Meilisearch — moteur de recherche ─────────────────────────────
+  # Indexe le catalogue d'objets GW2 (recherche instantanée, tolérance
+  # aux fautes, facettes de filtres). Alimenté par `php artisan items:sync`.
+  # Accessible depuis l'hôte : http://localhost:7700
+  meilisearch:
+    image: getmeili/meilisearch:v1.10
+    container_name: gw2nexus_meilisearch
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+      MEILI_ENV: development
+      MEILI_NO_ANALYTICS: "true"
+    ports:
+      - "7700:7700"
+    volumes:
+      # Volume nommé : les index Meilisearch survivent aux docker compose down
+      - meilisearch_data:/meili_data
+    networks:
+      - gw2nexus_network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:7700/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
   # ─── Laravel 12 — API REST ────────────────────────────────────────
   # Backend principal : API REST versionnée (/api/v1/*)
   # Accessible directement : http://localhost:8000
@@ -123,6 +149,8 @@ services:
         condition: service_healthy  # Attend que MySQL soit prêt avant de démarrer
       mailpit:
         condition: service_started  # Mailpit n'a pas de healthcheck — started suffit
+      meilisearch:
+        condition: service_healthy  # Attend que l'index de recherche soit prêt
 
     # ── Healthcheck Laravel ────────────────────────────────────────
     # Permet au service react d'attendre que Laravel soit opérationnel
@@ -175,6 +203,8 @@ services:
 # docker compose down -v pour les supprimer (reset complet)
 volumes:
   mysql_data:             # Données MySQL — ne jamais supprimer en prod
+    driver: local
+  meilisearch_data:       # Index de recherche — reconstructible via `items:sync`
     driver: local
   backend_vendor:         # Dépendances PHP Composer installées dans le container
     driver: local
