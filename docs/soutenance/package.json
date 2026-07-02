@@ -1,0 +1,12 @@
+{
+  "name": "gw2nexus-soutenance",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Génération du diaporama de soutenance GW2Nexus / GW2Nexus Mobile (PowerPoint natif via pptxgenjs)",
+  "scripts": {
+    "build": "node generate-pptx.js"
+  },
+  "dependencies": {
+    "pptxgenjs": "^4.0.1"
+  }
+}

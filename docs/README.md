@@ -18,6 +18,7 @@ Centre de documentation du projet GW2 Nexus. Application web communautaire dédi
 | **GW2 / Métier** | API ArenaNet, synchronisation, world bosses | [game/](game/) |
 | **Opérations** | Runbook, incidents courants | [operations/](operations/) |
 | **Forum** | Architecture et API détaillée du module forum | [forum/](forum/) |
+| **Soutenance** | Diaporama de présentation du projet (PowerPoint) | [soutenance/](soutenance/) |
 
 ---
 
