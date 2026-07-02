@@ -33,17 +33,16 @@ class EventController extends Controller
      */
     public function schedule(): JsonResponse
     {
-        // Pour l'instant : réponse statique couvrant les zones principales.
-        // À Sprint 4, ces données viendront de la BDD (table items_gw2 + cache).
+        $path = resource_path('data/events_schedule.json');
+        $groups = json_decode(file_get_contents($path), true, flags: JSON_THROW_ON_ERROR);
+
         return response()->json([
-            'data' => [
-                'message' => 'Endpoint disponible en Sprint 4.',
-                'note' => 'Le timer frontend utilise les horaires statiques (events.data.ts).',
-                'wiki' => 'https://wiki.guildwars2.com/wiki/Event_timers',
-            ],
+            'data' => $groups,
             'meta' => [
                 'server_time_utc' => now()->utc()->toISOString(),
-                'version' => 'v1',
+                'version'         => 'v1',
+                'source'          => 'frontend/static-events',
+                'wiki'            => 'https://wiki.guildwars2.com/wiki/Event_timers',
             ],
         ]);
     }
