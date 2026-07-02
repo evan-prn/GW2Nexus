@@ -1,0 +1,11 @@
+.content {
+  margin: 0;
+  color: rgba(240, 232, 216, 0.84);
+  line-height: var(--leading-loose);
+  white-space: pre-wrap;
+}
+
+.mention {
+  color: var(--gold-light);
+  font-weight: var(--weight-semibold);
+}

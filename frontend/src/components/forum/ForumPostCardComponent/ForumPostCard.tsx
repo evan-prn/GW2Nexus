@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import type { ForumPost, ForumPostReportPayload, ForumReportReason } from '@/types/forum.types';
+import ForumContent from '@/components/forum/ForumContentComponent/ForumContent';
 import styles from './ForumPostCard.module.css';
 
 interface ForumPostCardProps {
@@ -197,7 +198,7 @@ export default function ForumPostCard({
             )}
             {actionSuccess && <p className={styles.actionSuccess}>{actionSuccess}</p>}
             {actionError && <p className={styles.actionError}>{actionError}</p>}
-            <p className={styles.content}>{post.content}</p>
+            <ForumContent content={post.content} />
           </>
         )}
       </div>

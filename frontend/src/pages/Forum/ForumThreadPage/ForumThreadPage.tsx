@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import type { ChangeEvent, FormEvent } from 'react';
 import ForumBreadcrumb from '@/components/forum/ForumBreadcrumbComponent/ForumBreadcrumb';
 import ForumPostCard from '@/components/forum/ForumPostCardComponent/ForumPostCard';
+import MentionAutocompleteTextarea from '@/components/forum/MentionAutocompleteTextareaComponent/MentionAutocompleteTextarea';
 import { useForumMutations } from '@/hooks/forum/useForumMutations';
 import { useForumThread } from '@/hooks/forum/useForumThread';
 import useAuthStore from '@/store/authStore';
@@ -176,14 +177,14 @@ export default function ForumThreadPage() {
                 <label className={styles.replyLabel} htmlFor="forum-reply-content">
                   Repondre au sujet
                 </label>
-                <textarea
+                <MentionAutocompleteTextarea
                   id="forum-reply-content"
                   ref={replyTextareaRef}
                   name="content"
                   value={replyContent}
                   onChange={handleReplyChange}
                   className={styles.replyTextarea}
-                  placeholder="Partage ta reponse avec la communaute..."
+                  placeholder="Partage ta reponse avec la communaute... (@ pour mentionner, # pour un objet GW2)"
                   minLength={3}
                   required
                 />

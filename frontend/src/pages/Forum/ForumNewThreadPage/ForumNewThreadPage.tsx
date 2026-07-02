@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import type { ChangeEvent, FormEvent } from 'react';
 import FormInput from '@/components/auth/FormInputComponent/FormInput';
 import ForumBreadcrumb from '@/components/forum/ForumBreadcrumbComponent/ForumBreadcrumb';
+import MentionAutocompleteTextarea from '@/components/forum/MentionAutocompleteTextareaComponent/MentionAutocompleteTextarea';
 import { useForumCategory } from '@/hooks/forum/useForumCategories';
 import { useForumMutations } from '@/hooks/forum/useForumMutations';
 import usePageTitle from '@/hooks/usePageTitle';
@@ -99,13 +100,13 @@ export default function ForumNewThreadPage() {
 
           <label className={styles.field} htmlFor="content">
             <span className={styles.label}>Message</span>
-            <textarea
+            <MentionAutocompleteTextarea
               id="content"
               name="content"
               value={formData.content}
               onChange={handleChange}
               className={styles.textarea}
-              placeholder="Detaille ta question, ton contexte ou ton idee..."
+              placeholder="Detaille ta question, ton contexte ou ton idee... (@ pour mentionner, # pour un objet GW2)"
               minLength={10}
               required
             />
